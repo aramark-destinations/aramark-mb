@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "name": "eds/block-creation",
+  "title": "EDS Block Creation",
+  "aliases": ["create-block", "new-block"],
+  "helpers": []
+}

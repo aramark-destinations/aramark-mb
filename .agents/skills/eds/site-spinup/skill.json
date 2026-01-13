@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "name": "eds/site-spinup",
+  "title": "EDS Site Spinup",
+  "aliases": ["new-site", "create-site"],
+  "helpers": []
+}

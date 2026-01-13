@@ -1,23 +1,49 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+/**
+ * Site-Specific Cards Block Extension
+ * - Imports and re-exports base cards block
+ * - Wraps with local hooks for site-specific customizations
+ */
+
+import { decorate as baseDecorate } from '../../libs/blocks/cards/base.js';
+
+const hooks = {
+  onBefore: ({ block }) => {
+    // Site-specific: Add variant classes if specified
+    if (block.dataset.variant) {
+      block.classList.add(`cards--${block.dataset.variant}`);
+    }
+    
+    // Site-specific: Add column count class if specified
+    const columns = block.dataset.columns;
+    if (columns) {
+      block.classList.add(`cards--${columns}-cols`);
+    }
+  },
+  onAfter: ({ block }) => {
+    // Site-specific: Add hover effects
+    const cards = block.querySelectorAll('li');
+    cards.forEach((card) => {
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-4px)';
+        card.style.transition = 'transform 0.3s ease';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0)';
+      });
+    });
+    
+    // Site-specific: Add analytics tracking
+    block.addEventListener('click', (e) => {
+      const card = e.target.closest('li');
+      if (card) {
+        // Analytics code would go here
+        // console.log('Card clicked:', card);
+      }
+    });
+  },
+};
 
 export default function decorate(block) {
-  /* change to ul, li */
-  const ul = document.createElement('ul');
-  [...block.children].forEach((row) => {
-    const li = document.createElement('li');
-    moveInstrumentation(row, li);
-    while (row.firstElementChild) li.append(row.firstElementChild);
-    [...li.children].forEach((div) => {
-      if (div.children.length === 1 && div.querySelector('picture')) div.className = 'cards-card-image';
-      else div.className = 'cards-card-body';
-    });
-    ul.append(li);
-  });
-  ul.querySelectorAll('picture > img').forEach((img) => {
-    const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
-    moveInstrumentation(img, optimizedPic.querySelector('img'));
-    img.closest('picture').replaceWith(optimizedPic);
-  });
-  block.replaceChildren(ul);
+  return baseDecorate(block, hooks);
 }
+

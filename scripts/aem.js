@@ -568,7 +568,26 @@ function buildBlock(blockName, content) {
 }
 
 /**
- * Loads JS and CSS for a block.
+ * Attempts to load a resource from multiple paths
+ * @param {string[]} paths Array of paths to try
+ * @param {Function} loader Function to load the resource
+ * @returns {Promise<any>} The loaded resource or null
+ */
+async function loadFromPaths(paths, loader) {
+  for (const path of paths) {
+    try {
+      const result = await loader(path);
+      return result;
+    } catch (error) {
+      // Continue to next path
+    }
+  }
+  return null;
+}
+
+/**
+ * Loads JS and CSS for a block with site resolution support.
+ * Resolution order: sites/{site}/blocks → /blocks → /libs/blocks
  * @param {Element} block The block element
  */
 async function loadBlock(block) {
@@ -576,16 +595,35 @@ async function loadBlock(block) {
   if (status !== 'loading' && status !== 'loaded') {
     block.dataset.blockStatus = 'loading';
     const { blockName } = block.dataset;
+    
     try {
-      const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`);
+      // Import site resolver dynamically
+      const { getBlockPaths, getBlockCssPaths } = await import('./site-resolver.js');
+      
+      // Get resolution paths
+      const jsPaths = getBlockPaths(blockName);
+      const cssPaths = getBlockCssPaths(blockName);
+      
+      // Try to load CSS from resolution paths
+      const cssLoaded = loadFromPaths(
+        cssPaths,
+        (path) => loadCSS(`${window.hlx.codeBasePath}${path}`)
+      );
+      
+      // Try to load JS from resolution paths
       const decorationComplete = new Promise((resolve) => {
         (async () => {
           try {
-            const mod = await import(
-              `${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`
+            const mod = await loadFromPaths(
+              jsPaths,
+              (path) => import(`${window.hlx.codeBasePath}${path}.js`)
             );
-            if (mod.default) {
+            
+            if (mod && mod.default) {
               await mod.default(block);
+            } else {
+              // eslint-disable-next-line no-console
+              console.warn(`No module found for ${blockName} in any resolution path`);
             }
           } catch (error) {
             // eslint-disable-next-line no-console
@@ -594,6 +632,7 @@ async function loadBlock(block) {
           resolve();
         })();
       });
+      
       await Promise.all([cssLoaded, decorationComplete]);
     } catch (error) {
       // eslint-disable-next-line no-console
