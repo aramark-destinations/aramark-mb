@@ -1,9 +1,8 @@
-# Your Project's Title...
-Your project's description...
+# Aramark Nations Vacations EDS framework
 
 ## Environments
-- Preview: https://main--{repo}--{owner}.aem.page/
-- Live: https://main--{repo}--{owner}.aem.live/
+- Preview: https://staging--aramark-nv--blueacorninc.aem.page/
+- Live: https://main--aramark-nv--blueacorninc.aem.live/
 
 ## Documentation
 
