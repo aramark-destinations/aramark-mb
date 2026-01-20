@@ -25,13 +25,13 @@ mkdir -p sites/{site-name}/styles
 touch sites/{site-name}/README.md
 ```
 
-Example for "Bullfrog Marina":
+Example for "Grand Canyon North":
 
 ```bash
-mkdir -p sites/bullfrog-marina/blocks
-mkdir -p sites/bullfrog-marina/scripts
-mkdir -p sites/bullfrog-marina/styles
-touch sites/bullfrog-marina/README.md
+mkdir -p sites/grand-canyon-north/blocks
+mkdir -p sites/grand-canyon-north/scripts
+mkdir -p sites/grand-canyon-north/styles
+touch sites/grand-canyon-north/README.md
 ```
 
 ### Step 2: Configure SharePoint Mountpoint
@@ -45,8 +45,8 @@ mountpoints:
   # Lake Powell (existing)
   /sites/lake-powell: https://adobe.sharepoint.com/:f:/r/sites/NationsVacations/Shared%20Documents/lake-powell
   
-  # Bullfrog Marina (new)
-  /sites/bullfrog-marina: https://adobe.sharepoint.com/:f:/r/sites/NationsVacations/Shared%20Documents/bullfrog-marina
+  # Grand Canyon North (new)
+  /sites/grand-canyon-north: https://adobe.sharepoint.com/:f:/r/sites/NationsVacations/Shared%20Documents/grand-canyon-north
 ```
 
 **Important:** SharePoint folder must exist before adding to `fstab.yaml`
@@ -57,8 +57,8 @@ Create `sites/{site-name}/config.json`:
 
 ```json
 {
-  "siteName": "Bullfrog Marina",
-  "siteId": "bullfrog-marina",
+  "siteName": "Grand Canyon North",
+  "siteId": "grand-canyon-north",
   "brand": "nations-vacations",
   "locale": "en-US",
   "theme": {
@@ -76,8 +76,8 @@ Create `sites/{site-name}/config.json`:
     "adobeAnalytics": "RSID-XXXXXXXXX"
   },
   "bynder": {
-    "portalId": "bullfrog-marina",
-    "assetPrefix": "/bullfrog"
+    "portalId": "grand-canyon-north",
+    "assetPrefix": "/grandcanyon"
   }
 }
 ```
@@ -87,10 +87,10 @@ Create `sites/{site-name}/config.json`:
 Document site-specific information in `sites/{site-name}/README.md`:
 
 ```markdown
-# Bullfrog Marina Site
+# Grand Canyon North Site
 
 ## Overview
-Bullfrog Marina is a premier houseboat rental destination on Lake Powell.
+Grand Canyon North is a premier vacation destination offering cabins and lodging near the North Rim of the Grand Canyon.
 
 ## Site Details
 - **Launch Date:** Q2 2024
@@ -123,7 +123,7 @@ This site currently has no custom block overrides. All blocks use the shared Nat
 Create `sites/{site-name}/styles/styles.css` if needed:
 
 ```css
-/* Bullfrog Marina Site Styles */
+/* Grand Canyon North Site Styles */
 
 /* Import base Nations Vacations styles */
 @import url('../../styles/styles.css');
@@ -141,7 +141,7 @@ Create `sites/{site-name}/styles/styles.css` if needed:
 }
 
 /* Site-specific utility classes */
-.bullfrog-accent {
+.canyon-accent {
   color: var(--site-secondary-color);
 }
 ```
@@ -152,7 +152,7 @@ Create `sites/{site-name}/scripts/scripts.js` if needed:
 
 ```javascript
 /**
- * Bullfrog Marina Site Scripts
+ * Grand Canyon North Site Scripts
  * Site-specific JavaScript that runs after core EDS scripts
  */
 
@@ -160,9 +160,9 @@ import { loadScript } from '../../scripts/aem.js';
 
 // Load site-specific booking widget
 async function loadBookingWidget() {
-  await loadScript('/sites/bullfrog-marina/scripts/booking-widget.js');
+  await loadScript('/sites/grand-canyon-north/scripts/booking-widget.js');
   window.BookingWidget?.init({
-    property: 'bullfrog-marina',
+    property: 'grand-canyon-north',
     apiEndpoint: '/api/bookings'
   });
 }
@@ -181,25 +181,25 @@ if (document.readyState === 'loading') {
 
 Only create site-specific block overrides if the site truly needs custom behavior that can't be achieved through hooks or CSS.
 
-Example: Custom hero for Bullfrog Marina
+Example: Custom hero for Grand Canyon North
 
 ```bash
-mkdir -p sites/bullfrog-marina/blocks/hero
+mkdir -p sites/grand-canyon-north/blocks/hero
 ```
 
-Create `sites/bullfrog-marina/blocks/hero/hero.js`:
+Create `sites/grand-canyon-north/blocks/hero/hero.js`:
 
 ```javascript
 /**
- * Bullfrog Marina Hero Override
- * Adds marina-specific booking integration
+ * Grand Canyon North Hero Override
+ * Adds property-specific booking integration
  */
 
 import { decorate as nvDecorate } from '../../../blocks/hero/hero.js';
 
-const bullfrogHooks = {
+const canyonHooks = {
   onAfter: ({ block }) => {
-    // Add marina-specific booking button
+    // Add property-specific booking button
     const cta = block.querySelector('.button-container');
     if (cta) {
       const bookingBtn = document.createElement('a');
@@ -215,16 +215,16 @@ const bullfrogHooks = {
   }
 };
 
-export default (block) => nvDecorate(block, bullfrogHooks);
+export default (block) => nvDecorate(block, canyonHooks);
 ```
 
-Create `sites/bullfrog-marina/blocks/hero/hero.css`:
+Create `sites/grand-canyon-north/blocks/hero/hero.css`:
 
 ```css
 /* Import Nations Vacations hero styles */
 @import url('../../../blocks/hero/hero.css');
 
-/* Bullfrog Marina hero overrides */
+/* Grand Canyon North hero overrides */
 .hero {
   /* Marina-specific styling */
   --hero-overlay-opacity: 0.6;
@@ -242,9 +242,9 @@ Verify the site resolver correctly detects your new site:
 1. Create a test page at `/sites/{site-name}/test.html`
 2. Add a block (e.g., hero)
 3. Load the page in a browser
-4. Check browser console for:
+3. Check browser console for:
    ```
-   [Site Resolver] Current site: bullfrog-marina
+   [Site Resolver] Current site: grand-canyon-north
    [Site Resolver] Resolved block 'hero' to: /blocks/hero/hero.js
    ```
 
@@ -252,20 +252,20 @@ Verify the site resolver correctly detects your new site:
 
 1. **Create SharePoint Folder Structure:**
    ```
-   /sites/bullfrog-marina/
+   /sites/grand-canyon-north/
    ├── index (homepage)
    ├── about
-   ├── rentals/
-   │   ├── houseboats
-   │   └── powerboats
-   ├── amenities
+   ├── lodging/
+   │   ├── cabins
+   │   └── camping
+   ├── activities
    └── contact
    ```
 
 2. **Upload Assets to Bynder:**
-   - Create collection: "Bullfrog Marina"
+   - Create collection: "Grand Canyon North"
    - Upload site-specific photos
-   - Tag with property: "bullfrog-marina"
+   - Tag with property: "grand-canyon-north"
 
 3. **Create Initial Content:**
    - Author homepage in Universal Editor
@@ -282,7 +282,7 @@ jobs:
   deploy:
     strategy:
       matrix:
-        site: [lake-powell, bullfrog-marina]  # Add new site
+        site: [lake-powell, grand-canyon-north]  # Add new site
     steps:
       - name: Deploy ${{ matrix.site }}
         run: |
@@ -314,7 +314,7 @@ Update project documentation:
    ```markdown
    ## Sites
    - Lake Powell - `/sites/lake-powell/`
-   - Bullfrog Marina - `/sites/bullfrog-marina/` (NEW)
+   - Grand Canyon North - `/sites/grand-canyon-north/` (NEW)
    ```
 
 2. **Update site inventory:**
@@ -330,16 +330,16 @@ Update project documentation:
 Understanding path resolution:
 
 ```
-Request: /sites/bullfrog-marina/index.html
+Request: /sites/grand-canyon-north/index.html
 Block: hero
 
 Resolution order:
-1. /sites/bullfrog-marina/blocks/hero/hero.js  ← Site-specific (if exists)
+1. /sites/grand-canyon-north/blocks/hero/hero.js  ← Site-specific (if exists)
 2. /blocks/hero/hero.js                         ← Nations Vacations shared
 3. /libs/blocks/hero/base.js                    ← Base framework block
 
 CSS resolution:
-1. /sites/bullfrog-marina/blocks/hero/hero.css ← Site-specific
+1. /sites/grand-canyon-north/blocks/hero/hero.css ← Site-specific
 2. /blocks/hero/hero.css                        ← NV shared (imports base)
 3. /libs/blocks/hero/base.css                   ← Base styles
 ```
@@ -364,8 +364,8 @@ CSS resolution:
 #!/bin/bash
 # Create new EDS site
 
-SITE_NAME="bullfrog-marina"
-SITE_TITLE="Bullfrog Marina"
+SITE_NAME="grand-canyon-north"
+SITE_TITLE="Grand Canyon North"
 
 echo "Creating new site: $SITE_TITLE ($SITE_NAME)"
 
