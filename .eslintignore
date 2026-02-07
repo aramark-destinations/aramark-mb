@@ -1,2 +1,17 @@
 helix-importer-ui
+scripts/acdl
+tools/picker
+tools/segments
+tools/pdp-metadata
+tools/category-metadata
+tools/authoring-guide-importer
+tools/aem-config
+scripts/__dropins__
+scripts/lib
+scripts/commerce-events-collector.js
+scripts/commerce-events-sdk.js
+plugins/
+cypress/
+tests/playwright/
 dompurify.min.js
+blocks/form/rules/

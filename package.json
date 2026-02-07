@@ -4,15 +4,19 @@
   "version": "1.3.0",
   "description": "Starter project for Adobe Helix",
   "scripts": {
-    "lint:js": "eslint . --ext .json,.js,.mjs",
+    "lint": "pnpm lint:js && pnpm lint:css",
     "lint:css": "stylelint \"blocks/**/*.css\" \"styles/*.css\"",
-    "lint": "npm run lint:js && npm run lint:css",
-    "lint:fix": "npm run lint:js -- --fix && npm run lint:css -- --fix",
-    "build:json": "npm-run-all -p build:json:models build:json:definitions build:json:filters",
-    "build:json:models": "merge-json-cli -i \"models/_component-models.json\" -o \"component-models.json\"",
+    "lint:fix": "eslint . --ext .json,.js,.mjs --fix && stylelint \"blocks/**/*.css\" \"styles/*.css\" --fix",
+    "lint:js": "eslint . --ext .json,.js,.mjs",
+    "build:json": "pnpm run build:json:models && pnpm run build:json:definitions && pnpm run build:json:filters",
     "build:json:definitions": "merge-json-cli -i \"models/_component-definition.json\" -o \"component-definition.json\"",
     "build:json:filters": "merge-json-cli -i \"models/_component-filters.json\" -o \"component-filters.json\"",
-    "prepare": "husky"
+    "build:json:models": "merge-json-cli -i \"models/_component-models.json\" -o \"component-models.json\"",
+    "prepare": "husky",
+    "start": "pnpm --package=@adobe/aem-cli dlx aem up",
+    "test": "jest --workerThread=true --maxWorkers=2",
+    "test:coverage": "jest --coverage --outputFile=./coverage.json --json --maxWorkers=2 --workerThreads=true",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -25,16 +29,38 @@
   },
   "homepage": "https://github.com/adobe/aem-boilerplate#readme",
   "devDependencies": {
-    "@babel/eslint-parser": "7.28.5",
+    "@babel/core": "^7.28.6",
+    "@babel/eslint-parser": "~7.28.6",
+    "@babel/plugin-syntax-top-level-await": "^7.14.5",
+    "@babel/preset-env": "^7.29.0",
+    "@playwright/test": "^1.58.2",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "babel-jest": "^30.2.0",
     "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
+    "eslint-plugin-compat": "^6.1.0",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-json": "3.1.0",
     "eslint-plugin-xwalk": "github:adobe-rnd/eslint-plugin-xwalk",
-    "husky": "9.1.1",
+    "husky": "9.1.7",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "jest-junit": "^16.0.0",
     "merge-json-cli": "1.0.4",
     "npm-run-all": "4.1.5",
-    "stylelint": "16.26.1",
-    "stylelint-config-standard": "39.0.1"
+    "stylelint": "17.1.1",
+    "stylelint-browser-compat": "1.0.0-beta.180",
+    "stylelint-config-standard": "40.0.0",
+    "stylelint-plugin-use-baseline": "^1.2.2"
+  },
+  "browserlist": [
+    "baseline widely available"
+  ],
+  "packageManager": "pnpm@10.28.2",
+  "dependencies": {
+    "@adobe/adobe-client-data-layer": "^3.0.1",
+    "@adobe/aem-cli": "^16.16.19",
+    "baseline-browser-mapping": "^2.9.19"
   }
 }

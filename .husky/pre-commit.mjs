@@ -18,3 +18,12 @@ if (modifledPartials.length > 0) {
   console.log(output);
   await run('git add component-models.json component-definition.json component-filters.json');
 }
+
+// check if package.json is staged and generate package-lock.json
+const packageJsonModified = modifiedFiles.includes('package.json');
+if (packageJsonModified) {
+  console.log('package.json modified, generating package-lock.json...');
+  await run('npm install --package-lock-only');
+  await run('git add package-lock.json');
+  console.log('package-lock.json generated and staged');
+}
