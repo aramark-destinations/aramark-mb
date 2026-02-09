@@ -1,0 +1,41 @@
+{
+  // Format on save using ESLint and Stylelint
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  },
+
+  // Disable default formatters for JS/CSS, use linters instead
+  "editor.defaultFormatter": null,
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+
+  // ESLint settings
+  "eslint.format.enable": true,
+  "eslint.validate": ["javascript", "json"],
+
+  // Stylelint settings
+  "stylelint.validate": ["css"],
+
+  "files.associations": {
+    "AGENTS.md": "markdown",
+    "llms.txt": "plaintext"
+  },
+  "chat.instructionsFilesLocations": {
+    ".github/copilot-instructions.md": true,
+    ".github/*-instructions.md": true,
+    "AGENTS.md": true,
+    "TESTING.md": true
+  },
+  "terminal.integrated.shellIntegration.enabled": true,
+  "workbench.startupEditor": "readme",
+  "chat.useAgentSkills": true
+}

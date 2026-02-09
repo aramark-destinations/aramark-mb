@@ -1,9 +1,36 @@
 .hlx/*
 coverage/*
+test-coverage/*
 logs/*
-node_modules/*
+node_modules
+.pnpm-store/*
+.parcel-cache
+.pnpm-store/**
+.playwright-mcp/*
 
 helix-importer-ui
 .DS_Store
 *.bak
 .idea
+# Ignore .map files in scripts/__dropins__/ directory and all its subdirectories
+scripts/__dropins__/**/*.map
+.env
+server.crt
+server.key
+test-results
+
+# Ignore VSCode chrome debug profile
+.vscode/chrome-debug-profile/
+
+# Ignore agent plans but keep shared templates tracked
+.agents/plans/*
+.agents/tasks/*
+.ralphy/*
+.chrome/playwright/*
+docs/plans/*
+!.agents/plans/shared/
+!.agents/plans/shared/**
+.agents/skills/research/docs-search/.cache/*
+
+# Ignore git worktrees directory
+.worktrees/.config-backups/

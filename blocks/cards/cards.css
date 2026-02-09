@@ -1,46 +1,27 @@
-/* Import base cards styles */
-@import url('../../libs/blocks/cards/base.css');
-
-/* Site-specific cards overrides and extensions */
-
-/* Variant: Featured cards with shadow */
-.cards--featured > ul > li {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
+.cards > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
+  gap: 24px;
 }
 
-.cards--featured > ul > li:hover {
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+.cards > ul > li {
+  border: 1px solid #dadada;
+  background-color: var(--background-color);
 }
 
-/* Column variants */
-.cards--2-cols > ul {
-  grid-template-columns: repeat(2, 1fr);
+.cards .cards-card-body {
+  margin: 16px;
 }
 
-.cards--3-cols > ul {
-  grid-template-columns: repeat(3, 1fr);
+.cards .cards-card-image {
+  line-height: 0;
 }
 
-.cards--4-cols > ul {
-  grid-template-columns: repeat(4, 1fr);
+.cards > ul > li img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
 }
-
-/* Responsive overrides for column variants */
-@media (width < 900px) {
-  .cards--3-cols > ul,
-  .cards--4-cols > ul {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (width < 600px) {
-  .cards--2-cols > ul,
-  .cards--3-cols > ul,
-  .cards--4-cols > ul {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Add any additional site-specific cards styles here */
-

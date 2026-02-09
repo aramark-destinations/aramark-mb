@@ -1,14 +1,53 @@
 name: Build
-on: [push]
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
 
 jobs:
   build:
+    name: "Lint Javascript & CSS"
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22]
     steps:
-    - uses: actions/checkout@v6
-    - name: Use Node.js 20
-      uses: actions/setup-node@v6
-      with:
-        node-version: 22
-    - run: npm ci
-    - run: npm run lint
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+
+  update-pr-branch:
+    name: "Set Branch Name in EDS URL Description"
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Update PR description with branch name
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branchName = context.payload.pull_request.head.ref;
+            const currentBody = context.payload.pull_request.body || '';
+            
+            // Replace {{BRANCH}} placeholder with actual branch name
+            const updatedBody = currentBody.replace(/\{\{BRANCH\}\}/g, branchName);
+            
+            // Only update if changes were made
+            if (updatedBody !== currentBody) {
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                body: updatedBody
+              });
+              console.log(`Updated PR description: replaced {{BRANCH}} with ${branchName}`);
+            } else {
+              console.log('No {{BRANCH}} placeholder found, skipping update');
+            }
