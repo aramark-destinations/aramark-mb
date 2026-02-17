@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide walks through creating a new property site in the Nations Vacations multi-site EDS platform.
+This guide walks through creating a new property site in the Aramark MB multi-site EDS platform.
 
 ## Prerequisites
 
@@ -17,21 +17,21 @@ This guide walks through creating a new property site in the Nations Vacations m
 
 ```bash
 # Create site folder
-mkdir -p sites/{site-name}/blocks
-mkdir -p sites/{site-name}/scripts
-mkdir -p sites/{site-name}/styles
+mkdir -p brands/{brand-name}/blocks
+mkdir -p brands/{brand-name}/scripts
+mkdir -p brands/{brand-name}/styles
 
 # Create site README
-touch sites/{site-name}/README.md
+touch brands/{brand-name}/README.md
 ```
 
 Example for "Grand Canyon North":
 
 ```bash
-mkdir -p sites/grand-canyon-north/blocks
-mkdir -p sites/grand-canyon-north/scripts
-mkdir -p sites/grand-canyon-north/styles
-touch sites/grand-canyon-north/README.md
+mkdir -p brands/grand-canyon-north/blocks
+mkdir -p brands/grand-canyon-north/scripts
+mkdir -p brands/grand-canyon-north/styles
+touch brands/grand-canyon-north/README.md
 ```
 
 ### Step 2: Configure SharePoint Mountpoint
@@ -43,23 +43,23 @@ mountpoints:
   /: https://drive.google.com/drive/folders/root-folder-id
   
   # Lake Powell (existing)
-  /sites/lake-powell: https://adobe.sharepoint.com/:f:/r/sites/NationsVacations/Shared%20Documents/lake-powell
+  /brands/lake-powell: https://adobe.sharepoint.com/:f:/r/brands/NationsVacations/Shared%20Documents/lake-powell
   
   # Grand Canyon North (new)
-  /sites/grand-canyon-north: https://adobe.sharepoint.com/:f:/r/sites/NationsVacations/Shared%20Documents/grand-canyon-north
+  /brands/grand-canyon-north: https://adobe.sharepoint.com/:f:/r/brands/NationsVacations/Shared%20Documents/grand-canyon-north
 ```
 
 **Important:** SharePoint folder must exist before adding to `fstab.yaml`
 
 ### Step 3: Create Site Configuration
 
-Create `sites/{site-name}/config.json`:
+Create `brands/{brand-name}/config.json`:
 
 ```json
 {
   "siteName": "Grand Canyon North",
   "siteId": "grand-canyon-north",
-  "brand": "nations-vacations",
+  "brand": "aramark-mb",
   "locale": "en-US",
   "theme": {
     "primaryColor": "#0066cc",
@@ -84,7 +84,7 @@ Create `sites/{site-name}/config.json`:
 
 ### Step 4: Create Site README
 
-Document site-specific information in `sites/{site-name}/README.md`:
+Document site-specific information in `brands/{brand-name}/README.md`:
 
 ```markdown
 # Grand Canyon North Site
@@ -99,7 +99,7 @@ Grand Canyon North is a premier vacation destination offering cabins and lodging
 - **Bynder:** [Asset Portal](https://bynder.com/...)
 
 ## Site-Specific Blocks
-This site currently has no custom block overrides. All blocks use the shared Nations Vacations extensions from `/blocks/`.
+This site currently has no custom block overrides. All blocks use the shared Aramark MB extensions from `/blocks/`.
 
 ## Theme Customization
 - Primary Color: #0066cc (Lake Blue)
@@ -120,12 +120,12 @@ This site currently has no custom block overrides. All blocks use the shared Nat
 
 ### Step 5: Add Site-Specific Styles (Optional)
 
-Create `sites/{site-name}/styles/styles.css` if needed:
+Create `brands/{brand-name}/styles/styles.css` if needed:
 
 ```css
 /* Grand Canyon North Site Styles */
 
-/* Import base Nations Vacations styles */
+/* Import base Aramark MB styles */
 @import url('../../styles/styles.css');
 
 /* Site-specific CSS variables */
@@ -148,7 +148,7 @@ Create `sites/{site-name}/styles/styles.css` if needed:
 
 ### Step 6: Add Site-Specific Scripts (Optional)
 
-Create `sites/{site-name}/scripts/scripts.js` if needed:
+Create `brands/{brand-name}/scripts/scripts.js` if needed:
 
 ```javascript
 /**
@@ -160,7 +160,7 @@ import { loadScript } from '../../scripts/aem.js';
 
 // Load site-specific booking widget
 async function loadBookingWidget() {
-  await loadScript('/sites/grand-canyon-north/scripts/booking-widget.js');
+  await loadScript('/brands/grand-canyon-north/scripts/booking-widget.js');
   window.BookingWidget?.init({
     property: 'grand-canyon-north',
     apiEndpoint: '/api/bookings'
@@ -184,10 +184,10 @@ Only create site-specific block overrides if the site truly needs custom behavio
 Example: Custom hero for Grand Canyon North
 
 ```bash
-mkdir -p sites/grand-canyon-north/blocks/hero
+mkdir -p brands/grand-canyon-north/blocks/hero
 ```
 
-Create `sites/grand-canyon-north/blocks/hero/hero.js`:
+Create `brands/grand-canyon-north/blocks/hero/hero.js`:
 
 ```javascript
 /**
@@ -218,10 +218,10 @@ const canyonHooks = {
 export default (block) => nvDecorate(block, canyonHooks);
 ```
 
-Create `sites/grand-canyon-north/blocks/hero/hero.css`:
+Create `brands/grand-canyon-north/blocks/hero/hero.css`:
 
 ```css
-/* Import Nations Vacations hero styles */
+/* Import Aramark MB hero styles */
 @import url('../../../blocks/hero/hero.css');
 
 /* Grand Canyon North hero overrides */
@@ -239,7 +239,7 @@ Create `sites/grand-canyon-north/blocks/hero/hero.css`:
 
 Verify the site resolver correctly detects your new site:
 
-1. Create a test page at `/sites/{site-name}/test.html`
+1. Create a test page at `/brands/{brand-name}/test.html`
 2. Add a block (e.g., hero)
 3. Load the page in a browser
 3. Check browser console for:
@@ -252,7 +252,7 @@ Verify the site resolver correctly detects your new site:
 
 1. **Create SharePoint Folder Structure:**
    ```
-   /sites/grand-canyon-north/
+   /brands/grand-canyon-north/
    ├── index (homepage)
    ├── about
    ├── lodging/
@@ -313,8 +313,8 @@ Update project documentation:
 1. **Add to main README:**
    ```markdown
    ## Sites
-   - Lake Powell - `/sites/lake-powell/`
-   - Grand Canyon North - `/sites/grand-canyon-north/` (NEW)
+   - Lake Powell - `/brands/lake-powell/`
+   - Grand Canyon North - `/brands/grand-canyon-north/` (NEW)
    ```
 
 2. **Update site inventory:**
@@ -330,18 +330,16 @@ Update project documentation:
 Understanding path resolution:
 
 ```
-Request: /sites/grand-canyon-north/index.html
+Request: /brands/grand-canyon-north/index.html
 Block: hero
 
 Resolution order:
-1. /sites/grand-canyon-north/blocks/hero/hero.js  ← Site-specific (if exists)
-2. /blocks/hero/hero.js                         ← Nations Vacations shared
-3. /libs/blocks/hero/base.js                    ← Base framework block
+1. /brands/grand-canyon-north/blocks/hero/hero.js  ← Site-specific (if exists)
+2. /blocks/hero/hero.js                            ← Root/shared ✓
 
 CSS resolution:
-1. /sites/grand-canyon-north/blocks/hero/hero.css ← Site-specific
-2. /blocks/hero/hero.css                        ← NV shared (imports base)
-3. /libs/blocks/hero/base.css                   ← Base styles
+1. /brands/grand-canyon-north/blocks/hero/hero.css ← Site-specific (if exists)
+2. /blocks/hero/hero.css                           ← Root/shared ✓
 ```
 
 ## When to Create Site Overrides
@@ -370,22 +368,22 @@ SITE_TITLE="Grand Canyon North"
 echo "Creating new site: $SITE_TITLE ($SITE_NAME)"
 
 # 1. Create directories
-mkdir -p "sites/$SITE_NAME/blocks"
-mkdir -p "sites/$SITE_NAME/scripts"
-mkdir -p "sites/$SITE_NAME/styles"
+mkdir -p "brands/$SITE_NAME/blocks"
+mkdir -p "brands/$SITE_NAME/scripts"
+mkdir -p "brands/$SITE_NAME/styles"
 
 # 2. Create config.json
-cat > "sites/$SITE_NAME/config.json" <<EOF
+cat > "brands/$SITE_NAME/config.json" <<EOF
 {
   "siteName": "$SITE_TITLE",
   "siteId": "$SITE_NAME",
-  "brand": "nations-vacations",
+  "brand": "aramark-mb",
   "locale": "en-US"
 }
 EOF
 
 # 3. Create README.md
-cat > "sites/$SITE_NAME/README.md" <<EOF
+cat > "brands/$SITE_NAME/README.md" <<EOF
 # $SITE_TITLE Site
 
 ## Overview
@@ -401,7 +399,7 @@ EOF
 
 # 4. Update fstab.yaml (manual step required)
 echo ""
-echo "✅ Site structure created at: sites/$SITE_NAME/"
+echo "✅ Site structure created at: brands/$SITE_NAME/"
 echo ""
 echo "⚠️  Manual steps required:"
 echo "1. Add SharePoint mountpoint to fstab.yaml"
@@ -418,7 +416,7 @@ echo "See docs/NEW-SITE-GUIDE.md for complete instructions"
 
 **Symptom:** Console shows "Current site: null"
 
-**Solution:** Check URL pattern matches `/sites/{site-name}/`
+**Solution:** Check URL pattern matches `/brands/{brand-name}/`
 
 ### Blocks Not Loading
 

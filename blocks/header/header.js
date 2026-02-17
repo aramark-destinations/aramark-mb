@@ -1,6 +1,14 @@
+/**
+ * Header Block
+ * - Provides lifecycle hooks (onBefore/onAfter)
+ * - Dispatches before/after events
+ * - Implements core header/navigation functionality
+ * - Supports responsive navigation, hamburger menu, breadcrumbs
+ */
+
 import { getMetadata } from '../../scripts/aem.js';
 import { fetchPlaceholders } from '../../scripts/placeholders.js';
-import { loadFragment } from '../fragment/fragment.js';
+import { loadFragment } from '../../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -170,10 +178,21 @@ async function buildBreadcrumbs() {
 }
 
 /**
- * loads and decorates the header, mainly the nav
+ * Decorates the header block with navigation
  * @param {Element} block The header block element
+ * @param {Object} options Configuration options
+ * @param {Function} options.onBefore Lifecycle hook called before decoration
+ * @param {Function} options.onAfter Lifecycle hook called after decoration
+ * @returns {Promise<void>}
  */
-export default async function decorate(block) {
+export async function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('header:before', { detail: ctx }));
+
+  // === HEADER BLOCK LOGIC ===
   // load nav as fragment
   const navMeta = getMetadata('nav');
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
@@ -245,4 +264,14 @@ export default async function decorate(block) {
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
     navWrapper.append(await buildBreadcrumbs());
   }
+
+  // lifecycle hook + event (after)
+  options.onAfter?.(ctx);
+  block.dispatchEvent(new CustomEvent('header:after', { detail: ctx }));
 }
+
+/**
+ * Default export
+ * Allows the base implementation to be used directly or with hooks
+ */
+export default decorate;

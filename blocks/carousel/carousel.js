@@ -1,3 +1,11 @@
+/**
+ * Carousel Block
+ * - Provides lifecycle hooks (onBefore/onAfter)
+ * - Dispatches before/after events
+ * - Implements core carousel/slideshow functionality
+ * - Supports navigation buttons, indicators, and keyboard controls
+ */
+
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholders.js';
 
@@ -91,7 +99,23 @@ function createSlide(row, slideIndex, carouselId) {
 }
 
 let carouselId = 0;
-export default async function decorate(block) {
+
+/**
+ * Decorates the carousel block
+ * @param {Element} block The carousel block element
+ * @param {Object} options Configuration options
+ * @param {Function} options.onBefore Lifecycle hook called before decoration
+ * @param {Function} options.onAfter Lifecycle hook called after decoration
+ * @returns {Promise<void>}
+ */
+export async function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('carousel:before', { detail: ctx }));
+
+  // === CAROUSEL BLOCK LOGIC ===
   carouselId += 1;
   block.setAttribute('id', `carousel-${carouselId}`);
   const rows = block.querySelectorAll(':scope > div');
@@ -149,4 +173,14 @@ export default async function decorate(block) {
   if (!isSingleSlide) {
     bindEvents(block);
   }
+
+  // lifecycle hook + event (after)
+  options.onAfter?.(ctx);
+  block.dispatchEvent(new CustomEvent('carousel:after', { detail: ctx }));
 }
+
+/**
+ * Default export
+ * Allows the base implementation to be used directly or with hooks
+ */
+export default decorate;

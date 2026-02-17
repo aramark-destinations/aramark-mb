@@ -1,18 +1,18 @@
 /**
  * Site Resolver
- * Detects the current site context from URL path and provides
+ * Detects the current brand context from URL path and provides
  * block resolution order for the extensibility framework:
- * sites/{site}/blocks → /blocks → /libs/blocks
+ * brands/{brand}/blocks → /blocks
  */
 
 /**
- * Detects the current site from the URL path
- * @returns {string|null} The site name or null if not in a site context
+ * Detects the current brand from the URL path
+ * @returns {string|null} The brand name or null if not in a brand context
  */
-export function getCurrentSite() {
+export function getCurrentBrand() {
   const { pathname } = window.location;
-  const siteMatch = pathname.match(/^\/sites\/([^/]+)/);
-  return siteMatch ? siteMatch[1] : null;
+  const brandMatch = pathname.match(/^\/brands\/([^/]+)/);
+  return brandMatch ? brandMatch[1] : null;
 }
 
 /**
@@ -21,19 +21,16 @@ export function getCurrentSite() {
  * @returns {string[]} Array of paths to try, in order
  */
 export function getBlockPaths(blockName) {
-  const site = getCurrentSite();
+  const brand = getCurrentBrand();
   const paths = [];
 
-  // 1. Site-specific block (highest priority)
-  if (site) {
-    paths.push(`/sites/${site}/blocks/${blockName}/${blockName}`);
+  // 1. Brand-specific block (highest priority)
+  if (brand) {
+    paths.push(`/brands/${brand}/blocks/${blockName}/${blockName}`);
   }
 
-  // 2. Shared blocks (project-level)
+  // 2. Shared blocks (root/project-level)
   paths.push(`/blocks/${blockName}/${blockName}`);
-
-  // 3. Base blocks from library (lowest priority, fallback)
-  paths.push(`/libs/blocks/${blockName}/base`);
 
   return paths;
 }
@@ -44,30 +41,27 @@ export function getBlockPaths(blockName) {
  * @returns {string[]} Array of CSS paths to try, in order
  */
 export function getBlockCssPaths(blockName) {
-  const site = getCurrentSite();
+  const brand = getCurrentBrand();
   const paths = [];
 
-  // 1. Site-specific CSS
-  if (site) {
-    paths.push(`/sites/${site}/blocks/${blockName}/${blockName}.css`);
+  // 1. Brand-specific CSS
+  if (brand) {
+    paths.push(`/brands/${brand}/blocks/${blockName}/${blockName}.css`);
   }
 
-  // 2. Shared CSS
+  // 2. Shared CSS (root/project-level)
   paths.push(`/blocks/${blockName}/${blockName}.css`);
-
-  // 3. Base CSS
-  paths.push(`/libs/blocks/${blockName}/base.css`);
 
   return paths;
 }
 
 /**
- * Gets the site-specific code base path
- * @returns {string} The base path for site-specific code
+ * Gets the brand-specific code base path
+ * @returns {string} The base path for brand-specific code
  */
-export function getSiteBasePath() {
-  const site = getCurrentSite();
-  return site ? `/sites/${site}` : '';
+export function getBrandBasePath() {
+  const brand = getCurrentBrand();
+  return brand ? `/brands/${brand}` : '';
 }
 
 /**
@@ -101,3 +95,7 @@ export async function resolveBlockPath(blockName) {
   
   return null;
 }
+
+// Backward compatibility aliases (deprecated)
+export const getCurrentSite = getCurrentBrand;
+export const getSiteBasePath = getBrandBasePath;

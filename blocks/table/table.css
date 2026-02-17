@@ -1,3 +1,7 @@
+/* 
+ * Table Block - Base Styles
+ */
+
 .table.block {
   width: 100%;
   overflow-x: auto;

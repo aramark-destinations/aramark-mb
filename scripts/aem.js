@@ -587,7 +587,7 @@ async function loadFromPaths(paths, loader) {
 
 /**
  * Loads JS and CSS for a block with site resolution support.
- * Resolution order: sites/{site}/blocks → /blocks → /libs/blocks
+ * Resolution order: brands/{brand}/blocks → /blocks
  * @param {Element} block The block element
  */
 async function loadBlock(block) {

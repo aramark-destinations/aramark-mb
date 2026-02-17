@@ -1,7 +1,10 @@
 /*
- * Embed Block
+ * Embed Block - Implementation
  * Show videos and social posts directly on your page
  * https://www.hlx.live/developer/block-collection/embed
+ * 
+ * Supports: YouTube, Vimeo, Twitter/X, and generic iframes
+ * Features: Lazy loading, placeholder images, autoplay on click
  */
 
 const loadScript = (url, callback, type) => {
@@ -58,12 +61,40 @@ const embedTwitter = (url) => {
   return embedHTML;
 };
 
-const loadEmbed = (block, link, autoplay) => {
+const loadEmbed = (block, link, autoplay, embedsConfig) => {
   if (block.classList.contains('embed-is-loaded')) {
     return;
   }
 
-  const EMBEDS_CONFIG = [
+  const config = embedsConfig.find((e) => e.match.some((match) => link.includes(match)));
+  const url = new URL(link);
+  if (config) {
+    block.innerHTML = config.embed(url, autoplay);
+    block.classList = `block embed embed-${config.match[0]}`;
+  } else {
+    block.innerHTML = getDefaultEmbed(url);
+    block.classList = 'block embed';
+  }
+  block.classList.add('embed-is-loaded');
+};
+
+/**
+ * Decorates the embed block with lifecycle hooks and events
+ * @param {HTMLElement} block - The embed block element
+ * @param {Object} options - Decoration options
+ * @param {Function} options.onBefore - Hook called before decoration
+ * @param {Function} options.onAfter - Hook called after decoration
+ * @param {Array} options.embedsConfig - Custom embed configurations
+ * @returns {void}
+ */
+export function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // Lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('embed:before', { detail: ctx }));
+
+  const EMBEDS_CONFIG = options.embedsConfig || [
     {
       match: ['youtube', 'youtu.be'],
       embed: embedYoutube,
@@ -77,19 +108,7 @@ const loadEmbed = (block, link, autoplay) => {
       embed: embedTwitter,
     },
   ];
-  const config = EMBEDS_CONFIG.find((e) => e.match.some((match) => link.includes(match)));
-  const url = new URL(link);
-  if (config) {
-    block.innerHTML = config.embed(url, autoplay);
-    block.classList = `block embed embed-${config.match[0]}`;
-  } else {
-    block.innerHTML = getDefaultEmbed(url);
-    block.classList = 'block embed';
-  }
-  block.classList.add('embed-is-loaded');
-};
 
-export default function decorate(block) {
   const placeholder = block.querySelector('picture');
   const link = block.querySelector('a').href;
   block.textContent = '';
@@ -100,16 +119,27 @@ export default function decorate(block) {
     wrapper.innerHTML = '<div class="embed-placeholder-play"><button type="button" title="Play"></button></div>';
     wrapper.prepend(placeholder);
     wrapper.addEventListener('click', () => {
-      loadEmbed(block, link, true);
+      loadEmbed(block, link, true, EMBEDS_CONFIG);
     });
     block.append(wrapper);
   } else {
     const observer = new IntersectionObserver((entries) => {
       if (entries.some((e) => e.isIntersecting)) {
         observer.disconnect();
-        loadEmbed(block, link);
+        loadEmbed(block, link, false, EMBEDS_CONFIG);
       }
     });
     observer.observe(block);
   }
+
+  // Lifecycle hook + event (after)
+  options.onAfter?.(ctx);
+  block.dispatchEvent(new CustomEvent('embed:after', { detail: ctx }));
 }
+
+/**
+ * Default export for block decoration
+ * @param {HTMLElement} block - The embed block element
+ * @returns {void}
+ */
+export default (block) => decorate(block, window.Embed?.hooks);

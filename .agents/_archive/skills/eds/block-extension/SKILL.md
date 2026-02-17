@@ -8,50 +8,52 @@ version: 1.0.0
 # EDS Block Extension
 
 ## Overview
-Extends an existing base block from `/libs/blocks/` by adding site-specific hooks and styles while preserving the base implementation.
+Extends an existing root block from `/blocks/` by adding brand-specific hooks and styles while preserving the root implementation.
+
+**Note:** This skill is archived as the project now uses a simplified 2-tier architecture. Brand overrides are created in `brands/{brand}/blocks/{blockname}/` (directory created on-demand) by importing from `/blocks/`.
 
 ## When to Use
-- Customizing a base block for your site
-- Adding site-specific behavior (analytics, animations, variants)
-- Overriding styles while maintaining base functionality
-- When NOT to use: If you need to fundamentally change block behavior (consider forking to `/libs/blocks/` instead)
+- Customizing a root block for your brand
+- Adding brand-specific behavior (analytics, animations, variants)
+- Overriding styles while maintaining root functionality
+- When NOT to use: If you need to fundamentally change block behavior (modify the root block in `/blocks/` instead)
 
 ## Quick Reference
 
 ### Extension Pattern
 ```javascript
-import { decorate as baseDecorate } from '../../libs/blocks/{block}/base.js';
+import { decorate as rootDecorate } from '../../../blocks/{block}/{block}.js';
 
 const hooks = {
   onBefore: ({ block, options }) => {
-    // Runs before base block logic
+    // Runs before root block logic
   },
   onAfter: ({ block, options }) => {
-    // Runs after base block logic
+    // Runs after root block logic
   },
 };
 
-export default (block) => baseDecorate(block, hooks);
+export default (block) => rootDecorate(block, hooks);
 ```
 
 ## Implementation
 
-### Step 1: Import Base Block
+### Step 1: Import Root Block
 ```javascript
-import { decorate as baseDecorate } from '../../libs/blocks/{block-name}/base.js';
+import { decorate as rootDecorate } from '../../../blocks/{block-name}/{block-name}.js';
 ```
 
 ### Step 2: Define Local Hooks
 ```javascript
 const hooks = {
   onBefore: ({ block }) => {
-    // Site-specific pre-processing
+    // Brand-specific pre-processing
     // - Add variant classes
     // - Filter or modify initial DOM
     // - Set up data attributes
   },
   onAfter: ({ block }) => {
-    // Site-specific post-processing
+    // Brand-specific post-processing
     // - Add event listeners
     // - Integrate analytics
     // - Apply animations
@@ -63,21 +65,17 @@ const hooks = {
 ### Step 3: Export Decorated Function
 ```javascript
 export function decorate(block) {
-  return baseDecorate(block, hooks);
+  return rootDecorate(block, hooks);
 }
 
 export default (block) => decorate(block);
 ```
 
-### Step 4: Create Extension CSS
+### Step 4: Create Brand CSS Override
+Create this in `/brands/{brand}/blocks/{block-name}/{block-name}.css`:
 ```css
-/* Import base styles */
-@import url('../../libs/blocks/{block-name}/base.css');
-
-/* Add site-specific overrides */
-.{block-name}--variant {
-  /* Custom styles */
-}
+/* Brand-specific overrides */
+/* Root styles from /blocks/{block-name}/{block-name}.css load automatically */
 ```
 
 ## Common Extension Patterns
@@ -154,18 +152,18 @@ block.addEventListener('{block-name}:after', (e) => {
 
 ## Testing Extensions
 
-1. **Verify base behavior**: Ensure base block works without extension
+1. **Verify root behavior**: Ensure root block works without brand extension
 2. **Test hooks**: Confirm onBefore/onAfter execute in correct order
 3. **Check events**: Verify block events fire properly
-4. **Test overrides**: Ensure CSS overrides don't break base styles
+4. **Test overrides**: Ensure CSS overrides don't break root styles
 5. **Universal Editor**: Test in authoring environment
 
 ## Common Mistakes
 
-❌ **Don't modify ctx.block structure in onBefore** (breaks base logic)
+❌ **Don't modify ctx.block structure in onBefore** (breaks root logic)
 ✅ **Do add classes, data attributes, or event listeners**
 
-❌ **Don't override base.js directly** (loses upgrade path)
+❌ **Don't override root block directly** (loses upgrade path)
 ✅ **Do use hooks for customization**
 
 ❌ **Don't use !important in CSS** (makes debugging hard)

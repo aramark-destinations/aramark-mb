@@ -6,8 +6,8 @@ mountpoints:
     suffix: ".html"
   
   # Lake Powell site-specific content
-  /sites/lake-powell:
-    url: "https://author-p130360-e1272151.adobeaemcloud.com/bin/franklin.delivery/adobe-rnd/aem-boilerplate-xwalk/main/sites/lake-powell"
+  /brands/lake-powell:
+    url: "https://author-p130360-e1272151.adobeaemcloud.com/bin/franklin.delivery/adobe-rnd/aem-boilerplate-xwalk/main/brands/lake-powell"
     type: "markup"
     suffix: ".html"
 

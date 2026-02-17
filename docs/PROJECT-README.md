@@ -1,21 +1,20 @@
-# Nations Vacations - Multi-Site EDS Platform
+# Aramark MB - Multi-Site EDS Platform
 
-A scalable Adobe Edge Delivery Services (EDS) platform for Nations Vacations' portfolio of vacation rental properties, built on the EDS Block Extensibility Framework.
+A scalable Adobe Edge Delivery Services (EDS) platform for Aramark MB' portfolio of vacation rental properties.
 
 ## Overview
 
-This project enables multiple vacation property sites to share a common base library of blocks while maintaining flexibility for property-specific customizations.
+This project enables multiple vacation property sites to share a common library of blocks while maintaining flexibility for property-specific customizations.
 
 ### Current Sites
 
-- **Lake Powell** - `/sites/lake-powell/` - Premier houseboat and watercraft rental destination
+- **Lake Powell** - `/brands/lake-powell/` - Premier houseboat and watercraft rental destination
 
 ### Architecture Benefits
 
-✅ **Reusable Components** - Base blocks in `/libs/blocks/` shared across all properties  
-✅ **Brand Consistency** - Nations Vacations extensions in `/blocks/` ensure cohesive experience  
-✅ **Property Flexibility** - Site-specific overrides in `/sites/{site}/blocks/` when needed  
-✅ **Upgrade Safety** - Base block improvements automatically benefit all sites  
+✅ **Reusable Components** - Root blocks in `/blocks/` shared across all properties  
+✅ **Property Flexibility** - Site-specific overrides in `/brands/{brand}/blocks/` when needed  
+✅ **Simplified Maintenance** - 2-tier architecture for clarity  
 ✅ **Rapid Deployment** - New properties launch quickly using existing blocks  
 
 ## Quick Start
@@ -40,51 +39,41 @@ npm install -g @blueacornici/eds-cli
 npm run up
 
 # Access site locally
-open http://localhost:3000/sites/lake-powell/
+open http://localhost:3000/brands/lake-powell/
 ```
 
 ## Project Structure
 
 ```
 eds/
-├── libs/blocks/              # Base blocks (reusable, upgradeable)
+├── blocks/                   # Root blocks (shared across all sites)
 │   ├── hero/
-│   │   ├── base.js          # Core implementation + lifecycle hooks
-│   │   ├── base.css         # Base styles
-│   │   └── CHANGELOG.md     # Version history & extension points
-│   └── cards/
-│       ├── base.js
-│       ├── base.css
-│       └── CHANGELOG.md
-│
-├── blocks/                   # Nations Vacations extensions
-│   ├── hero/
-│   │   ├── hero.js          # Wraps base + adds NV-specific hooks
-│   │   └── hero.css         # Imports base + adds NV styling
+│   │   ├── hero.js          # Implementation with lifecycle hooks
+│   │   ├── hero.css         # Styles
+│   │   └── README.md        # Documentation & usage
 │   └── cards/
 │       ├── cards.js
-│       └── cards.css
+│       ├── cards.css
+│       └── README.md
 │
-├── sites/                    # Property-specific sites
+├── brands/                   # Property-specific brands
 │   └── lake-powell/
 │       ├── blocks/           # Lake Powell overrides (only if needed)
 │       ├── config.json       # Site configuration
 │       └── README.md         # Site documentation
 │
 ├── scripts/
-│   ├── site-resolver.js      # Multi-site path resolution
+│   ├── site-resolver.js      # Multi-site path resolution (2-tier)
 │   ├── aem.js               # Core EDS framework
 │   └── scripts.js           # Global utilities
 │
 ├── docs/                     # Documentation
-│   ├── BLOCK-EXTENSIBILITY-GUIDE.md  # Framework architecture
-│   ├── MIGRATION-GUIDE.md            # Block migration steps
-│   └── NEW-SITE-GUIDE.md             # Creating new sites
+│   ├── BLOCK-EXTENSIBILITY-GUIDE.md      # Framework architecture
+│   ├── ARCHITECTURE-SIMPLIFICATION-PLAN.md  # 2-tier migration
+│   └── NEW-SITE-GUIDE.md                 # Creating new sites
 │
-└── .agents/skills/eds/       # AI automation skills
-    ├── block-creation/       # Create new blocks
-    ├── block-extension/      # Extend existing blocks
-    └── site-spinup/          # Launch new sites
+└── tools/
+    └── migrate-blocks.js     # Block migration utility
 ```
 
 ## Block Resolution System
@@ -92,19 +81,18 @@ eds/
 When a page requests a block (e.g., "hero"), the system checks paths in priority order:
 
 ```
-1. /sites/lake-powell/blocks/hero/hero.js  ← Site-specific override
-2. /blocks/hero/hero.js                     ← Nations Vacations shared
-3. /libs/blocks/hero/base.js                ← Base implementation
+1. /brands/lake-powell/blocks/hero/hero.js  ← Site-specific override
+2. /blocks/hero/hero.js                     ← Root/shared ✓
 ```
 
-**Result:** Sites automatically get base improvements while retaining customizations.
+**Result:** Sites can override root blocks when needed, otherwise use shared implementation.
 
 ## Key Concepts
 
-### Base Blocks (`/libs/blocks/`)
+### Root Blocks (`/blocks/`)
 
 Foundation blocks with:
-- Core functionality all sites need
+- Core functionality for all sites
 - Lifecycle hooks (`onBefore`, `onAfter`)
 - Event dispatching for extension
 - Semantic HTML structure
@@ -112,9 +100,11 @@ Foundation blocks with:
 
 **Example:** Hero block provides image handling, text layout, CTA buttons
 
-### Extensions (`/blocks/`)
+### Site Overrides (`/brands/{brand}/blocks/`)
 
-Nations Vacations brand layer with:
+Site-specific customizations with:
+
+Aramark MB brand layer with:
 - Brand-specific styling
 - Analytics integration
 - Common animations/interactions
@@ -122,7 +112,7 @@ Nations Vacations brand layer with:
 
 **Example:** Hero extension adds NV brand colors, booking analytics
 
-### Overrides (`/sites/{site}/blocks/`)
+### Overrides (`/brands/{brand}/blocks/`)
 
 Property-specific customizations:
 - Unique integrations (booking widgets)
@@ -136,52 +126,41 @@ Property-specific customizations:
 
 ### Creating a New Block
 
+### Creating a Block
+
 ```bash
-# Option 1: Use CLI (recommended)
-eds-cli install @blueacornici/eds-feature-card
-
-# Option 2: Use AI skill
-# In VS Code: @block-creation "testimonial block with star ratings"
-
-# Option 3: Manual creation
-# See: docs/BLOCK-EXTENSIBILITY-GUIDE.md
+# Create root block
+mkdir -p blocks/newblock
+# Create blocks/newblock/newblock.js (with lifecycle hooks)
+# Create blocks/newblock/newblock.css
+# Create blocks/newblock/README.md
 ```
 
-### Extending an Existing Block
+### Extending a Block for a Site
 
 ```javascript
-// blocks/hero/hero.js
-import { decorate as baseDecorate } from '../../libs/blocks/hero/base.js';
+// brands/lake-powell/blocks/hero/hero.js
+import decorateRoot from '../../../blocks/hero/hero.js';
 
-const hooks = {
-  onBefore: ({ block }) => {
-    // Runs before base block logic
-  },
-  onAfter: ({ block }) => {
-    // Runs after base block logic
-  }
-};
-
-export default (block) => baseDecorate(block, hooks);
+export default function decorate(block) {
+  decorateRoot(block, {
+    onBefore: ({ block }) => {
+      // Runs before root block logic
+    },
+    onAfter: ({ block }) => {
+      // Runs after root block logic
+    }
+  });
+}
 ```
 
 See: `docs/BLOCK-EXTENSIBILITY-GUIDE.md` for complete patterns
-
-### Migrating an Existing Block
-
-1. Create base block in `/libs/blocks/{block}/`
-2. Add lifecycle hooks and events
-3. Convert existing block to extension wrapper
-4. Test base + extension together
-5. Document in CHANGELOG.md
-
-See: `docs/MIGRATION-GUIDE.md` for step-by-step guide
 
 ### Creating a New Site
 
 ```bash
 # Create site structure
-mkdir -p sites/{site-name}/{blocks,scripts,styles}
+mkdir -p brands/{brand-name}/{blocks,scripts,styles}
 
 # Configure content source in fstab.yaml
 # Create config.json with site settings
@@ -192,18 +171,21 @@ See: `docs/NEW-SITE-GUIDE.md` for complete process
 
 ## Available Blocks
 
-### ✅ Migrated to Framework
-
-- **Hero** - Large banner with image, headline, CTA
+- **Accordion** - Collapsible content sections
 - **Cards** - Grid of content cards with images
-- _More blocks being migrated..._
-
-### 🔄 Using Legacy Pattern
-
+- **Carousel** - Image/content carousel
 - **Columns** - Multi-column layouts
+- **Embed** - YouTube, Vimeo, Twitter embeds
 - **Footer** - Site footer with navigation
-- **Header** - Site header with navigation
 - **Fragment** - Reusable content fragments
+- **Header** - Site header with navigation
+- **Hero** - Large banner with image, headline, CTA
+- **Modal** - Modal/dialog overlays
+- **Quote** - Blockquote styling
+- **Search** - Search functionality
+- **Table** - Data tables
+- **Tabs** - Tabbed content
+- **Video** - Video embeds with placeholder
 
 ## Documentation
 
@@ -247,15 +229,15 @@ In VS Code with GitHub Copilot:
 
 ### Best Practices
 
-✅ Use lifecycle hooks for customization  
-✅ Import and extend base blocks  
-✅ Document extension points in CHANGELOG.md  
-✅ Test base blocks independently  
+✅ Use lifecycle hooks for site-specific customization  
+✅ Keep root blocks generic and reusable  
+✅ Document changes in block README.md files  
+✅ Test blocks independently  
 ✅ Use CSS custom properties for theming  
 ✅ Preserve Universal Editor compatibility  
 
-❌ Don't modify `/libs/blocks/` directly  
-❌ Don't duplicate base block logic  
+❌ Don't hard-code site-specific logic in root blocks  
+❌ Don't duplicate root block logic in site overrides  
 ❌ Don't use `!important` in CSS  
 ❌ Don't create site overrides unless necessary  
 
@@ -266,7 +248,7 @@ In VS Code with GitHub Copilot:
 npm run up
 
 # Test specific site
-open http://localhost:3000/sites/lake-powell/
+open http://localhost:3000/brands/lake-powell/
 
 # Validate block resolution
 # Check browser console for: "[Site Resolver] Current site: lake-powell"
@@ -280,7 +262,7 @@ open http://localhost:3000/sites/lake-powell/
 # Deploy to staging
 aem up --stage
 
-# Test at: https://main--nations-vacations--{org}.aem.page/sites/lake-powell/
+# Test at: https://main--aramark-mb--{org}.aem.page/brands/lake-powell/
 ```
 
 ### Production
@@ -296,17 +278,17 @@ aem publish
 
 ### Adding a New Block
 
-1. Create base block in `/libs/blocks/`
-2. Create Nations Vacations extension in `/blocks/`
-3. Document in CHANGELOG.md
-4. Add examples to guides
+1. Create block in `/blocks/` with lifecycle hooks
+2. Add CSS and documentation (README.md)
+3. Add Universal Editor model in `/models/`
+4. Test in both root and site contexts
 5. Create PR for review
 
-### Migrating Existing Block
+### Modifying Existing Block
 
-1. Follow Migration Guide process
+1. Update block in `/blocks/` or create site override in `/brands/{brand}/blocks/`
 2. Test thoroughly (no regressions)
-3. Update documentation
+3. Update documentation (README.md)
 4. Submit PR with before/after comparison
 
 ### Creating New Site
@@ -322,9 +304,7 @@ aem publish
 ### Getting Help
 
 - **Architecture Questions** → See [Block Extensibility Guide](docs/BLOCK-EXTENSIBILITY-GUIDE.md)
-- **Migration Help** → See [Migration Guide](docs/MIGRATION-GUIDE.md)
 - **New Site Questions** → See [New Site Guide](docs/NEW-SITE-GUIDE.md)
-- **AI Assistance** → Use skills: `@block-creation`, `@block-extension`, `@new-site`
 - **Bug Reports** → Create issue in repository
 - **Feature Requests** → Create issue with enhancement label
 

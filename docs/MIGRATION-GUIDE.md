@@ -1,8 +1,31 @@
 # Block Migration Guide
 
-## Quick Start: Migrate Existing Block to Framework
+> **⚠️ ARCHIVED:** This guide described the migration from simple blocks to a 3-tier architecture with `/libs/`. 
+> The project has since been simplified to a 2-tier architecture. This document is kept for historical reference only.
+>
+> **For current development patterns, see:**
+> - [Block Extensibility Guide](BLOCK-EXTENSIBILITY-GUIDE.md) - Current 2-tier architecture
+> - [Architecture Simplification Plan](ARCHITECTURE-SIMPLIFICATION-PLAN.md) - Why we changed
 
-Follow this step-by-step guide to migrate any existing block to the extensibility framework.
+---
+
+## Historical Context: 3-Tier to 2-Tier Migration (Completed February 2026)
+
+This project originally implemented a 3-tier block resolution system:
+1. Brand-specific (`/brands/{brand}/blocks/`)
+2. Project shared (`/blocks/`)
+3. Base library (`/libs/blocks/`)
+
+**Decision:** Simplified to 2-tier (removed `/libs/`) because:
+- Only 2 sites/brands needed (not the many originally anticipated)
+- Reduced complexity and maintenance overhead
+- Easier for developers to understand and modify
+
+**Current Architecture:** See [BLOCK-EXTENSIBILITY-GUIDE.md](BLOCK-EXTENSIBILITY-GUIDE.md)
+
+---
+
+## Original Migration Guide Content (Archived)
 
 ## Example: Migrating the Columns Block
 
@@ -206,7 +229,7 @@ Update: `/blocks/columns/columns.js`
 
 ```javascript
 /**
- * Nations Vacations Columns Extension
+ * aramark-mb Columns Extension
  * Adds site-specific column behaviors
  */
 
@@ -253,7 +276,7 @@ Update: `/blocks/columns/columns.css`
 /* Import base styles */
 @import url('../../libs/blocks/columns/base.css');
 
-/* Nations Vacations Overrides */
+/* aramark-mb Overrides */
 
 :root {
   --columns-gap-mobile: 1.5rem;

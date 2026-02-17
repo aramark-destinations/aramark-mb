@@ -1,5 +1,5 @@
 /*
- * Table Block
+ * Table Block - Implementation
  * Recreate a table
  * https://www.hlx.live/developer/block-collection/table
  */
@@ -7,10 +7,20 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 /**
- *
- * @param {Element} block
+ * Decorates the table block with lifecycle hooks and events
+ * @param {HTMLElement} block - The table block element
+ * @param {Object} options - Decoration options
+ * @param {Function} options.onBefore - Hook called before decoration
+ * @param {Function} options.onAfter - Hook called after decoration
+ * @returns {Promise<void>}
  */
-export default async function decorate(block) {
+export async function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // Lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('table:before', { detail: ctx }));
+
   const table = document.createElement('table');
   const thead = document.createElement('thead');
   const tbody = document.createElement('tbody');
@@ -32,4 +42,15 @@ export default async function decorate(block) {
   });
   table.append(thead, tbody);
   block.replaceChildren(table);
+
+  // Lifecycle hook + event (after)
+  options.onAfter?.(ctx);
+  block.dispatchEvent(new CustomEvent('table:after', { detail: ctx }));
 }
+
+/**
+ * Default export for block decoration
+ * @param {HTMLElement} block - The table block element
+ * @returns {Promise<void>}
+ */
+export default (block) => decorate(block, window.Table?.hooks);

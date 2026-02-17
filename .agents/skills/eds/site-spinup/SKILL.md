@@ -1,212 +1,373 @@
 ---
 name: EDS Site Spinup
-description: Rapidly create a new site using the multi-site framework
-when_to_use: when launching a new vacation property site (post-Lake Powell)
-version: 1.0.0
+description: Rapidly create a new brand site using the 2-tier multi-site framework
+when_to_use: when launching a new vacation property site (e.g., post-Lake Powell)
+version: 2.0.0
 ---
 
 # EDS Site Spinup
 
 ## Overview
-Quickly scaffold a new site in the multi-site Nations Vacations framework, leveraging shared blocks from `/libs/blocks/` and `/blocks/` with site-specific overrides.
+Quickly scaffold a new brand site in the aramark-mb framework. Uses a streamlined 2-tier architecture:
+- **Tier 1:** `brands/{brand}/blocks` (brand-specific overrides)
+- **Tier 2:** `/blocks` (shared/root blocks)
+
+Primary customization via design tokens, with optional block behavior overrides using lifecycle hooks.
 
 ## When to Use
-- Launching a new vacation property site
-- Creating a site variant (e.g., seasonal microsites)
+- Launching a new property site/brand
+- Creating a brand variant (e.g., seasonal microsites)
 - Setting up staging/preview environments with different branding
 
 ## Quick Start
 
-### 1. Create Site Directory
+### 1. Create Brand Directory
 ```bash
-mkdir -p sites/{site-name}/blocks
-mkdir -p sites/{site-name}/styles
-mkdir -p sites/{site-name}/scripts
+mkdir -p brands/{brand-name}
+# Subdirectories (blocks/, scripts/, config.json) are created only when needed
 ```
 
-### 2. Add Site README
-Create `sites/{site-name}/README.md`:
+### 2. Add Brand README
+Create `brands/{brand-name}/README.md`:
 ```markdown
 # {Site Name}
 
-Site-specific blocks, styles, and scripts for {Site Name}.
+Brand-specific configuration and overrides for {Site Name}.
 
-## Block Overrides
-- List any blocks that have site-specific overrides
+## Structure
+```
+brands/{brand-name}/
+├── README.md        # This file
+├── tokens.css       # Brand design tokens (PRIMARY styling mechanism)
+├── config.json      # (Optional) Brand configuration (analytics, integrations)
+├── blocks/          # (Optional) Block behavior overrides only
+└── scripts/         # (Optional) Brand-specific scripts if needed
+```
 
 ## Branding
-- Colors: ...
-- Fonts: ...
-- Logo: ...
+- Primary Color: {hex}
+- Font Family: {font-name}
+- Logo: /brands/{brand-name}/icons/logo.svg
+
+## Block Overrides
+Currently none. Use design tokens for styling customization.
 ```
 
-### 3. Update fstab.yaml
-Add mountpoint:
-```yaml
-/sites/{site-name}:
-  url: "https://author-{your-instance}.adobeaemcloud.com/bin/franklin.delivery/{org}/{repo}/main/sites/{site-name}"
-  type: "markup"
-  suffix: ".html"
-```
-
-### 4. Create Site-Specific Blocks (Optional)
-Only if you need to override shared blocks:
-
-```bash
-# Create override for specific block
-mkdir -p sites/{site-name}/blocks/hero
-```
-
-```javascript
-// sites/{site-name}/blocks/hero/hero.js
-import { decorate as sharedDecorate } from '../../../blocks/hero/hero.js';
-
-const {siteName}Hooks = {
-  onBefore: ({ block }) => {
-    block.classList.add('{site-name}-hero');
-  }
-};
-
-export default (block) => sharedDecorate(block, {siteName}Hooks);
-```
-
-### 5. Create Site Styles (Optional)
+### 3. Create Design Tokens (PRIMARY CUSTOMIZATION)
+Create `brands/{brand-name}/tokens.css`:
 ```css
-/* sites/{site-name}/styles/{site-name}.css */
+/* {Brand Name} Design Tokens */
 :root {
-  /* Site-specific CSS variables */
-  --site-primary-color: #...;
-  --site-font-family: ...;
+  /* Brand Colors */
+  --color-primary-base: #...;
+  --color-primary-light: #...;
+  --color-primary-dark: #...;
+  --color-secondary-base: #...;
+  
+  /* Typography */
+  --font-family-heading: '{Brand Font}', serif;
+  --font-family-body: system-ui, sans-serif;
+  
+  /* Spacing (if needed) */
+  --spacing-section-vertical: 4rem;
+  --spacing-content-max-width: 1200px;
 }
 ```
 
-## Site Resolution Order
+**Note:** Design tokens automatically apply to all blocks. No block-specific CSS needed for colors/fonts.
 
-When loading blocks, EDS checks in this order:
-1. `sites/{site-name}/blocks/{block}` - Site-specific override
-2. `/blocks/{block}` - Shared extension
-3. `/libs/blocks/{block}` - Base implementation
+### 4. Update fstab.yaml
+Add brand mountpoint in `fstab.yaml`:
+```yaml
+mountpoints:
+  # Default root - shared content
+  /:
+    url: "https://author-p{program}-e{env}.adobeaemcloud.com/bin/franklin.delivery/{org}/{repo}/main"
+    type: "markup"
+    suffix: ".html"
+  
+  # {Brand Name} brand-specific content
+  /brands/{brand-name}:
+    url: "https://author-p{program}-e{env}.adobeaemcloud.com/bin/franklin.delivery/{org}/{repo}/main/brands/{brand-name}"
+    type: "markup"
+    suffix: ".html"
+```
+
+### 5. Create Brand Configuration (Optional)
+Create `brands/{brand-name}/config.json` for integrations:
+```json
+{
+  "brand": "{brand-name}",
+  "analytics": {
+    "googleAnalyticsId": "GA-XXXXXXX"
+  },
+  "integrations": {
+    "booking": {
+      "widgetEnabled": true,
+      "apiEndpoint": "..."
+    }
+  }
+}
+```
+
+### 6. Create Block Overrides (Only When Needed)
+**When to use:** Custom analytics, unique interactions, additional DOM elements  
+**When NOT to use:** Colors, fonts, spacing (use `tokens.css` instead)
+
+```bash
+# Example: Override hero block for custom analytics
+mkdir -p brands/{brand-name}/blocks/hero
+```
+
+```javascript
+// brands/{brand-name}/blocks/hero/hero.js
+import { decorate as rootDecorate } from '../../../blocks/hero/hero.js';
+
+const {brandName}Hooks = {
+  onBefore: ({ block }) => {
+    // Add brand identifier
+    block.dataset.brand = '{brand-name}';
+  },
+  onAfter: ({ block }) => {
+    // Add brand-specific tracking
+    block.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        window.analytics?.track('hero_cta_click', { 
+          brand: '{brand-name}' 
+        });
+      });
+    });
+  }
+};
+
+export default (block) => rootDecorate(block, {brandName}Hooks);
+```
+
+## Block Resolution Order
+
+The `site-resolver.js` script checks paths in this order:
+1. `brands/{brand-name}/blocks/{block}` - Brand-specific override
+2. `/blocks/{block}` - Root/shared implementation
+
+**CSS Resolution:** Same order as JS. Both paths are tried automatically.
 
 ## Content Structure
 
 ### In AEM Author
 ```
 /content/
-  └── nations-vacations/
-      └── {site-name}/
+  └── aramark-mb/
+      └── {brand-name}/
           ├── index (homepage)
           ├── activities/
           ├── lodging/
           └── ...
 ```
 
-### Published Structure
+### Published Structure (After Franklin Delivery)
 ```
-/sites/{site-name}/
+/brands/{brand-name}/
   ├── index.html (homepage)
   ├── activities/
   ├── lodging/
   └── ...
 ```
 
-## Configuration Files
+## Customization Decision Tree
 
-### paths.json (Optional)
-If site needs custom path mappings:
-```json
-{
-  "mappings": [
-    "/content/nations-vacations/{site-name}:/sites/{site-name}/",
-    "/content/nations-vacations/{site-name}/configuration:/sites/{site-name}/.helix/config.json"
-  ],
-  "includes": [
-    "/content/nations-vacations/{site-name}/"
-  ]
-}
+```
+Need to customize for brand?
+├─ Colors, fonts, spacing?
+│  └─ Use: tokens.css
+├─ Analytics, tracking?
+│  └─ Use: Block hooks (onAfter)
+├─ Additional DOM elements?
+│  └─ Use: Block hooks (onBefore/onAfter)
+├─ Different layout structure?
+│  └─ Use: Block CSS override (rare)
+└─ Configuration data?
+   └─ Use: config.json
 ```
 
-## Common Site Overrides
+## Common Implementation Patterns
 
-### Hero Block with Site Branding
+### Example 1: Design Tokens Only (Most Common)
+```css
+/* brands/lake-tahoe/tokens.css */
+:root {
+  --color-primary-base: #004d99;
+  --color-primary-light: #0066cc;
+  --font-family-heading: 'Montserrat', sans-serif;
+}
+```
+**Result:** All blocks automatically use these colors/fonts. No other files needed.
+
+### Example 2: Hero with Brand Logo
 ```javascript
-// sites/{site-name}/blocks/hero/hero.js
-import { decorate as baseDecorate } from '../../../blocks/hero/hero.js';
+// brands/{brand-name}/blocks/hero/hero.js
+import { decorate as rootDecorate } from '../../../blocks/hero/hero.js';
 
-export default (block) => baseDecorate(block, {
+export default (block) => rootDecorate(block, {
   onBefore: ({ block }) => {
-    // Add site logo
+    // Prepend brand logo
     const logo = document.createElement('img');
-    logo.src = '/sites/{site-name}/icons/logo.svg';
-    logo.alt = '{Site Name}';
-    logo.classList.add('site-logo');
+    logo.src = '/brands/{brand-name}/icons/logo.svg';
+    logo.alt = '{Brand Name}';
+    logo.classList.add('brand-logo');
     block.prepend(logo);
   }
 });
 ```
 
-### Site-Specific Header/Footer
+### Example 3: Header with Brand-Specific Navigation
 ```javascript
-// sites/{site-name}/blocks/header/header.js
-import { decorate as baseDecorate } from '../../../blocks/header/header.js';
+// brands/{brand-name}/blocks/header/header.js
+import { decorate as rootDecorate } from '../../../blocks/header/header.js';
 
-export default (block) => baseDecorate(block, {
+export default (block) => rootDecorate(block, {
   onAfter: ({ block }) => {
-    // Add site-specific nav items
+    // Add brand-specific nav item
     const nav = block.querySelector('nav');
-    const siteLinks = document.createElement('div');
-    siteLinks.innerHTML = '<a href="/sites/{site-name}/special">Special Offer</a>';
-    nav.append(siteLinks);
+    if (nav) {
+      const specialLink = document.createElement('a');
+      specialLink.href = '/brands/{brand-name}/seasonal-offer';
+      specialLink.textContent = 'Seasonal Offer';
+      specialLink.classList.add('special-offer-link');
+      nav.append(specialLink);
+    }
   }
 });
 ```
 
-## Testing New Site
+### Example 4: Block with Analytics Tracking
+```javascript
+// brands/{brand-name}/blocks/cards/cards.js
+import { decorate as rootDecorate } from '../../../blocks/cards/cards.js';
 
-1. **Local Development**
-   ```bash
-   aem up
-   # Visit http://localhost:3000/sites/{site-name}/
-   ```
+export default (block) => rootDecorate(block, {
+  onAfter: ({ block }) => {
+    // Track card clicks
+    block.querySelectorAll('.card a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const cardTitle = e.target.closest('.card')
+          ?.querySelector('h3')?.textContent;
+        window.analytics?.track('card_click', {
+          brand: '{brand-name}',
+          card: cardTitle
+        });
+      });
+    });
+  }
+});
+```
 
-2. **Verify Block Resolution**
-   - Check browser console for block load paths
-   - Confirm correct resolution order
+## Testing New Brand Site
 
-3. **Test in Universal Editor**
-   - Open pages in AEM authoring
-   - Verify blocks load correctly
-   - Test inline editing
+### 1. Local Development
+```bash
+# Start AEM proxy server
+aem up
 
-4. **Check Performance**
-   - Run Lighthouse on site pages
-   - Verify no duplicate resource loading
-   - Check LCP for hero/header
+# Opens browser at http://localhost:3000
+# Navigate to: http://localhost:3000/brands/{brand-name}/
+```
+
+### 2. Verify Block Resolution
+Check browser console for block load paths:
+```
+Loading block: /brands/{brand-name}/blocks/hero/hero.js ✓
+Fallback to: /blocks/hero/hero.js
+```
+
+### 3. Test Design Tokens
+Inspect elements to verify CSS variables:
+```css
+/* Should see brand-specific values */
+color: var(--color-primary-base); /* Your brand color */
+font-family: var(--font-family-heading); /* Your brand font */
+```
+
+### 4. Test in Universal Editor
+1. Open AEM authoring environment
+2. Navigate to `/content/aramark-mb/{brand-name}/`
+3. Open page in Universal Editor
+4. Verify blocks load correctly
+5. Test inline editing and block configuration
+
+### 5. Performance Check
+```bash
+# Run Lighthouse audit
+npm run lint
+
+# Check key metrics:
+# - LCP < 2.5s (hero/header performance)
+# - No duplicate resource loading
+# - Proper CSS cascade (tokens → blocks)
+```
 
 ## Deployment Checklist
 
-- [ ] Site directory created in `sites/{site-name}/`
+- [ ] Brand directory created in `brands/{brand-name}/`
+- [ ] Brand README.md documented
+- [ ] Design tokens created in `tokens.css`
 - [ ] fstab.yaml mountpoint added
-- [ ] Site README documented
+- [ ] config.json created (if needed)
 - [ ] Block overrides created (if needed)
-- [ ] Site styles configured
-- [ ] Content created in AEM
-- [ ] Local testing completed
+- [ ] Local testing completed (`aem up`)
+- [ ] Block resolution verified in console
+- [ ] Design tokens verified in DevTools
+- [ ] Content created in AEM (`/content/aramark-mb/{brand-name}/`)
 - [ ] Universal Editor tested
-- [ ] Performance validated
+- [ ] Performance validated (Lighthouse)
 - [ ] DNS/domain configured (if applicable)
 
-## Updating Existing Sites
+## Maintenance
 
-When base blocks are updated:
-1. Review CHANGELOG.md in `/libs/blocks/{block}/`
-2. Test site-specific overrides still work
-3. Update site hooks if needed
-4. No changes required if only using base blocks
+### When Root Blocks Are Updated
+1. Review block README in `/blocks/{block}/`
+2. Test brand-specific overrides still work
+3. Update brand hooks if needed
+4. **No changes needed if only using root blocks**
 
-## Site Decommissioning
+### Brand Decommissioning
+To archive a brand:
+```bash
+# 1. Move to archive
+mkdir -p brands/_archived
+mv brands/{brand-name} brands/_archived/
 
-To archive a site:
-1. Move to `sites/_archived/{site-name}/`
-2. Remove fstab.yaml mountpoint
-3. Archive content in AEM
-4. Document in project README
+# 2. Remove from fstab.yaml
+# Delete the /brands/{brand-name} mountpoint
+
+# 3. Archive AEM content
+# Move /content/aramark-mb/{brand-name} to archive in AEM
+
+# 4. Document in project README
+```
+
+## Quick Reference
+
+| Task | Primary Tool/File |
+|------|------------------|
+| Brand colors/fonts | `tokens.css` |
+| Custom analytics | Block hooks (`onAfter`) |
+| Additional DOM | Block hooks (`onBefore`/`onAfter`) |
+| Layout structure | Block CSS (rare) |
+| Integrations | `config.json` |
+| Resolution order | `site-resolver.js` (automatic) |
+
+## Tips & Best Practices
+
+1. **Start Simple:** Begin with `tokens.css` only. Add overrides only when necessary.
+2. **Lifecycle Hooks:** Use `onBefore` for DOM prep, `onAfter` for enhancements.
+3. **Testing:** Always test in both local (`aem up`) and Universal Editor.
+4. **Documentation:** Update brand README.md when adding overrides.
+5. **Performance:** Each override adds HTTP requests. Use tokens when possible.
+6. **Version Control:** Commit brand directory with descriptive commit message.
+
+## Related Documentation
+
+- [Lake Powell Brand README](../../brands/lake-powell/README.md) - Reference implementation
+- [site-resolver.js](../../scripts/site-resolver.js) - Block resolution logic
+- [AEM EDS Documentation](https://www.aem.live/docs/)
+- [Universal Editor Guide](https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/edge-delivery/wysiwyg-authoring/authoring)
