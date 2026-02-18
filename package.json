@@ -54,7 +54,7 @@
     "stylelint-config-standard": "40.0.0",
     "stylelint-plugin-use-baseline": "^1.2.2"
   },
-  "browserlist": [
+  "browserslist": [
     "baseline widely available"
   ],
   "packageManager": "pnpm@10.28.2",
