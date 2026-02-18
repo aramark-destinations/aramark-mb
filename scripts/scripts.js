@@ -106,6 +106,14 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+
+  // Load brand-specific design tokens before first paint
+  const { getCurrentBrand } = await import('./site-resolver.js');
+  const brand = getCurrentBrand();
+  if (brand) {
+    await loadCSS(`${window.hlx.codeBasePath}/brands/${brand}/tokens.css`);
+  }
+
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
     doc.body.dataset.breadcrumbs = true;
   }

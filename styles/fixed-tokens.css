@@ -42,17 +42,9 @@
   --color-secondary-900: color-mix(in srgb, var(--color-secondary) 20%, var(--color-base-black));
   --color-secondary-950: color-mix(in srgb, var(--color-secondary) 10%, var(--color-base-black));
 
-  /* Grey */
-  --color-grey-50:  color-mix(in srgb, var(--color-grey) 10%, var(--color-base-white));
-  --color-grey-100: color-mix(in srgb, var(--color-grey) 20%, var(--color-base-white));
-  --color-grey-200: color-mix(in srgb, var(--color-grey) 40%, var(--color-base-white));
-  --color-grey-300: color-mix(in srgb, var(--color-grey) 60%, var(--color-base-white));
-  --color-grey-400: color-mix(in srgb, var(--color-grey) 80%, var(--color-base-white));
-  --color-grey-600: color-mix(in srgb, var(--color-grey) 80%, var(--color-base-black));
-  --color-grey-700: color-mix(in srgb, var(--color-grey) 60%, var(--color-base-black));
-  --color-grey-800: color-mix(in srgb, var(--color-grey) 40%, var(--color-base-black));
-  --color-grey-900: color-mix(in srgb, var(--color-grey) 20%, var(--color-base-black));
-  --color-grey-950: color-mix(in srgb, var(--color-grey) 10%, var(--color-base-black));
+  /* Grey — Explicit scale defined in root-tokens.css (not derived).
+     Grey values are hand-picked per brand and do not follow a uniform
+     tint/shade pattern like primary/secondary. */
 
   /* Alerts — Success */
   --color-alerts-success-50:  color-mix(in srgb, var(--color-alerts-success) 10%, var(--color-base-white));

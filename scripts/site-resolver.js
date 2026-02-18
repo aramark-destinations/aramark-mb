@@ -1,15 +1,26 @@
 /**
  * Site Resolver
- * Detects the current brand context from URL path and provides
- * block resolution order for the extensibility framework:
+ * Detects the current brand context and provides block resolution
+ * order for the extensibility framework:
  * brands/{brand}/blocks → /blocks
+ *
+ * Brand detection priority:
+ * 1. AEM page metadata 'brand' field (production — set via metadata sheet)
+ * 2. URL path fallback /brands/{brand}/ (local development)
  */
 
+import { getMetadata } from './aem.js';
+
 /**
- * Detects the current brand from the URL path
+ * Detects the current brand from AEM metadata or URL path.
  * @returns {string|null} The brand name or null if not in a brand context
  */
 export function getCurrentBrand() {
+  // 1. AEM metadata (production — set via metadata sheet in AEM author)
+  const metaBrand = getMetadata('brand');
+  if (metaBrand) return metaBrand;
+
+  // 2. URL path fallback (local dev — /brands/{brand}/)
   const { pathname } = window.location;
   const brandMatch = pathname.match(/^\/brands\/([^/]+)/);
   return brandMatch ? brandMatch[1] : null;

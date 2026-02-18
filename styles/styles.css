@@ -10,14 +10,18 @@
  * governing permissions and limitations under the License.
  */
 
+@import url('fixed-tokens.css');
+
 :root {
-  /* colors */
-  --background-color: white;
-  --light-color: #f8f8f8;
-  --dark-color: #505050;
-  --text-color: #131313;
-  --link-color: #3b63fb;
-  --link-hover-color: #1d3ecf;
+  /* Legacy aliases → design token system.
+     These map old token names (used by blocks) to the new semantic/design tokens.
+     Brand overrides to root-tokens.css values will automatically flow through. */
+  --background-color: var(--surface-light-0);
+  --light-color: var(--surface-light-1);
+  --dark-color: var(--color-grey-500);
+  --text-color: var(--text-dark-1);
+  --link-color: var(--color-primary);
+  --link-hover-color: var(--color-primary-700);
 
   /* fonts */
   --body-font-family: roboto, roboto-fallback, sans-serif;

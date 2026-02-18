@@ -59,7 +59,7 @@
   /* Dark text (on light backgrounds) */
   --text-dark-1: var(--color-grey-900);
   --text-dark-2: var(--color-grey-700);
-  --text-dark-3: var(--color-grey);
+  --text-dark-3: var(--color-grey-500);
 
   /* ========================================================================
      Icon Sizes

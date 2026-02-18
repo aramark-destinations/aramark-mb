@@ -1,0 +1,24 @@
+/* ==========================================================================
+   Lake Powell — Brand Design Tokens
+   Override root-tokens.css values for the Lake Powell brand site.
+
+   These values are loaded at runtime when the brand is detected
+   (via AEM metadata or URL path). They override the root tokens
+   through CSS cascade specificity (loaded after styles.css).
+
+   Only include tokens that DIFFER from root-tokens.css defaults.
+   ========================================================================== */
+
+:root {
+  /* Brand Colors — replace with actual Lake Powell brand values */
+  --color-primary: #0066cc;
+  --color-secondary: #1a4d2e;
+
+  /* Example overrides (uncomment and adjust as needed):
+  --color-grey-50: #f5f7fa;
+  --color-grey-900: #0a1628;
+  --radius-s: 6px;
+  --body-font-family: 'Brand Font', sans-serif;
+  --heading-font-family: 'Brand Heading Font', serif;
+  */
+}
