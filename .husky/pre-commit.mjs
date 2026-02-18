@@ -24,6 +24,10 @@ const packageJsonModified = modifiedFiles.includes('package.json');
 if (packageJsonModified) {
   console.log('package.json modified, generating package-lock.json...');
   await run('npm install --package-lock-only');
-  await run('git add package-lock.json');
-  console.log('package-lock.json generated and staged');
+  try {
+    await run('git add package-lock.json');
+    console.log('package-lock.json generated and staged');
+  } catch {
+    console.log('package-lock.json not staged (may be gitignored)');
+  }
 }

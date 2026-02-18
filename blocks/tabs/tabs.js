@@ -1,10 +1,29 @@
-// eslint-disable-next-line import/no-unresolved
+/*
+ * Tabs Block - Implementation
+ * Display content with accessible tab interface
+ */
+
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 // keep track globally of the number of tab blocks on the page
 let tabBlockCnt = 0;
 
-export default async function decorate(block) {
+/**
+ * Decorates the tabs block with lifecycle hooks and events
+ * @param {HTMLElement} block - The tabs block element
+ * @param {Object} options - Decoration options
+ * @param {Function} options.onBefore - Hook called before decoration
+ * @param {Function} options.onAfter - Hook called after decoration
+ * @param {Function} options.onTabClick - Hook called when tab is clicked
+ * @returns {Promise<void>}
+ */
+export async function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // Lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('tabs:before', { detail: ctx }));
+
   // build tablist
   const tablist = document.createElement('div');
   tablist.className = 'tabs-list';
@@ -40,6 +59,11 @@ export default async function decorate(block) {
     button.setAttribute('type', 'button');
 
     button.addEventListener('click', () => {
+      // Allow hook to intercept tab click
+      options.onTabClick?.({
+        block, button, tabpanel, i,
+      });
+
       block.querySelectorAll('[role=tabpanel]').forEach((panel) => {
         panel.setAttribute('aria-hidden', true);
       });
@@ -48,6 +72,11 @@ export default async function decorate(block) {
       });
       tabpanel.setAttribute('aria-hidden', false);
       button.setAttribute('aria-selected', true);
+
+      // Dispatch tab change event
+      block.dispatchEvent(new CustomEvent('tabs:change', {
+        detail: { button, tabpanel, index: i },
+      }));
     });
 
     // add the new tab list button, to the tablist
@@ -63,4 +92,15 @@ export default async function decorate(block) {
   });
 
   block.prepend(tablist);
+
+  // Lifecycle hook + event (after)
+  options.onAfter?.(ctx);
+  block.dispatchEvent(new CustomEvent('tabs:after', { detail: ctx }));
 }
+
+/**
+ * Default export for block decoration
+ * @param {HTMLElement} block - The tabs block element
+ * @returns {Promise<void>}
+ */
+export default (block) => decorate(block, window.Tabs?.hooks);

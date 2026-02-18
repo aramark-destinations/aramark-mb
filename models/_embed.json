@@ -23,21 +23,21 @@
         {
           "component": "reference",
           "valueType": "string",
-          "name": "embed_placeholder",
+          "name": "embedPlaceholder",
           "label": "Placeholder Image",
           "multi": false
         },
         {
           "component": "text",
           "valueType": "string",
-          "name": "embed_placeholderAlt",
+          "name": "embedPlaceholderAlt",
           "value": "",
           "label": "Placeholder Image Alt Text"
         },
         {
           "component": "text",
           "valueType": "string",
-          "name": "embed_uri",
+          "name": "embedUri",
           "label": "URI"
         }
       ]

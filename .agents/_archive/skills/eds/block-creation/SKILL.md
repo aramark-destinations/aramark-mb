@@ -8,7 +8,9 @@ version: 1.0.0
 # EDS Block Creation
 
 ## Overview
-Creates a new EDS block following the Block Extensibility Framework with base implementation in `/libs/blocks/` and site extension in `/blocks/`.
+Creates a new EDS block following the Block Extensibility Framework with implementation in `/blocks/` and optional brand overrides in `/brands/{brand}/blocks/`.
+
+**Note:** This skill is archived as the project now uses a simplified 2-tier architecture. New blocks are created directly in `/blocks/` with full implementations, not split between base and extension layers.
 
 ## When to Use
 - Creating a new block from scratch
@@ -17,13 +19,13 @@ Creates a new EDS block following the Block Extensibility Framework with base im
 
 ## Implementation Steps
 
-### 1. Create Base Block Structure
+### 1. Create Block Structure
 ```bash
-mkdir -p libs/blocks/{block-name}
+mkdir -p blocks/{block-name}
 ```
 
-### 2. Generate base.js
-Create `libs/blocks/{block-name}/base.js`:
+### 2. Generate block.js
+Create `blocks/{block-name}/{block-name}.js`:
 ```javascript
 /**
  * Base {BlockName} Block
@@ -49,40 +51,47 @@ export function decorate(block, options = {}) {
 export default (block) => decorate(block, window.{BlockName}?.hooks);
 ```
 
-### 3. Generate base.css
-Create `libs/blocks/{block-name}/base.css` with core styles
+### 3. Generate block.css
+Create `blocks/{block-name}/{block-name}.css` with core styles
 
-### 4. Create CHANGELOG.md
-Document the base block's version, features, and extension points
+### 4. Create README.md
+Document the block's usage, variants, and extension points via lifecycle hooks
 
-### 5. Generate Extension Wrapper
-Create `blocks/{block-name}/{block-name}.js`:
+### 5. Brand Override Example (Optional)
+If a brand needs customization:
+
+```bash
+mkdir -p brands/{brand}/blocks/{block-name}
+```
+
+Then create `brands/{brand}/blocks/{block-name}/{block-name}.js`:
 ```javascript
-import { decorate as baseDecorate } from '../../libs/blocks/{block-name}/base.js';
+import { decorate as rootDecorate } from '../../../blocks/{block-name}/{block-name}.js';
 
 const hooks = {
   onBefore: ({ block }) => {
-    // Site-specific: before logic
+    // Brand-specific: before logic
   },
   onAfter: ({ block }) => {
-    // Site-specific: after logic
+    // Brand-specific: after logic
   },
 };
 
 export function decorate(block) {
-  return baseDecorate(block, hooks);
+  return rootDecorate(block, hooks);
 }
 
 export default (block) => decorate(block);
 ```
 
-### 6. Create Extension CSS
-Create `blocks/{block-name}/{block-name}.css`:
+### 6. Create Brand CSS Override (Optional)
+In the same directory, create `brands/{brand}/blocks/{block-name}/{block-name}.css`:
 ```css
-@import url('../../libs/blocks/{block-name}/base.css');
-
-/* Site-specific overrides */
+/* Brand-specific overrides */
+/* Root styles from /blocks/{block-name}/{block-name}.css load automatically */
 ```
+
+**Important:** Brand directories only need a `blocks/` subdirectory when they have block overrides.
 
 ## Common Patterns
 

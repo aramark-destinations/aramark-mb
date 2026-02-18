@@ -1,8 +1,12 @@
+/* 
+ * Embed Block - Base Styles
+ */
+
 .embed {
   width: unset;
   text-align: center;
-  max-width: 800px;
-  margin: 32px auto;
+  max-width: var(--layout-max-width-media);
+  margin: var(--spacing-032) auto;
 }
 
 .embed > div {
@@ -17,7 +21,7 @@
 
 .embed .embed-placeholder {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: var(--aspect-ratio-video);
   position: relative;
 }
 
@@ -40,10 +44,10 @@
   position: relative;
   display: block;
   transform: scale(3);
-  width: 22px;
-  height: 22px;
-  border: 2px solid;
-  border-radius: 20px;
+  width: var(--sizing-024);
+  height: var(--sizing-024);
+  border: var(--weight-m) solid;
+  border-radius: var(--radius-l);
   padding: 0;
 }
 
@@ -53,7 +57,7 @@
   box-sizing: border-box;
   position: absolute;
   width: 0;
-  height: 10px;
+  height: var(--sizing-010);
   border-top: 5px solid transparent;
   border-bottom: 5px solid transparent;
   border-left: 6px solid;

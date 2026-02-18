@@ -4,16 +4,16 @@
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  gap: 24px;
+  gap: var(--spacing-024);
 }
 
 .cards > ul > li {
-  border: 1px solid #dadada;
+  border: var(--weight-s) solid var(--color-grey-200);
   background-color: var(--background-color);
 }
 
 .cards .cards-card-body {
-  margin: 16px;
+  margin: var(--spacing-016);
 }
 
 .cards .cards-card-image {
@@ -22,6 +22,6 @@
 
 .cards > ul > li img {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: var(--aspect-ratio-landscape);
   object-fit: cover;
 }

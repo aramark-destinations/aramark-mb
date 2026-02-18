@@ -11,6 +11,7 @@ node_modules
 helix-importer-ui
 .DS_Store
 *.bak
+package-lock.json
 .idea
 # Ignore .map files in scripts/__dropins__/ directory and all its subdirectories
 scripts/__dropins__/**/*.map
@@ -34,3 +35,7 @@ docs/plans/*
 
 # Ignore git worktrees directory
 .worktrees/.config-backups/
+
+# Ignore user IDE configuration files
+.editorconfig
+.claude/*

@@ -26,7 +26,7 @@
               "name": "Tab",
               "model": "tabs-item",
               "title": "Tab Name",
-              "content_headingType": "h3"
+              "contentHeadingType": "h3"
             }
           }
         }
@@ -47,14 +47,14 @@
         {
           "component": "text",
           "valueType": "string",
-          "name": "content_heading",
+          "name": "contentHeading",
           "value": "",
           "label": "Heading"
         },
         {
           "component": "select",
           "valueType": "string",
-          "name": "content_headingType",
+          "name": "contentHeadingType",
           "value": "",
           "label": "Heading Type",
           "options": [
@@ -79,13 +79,13 @@
         {
           "component": "reference",
           "valueType": "string",
-          "name": "content_image",
+          "name": "contentImage",
           "label": "Image",
           "multi": false
         },
         {
           "component": "richtext",
-          "name": "content_richtext",
+          "name": "contentRichtext",
           "value": "",
           "label": "Content",
           "valueType": "string"

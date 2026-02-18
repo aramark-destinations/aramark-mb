@@ -3,17 +3,17 @@ body.modal-open {
 }
 
 .modal dialog::backdrop {
-  background-color: rgb(19 19 19 / 75%);
+  background-color: color-mix(in srgb, var(--color-grey-900) 75%, transparent);
 }
 
 .modal dialog {
   overscroll-behavior: none;
   overflow-y: hidden;
-  width: calc(100vw - 48px);
-  max-width: 900px;
+  width: calc(100vw - var(--spacing-048));
+  max-width: var(--layout-max-width-narrow);
   max-height: calc(100dvh - (2 * var(--header-height)));
   padding: 0;
-  border: 1px solid var(--dark-color);
+  border: var(--weight-s) solid var(--dark-color);
 }
 
 .modal dialog .modal-content {
@@ -21,20 +21,20 @@ body.modal-open {
   overflow-y: auto;
   overscroll-behavior: none;
   width: 100%;
-  max-height: calc(100dvh - (2 * var(--header-height)) - 48px);
-  padding: 24px;
+  max-height: calc(100dvh - (2 * var(--header-height)) - var(--spacing-048));
+  padding: var(--spacing-024);
   padding-top: 0;
-  margin-top: 44px;
+  margin-top: var(--spacing-048);
 }
 
 @media (width >= 900px) {
   .modal dialog {
-    width: calc(100vw - 64px);
+    width: calc(100vw - var(--spacing-064));
   }
   
   .modal dialog .modal-content {
-    max-height: calc(100dvh - (2 * var(--header-height)) - 64px);
-    padding: 32px;
+    max-height: calc(100dvh - (2 * var(--header-height)) - var(--spacing-064));
+    padding: var(--spacing-032);
     padding-top: 0;
   }
 }
@@ -43,21 +43,21 @@ body.modal-open {
   position: absolute;
   top: 0;
   right: 0;
-  width: 44px;
-  height: 44px;
+  width: var(--spacing-048);
+  height: var(--spacing-048);
   margin: 0;
   border: none;
   border-radius: 0;
   padding: 0;
   background-color: transparent;
   color: var(--text-color);
-  line-height: 0;
+  line-height: var(--line-height-none);
 }
 
 .modal .close-button .icon.icon-close {
   content: '';
-  width: 24px;
-  height: 24px;
+  width: var(--sizing-024);
+  height: var(--sizing-024);
 }
 
 .modal .close-button .icon.icon-close::before,
@@ -69,9 +69,9 @@ body.modal-open {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(45deg);
-  width: 24px;
-  height: 2px;
-  border-radius: 2px;
+  width: var(--sizing-024);
+  height: var(--weight-m);
+  border-radius: var(--weight-m);
   background-color: currentcolor;
 }
 

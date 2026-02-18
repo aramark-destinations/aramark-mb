@@ -59,17 +59,6 @@ async function loadFonts() {
   }
 }
 
-function autolinkModals(doc) {
-  doc.addEventListener('click', async (e) => {
-    const origin = e.target.closest('a');
-    if (origin && origin.href && origin.href.includes('/modals/')) {
-      e.preventDefault();
-      const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
-      openModal(origin.href);
-    }
-  });
-}
-
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -117,6 +106,14 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+
+  // Load brand-specific design tokens before first paint
+  const { getCurrentBrand } = await import('./site-resolver.js');
+  const brand = getCurrentBrand();
+  if (brand) {
+    await loadCSS(`${window.hlx.codeBasePath}/brands/${brand}/tokens.css`);
+  }
+
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
     doc.body.dataset.breadcrumbs = true;
   }

@@ -132,32 +132,6 @@ async function applyChanges(event) {
   return false;
 }
 
-function handleSelection(event) {
-  const { detail } = event;
-  const resource = detail?.resource;
-
-  if (resource) {
-    const element = document.querySelector(`[data-aue-resource="${resource}"]`);
-    const block = element.parentElement?.closest('.block[data-aue-resource]')
-      || element?.closest('.block[data-aue-resource]');
-
-    if (block && block.matches('.accordion')) {
-      // close all details
-      const details = element.matches('details') ? element : element.querySelector('details');
-      setState(block, [details.dataset.aueResource]);
-    }
-
-    if (block && block.matches('.carousel')) {
-      const slideIndex = [...block.querySelectorAll('.carousel-slide')].findIndex((slide) => slide === element);
-      setState(block, slideIndex);
-    }
-
-    if (block && block.matches('.tabs')) {
-      setState(block, element.dataset.aueResource);
-    }
-  }
-}
-
 function attachEventListners(main) {
   [
     'aue:content-patch',
