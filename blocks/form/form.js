@@ -1,3 +1,10 @@
+/**
+ * Form Block
+ * - Provides lifecycle hooks (onBefore/onAfter)
+ * - Dispatches before/after events
+ * - Implements core form block functionality
+ */
+
 import createField from './form-fields.js';
 
 async function createForm(formHref, submitHref) {
@@ -77,7 +84,14 @@ async function handleSubmit(form) {
   }
 }
 
-export default async function decorate(block) {
+export async function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('form:before', { detail: ctx }));
+
+  // === FORM BLOCK LOGIC ===
   const links = [...block.querySelectorAll('a')].map((a) => a.href);
   const formLink = links.find((link) => link.startsWith(window.location.origin) && link.endsWith('.json'));
   const submitLink = links.find((link) => link !== formLink);
@@ -99,4 +113,10 @@ export default async function decorate(block) {
       }
     }
   });
+
+  // lifecycle hook + event (after)
+  options.onAfter?.(ctx);
+  block.dispatchEvent(new CustomEvent('form:after', { detail: ctx }));
 }
+
+export default (block) => decorate(block, window.Form?.hooks);

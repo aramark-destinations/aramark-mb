@@ -1,4 +1,4 @@
-# Aramark Nations Vacations EDS framework
+# Aramark MB EDS framework
 
 ## Environments
 - Preview: https://staging--aramark-nv--blueacorninc.aem.page/

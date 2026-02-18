@@ -2,10 +2,9 @@
 
 ## Overview
 
-This project implements Adobe's EDS Block Extensibility Framework to enable:
-- **Reusable base blocks** in `/libs/blocks/` shared across all sites
-- **Site-specific extensions** in `/blocks/` for Nations Vacations customizations
-- **Per-property overrides** in `/sites/{site}/blocks/` for individual properties (Lake Powell, etc.)
+This project implements a **2-tier block resolution system** to enable:
+- **Shared root blocks** in `/blocks/` for project-wide implementations
+- **Site-specific overrides** in `/brands/{brand}/blocks/` for individual properties (Lake Powell, etc.)
 
 ## Architecture
 
@@ -13,53 +12,47 @@ This project implements Adobe's EDS Block Extensibility Framework to enable:
 
 When EDS loads a block, it checks paths in this priority order:
 
-1. **Site-Specific** → `/sites/{site}/blocks/{block}/{block}.js`
-2. **Shared Extension** → `/blocks/{block}/{block}.js`
-3. **Base Library** → `/libs/blocks/{block}/base.js`
+1. **Site-Specific Override** → `/brands/{brand}/blocks/{block}/{block}.js`
+2. **Root/Shared Block** → `/blocks/{block}/{block}.js`
 
 ### Directory Structure
 
 ```
 eds/
-├── libs/blocks/              # Base blocks (reusable, upgradeable)
+├── blocks/                   # Root blocks (shared across all sites)
 │   ├── hero/
-│   │   ├── base.js          # Core hero logic + lifecycle hooks
-│   │   ├── base.css         # Base hero styles
-│   │   └── CHANGELOG.md     # Version history & extension points
-│   └── cards/
-│       ├── base.js
-│       ├── base.css
-│       └── CHANGELOG.md
-│
-├── blocks/                   # Site extensions (Nations Vacations shared)
-│   ├── hero/
-│   │   ├── hero.js          # Wraps base, adds NV-specific hooks
-│   │   └── hero.css         # Imports base, adds NV overrides
+│   │   ├── hero.js          # Core hero implementation with lifecycle hooks
+│   │   ├── hero.css         # Hero styles
+│   │   └── README.md        # Documentation & usage examples
 │   └── cards/
 │       ├── cards.js
-│       └── cards.css
+│       ├── cards.css
+│       └── README.md
 │
-└── sites/                    # Per-property overrides
+└── brands/                    # Per-property overrides
     └── lake-powell/
         ├── blocks/           # Lake Powell-specific block overrides
         │   └── hero/         # Only created if LP needs custom hero
         │       ├── hero.js
         │       └── hero.css
+        ├── tokens.css        # Brand design tokens
         └── README.md
 ```
 
-## Base Block Pattern
+## Block Implementation Pattern
 
-### base.js Template
+### Standard Block Template (in /blocks/)
 
 ```javascript
 /**
- * Base {BlockName} Block
- * - Provides lifecycle hooks (onBefore/onAfter)
- * - Dispatches before/after events
+ * {BlockName} Block
+ * - Provides lifecycle hooks (onBefore/onAfter) for site-specific extensions
+ * - Dispatches before/after events for advanced customization
  */
 
-export function decorate(block, options = {}) {
+import { someHelper } from '../../scripts/aem.js';
+
+export default function decorate(block, options = {}) {
   const ctx = { block, options };
 
   // Lifecycle hook + event (before core logic)
@@ -73,9 +66,6 @@ export function decorate(block, options = {}) {
   options.onAfter?.(ctx);
   block.dispatchEvent(new CustomEvent('{block}:after', { detail: ctx }));
 }
-
-// Export with global hooks support
-export default (block) => decorate(block, window.{BlockName}?.hooks);
 ```
 
 ### Key Features
@@ -87,197 +77,139 @@ export default (block) => decorate(block, window.{BlockName}?.hooks);
 
 ## Extension Pattern
 
-### Extension Template
+### Site-Specific Override Template (in /brands/{brand}/blocks/)
 
 ```javascript
 /**
- * Site-Specific {BlockName} Extension
- * - Imports base block
- * - Adds site-specific hooks
+ * Site-Specific {BlockName} Override
+ * - Imports root block implementation
+ * - Adds site-specific customizations via hooks
  */
 
-import { decorate as baseDecorate } from '../../libs/blocks/{block}/base.js';
+import decorate as decorateRoot from '../../../blocks/{block}/{block}.js';
 
-const hooks = {
-  onBefore: ({ block, options }) => {
-    // Runs BEFORE base block logic
-    // - Add variant classes
-    // - Modify initial DOM structure
-    // - Set data attributes
-  },
-  onAfter: ({ block, options }) => {
-    // Runs AFTER base block logic
-    // - Add event listeners
-    // - Integrate analytics
-    // - Apply animations
-  },
-};
-
-export function decorate(block) {
-  return baseDecorate(block, hooks);
+export default function decorate(block) {
+  // Use root implementation with site-specific hooks
+  decorateRoot(block, {
+    onBefore: ({ block, options }) => {
+      // Runs BEFORE root block logic
+      // - Add variant classes
+      // - Modify initial DOM structure
+      // - Set data attributes
+    },
+    onAfter: ({ block, options }) => {
+      // Runs AFTER root block logic
+      // - Add event listeners
+      // - Integrate analytics
+      // - Apply animations
+    },
+  });
 }
-
-export default (block) => decorate(block);
 ```
 
-### CSS Extension
+### CSS Override
 
 ```css
-/* Import base styles first */
-@import url('../../libs/blocks/{block}/base.css');
-
-/* Add site-specific overrides */
+/* Add site-specific overrides (root styles load automatically) */
 .{block}--variant {
-  /* Custom styles */
+  /* Custom styles for this site */
 }
 ```
 
-## Migration Checklist
+## Creating a New Block
 
-When migrating an existing block to the framework:
+### 1. Create Root Block (in /blocks/)
 
-### 1. Create Base Block
-
-- [ ] Create `/libs/blocks/{block}/` directory
-- [ ] Move core logic to `base.js` with lifecycle hooks
+- [ ] Create `/blocks/{block}/` directory
+- [ ] Create `{block}.js` with lifecycle hooks (onBefore/onAfter)
 - [ ] Add event dispatching (`{block}:before`, `{block}:after`)
-- [ ] Create `base.css` with core styles
-- [ ] Document in `CHANGELOG.md` (version, features, extension points)
+- [ ] Create `{block}.css` with styles
+- [ ] Document in `README.md` (usage, extension points, examples)
 
-### 2. Convert Existing Block to Extension
+### 2. Create Site Override (Optional - only if needed)
 
-- [ ] Import base decorate function
-- [ ] Define local hooks object
+- [ ] Create `/brands/{brand}/blocks/{block}/` directory
+- [ ] Import root decorate function
+- [ ] Define site-specific hooks
 - [ ] Move site-specific logic to hooks
-- [ ] Test that base + extension works together
+- [ ] Test that root + override works together
 
-### 3. Update CSS
+### 3. Test
 
-- [ ] Import base CSS with `@import url('../../libs/blocks/{block}/base.css')`
-- [ ] Keep only site-specific overrides in extension CSS
-- [ ] Test cascading works correctly
-
-### 4. Test
-
-- [ ] Base block works in isolation
-- [ ] Extension hooks execute in correct order
+- [ ] Block works in root context
+- [ ] Site override hooks execute in correct order
 - [ ] Events fire properly
 - [ ] Universal Editor compatibility maintained
 - [ ] No regressions in existing functionality
 
-## Creating a New Block
+## Extending an Existing Block
 
-### Using @blueacornici/eds-cli
+### Creating Blocks Manually
 
 ```bash
-# Install CLI (already installed globally)
-npm i -g @blueacornici/eds-cli
-
-# Scaffold a new block from a template
-eds-cli install @blueacornici/eds-feature-card
-
-# Creates:
-# - /libs/blocks/feature-card/base.js
-# - /libs/blocks/feature-card/base.css
-# - /blocks/feature-card/feature-card.js
-# - /blocks/feature-card/feature-card.css
+# Create a new block directly
+mkdir -p blocks/feature-card
+# Create blocks/feature-card/feature-card.js (with lifecycle hooks)
+# Create blocks/feature-card/feature-card.css
+# Create blocks/feature-card/README.md (usage documentation)
 ```
-
-### Manual Creation
-
-1. Create base block files in `/libs/blocks/{block}/`
-2. Follow the base.js template pattern
-3. Create extension wrapper in `/blocks/{block}/`
-4. Document in CHANGELOG.md
 
 ## Creating Site-Specific Overrides
 
 Example: Lake Powell needs a custom hero
 
 ```bash
-mkdir -p sites/lake-powell/blocks/hero
+mkdir -p brands/lake-powell/blocks/hero
 ```
 
 ```javascript
-// sites/lake-powell/blocks/hero/hero.js
-import { decorate as nvDecorate } from '../../../blocks/hero/hero.js';
+// brands/lake-powell/blocks/hero/hero.js
+import decorateRoot from '../../../blocks/hero/hero.js';
 
-const lakePowellHooks = {
-  onBefore: ({ block }) => {
-    // Lake Powell specific: add branding
-    block.classList.add('lake-powell-hero');
-  },
-  onAfter: ({ block }) => {
-    // Lake Powell specific: add booking widget
-    const widget = document.createElement('div');
-    widget.className = 'booking-widget';
-    block.append(widget);
-  }
-};
-
-export default (block) => nvDecorate(block, lakePowellHooks);
+export default function decorate(block) {
+  // Use root implementation with Lake Powell-specific hooks
+  decorateRoot(block, {
+    onBefore: ({ block }) => {
+      // Lake Powell specific: add branding
+      block.classList.add('lake-powell-hero');
+    },
+    onAfter: ({ block }) => {
+      // Lake Powell specific: add booking widget
+      const widget = document.createElement('div');
+      widget.className = 'booking-widget';
+      block.append(widget);
+    }
+  });
+}
 ```
 
 ```css
-/* sites/lake-powell/blocks/hero/hero.css */
-@import url('../../../blocks/hero/hero.css');
-
+/* brands/lake-powell/blocks/hero/hero.css */
 .lake-powell-hero {
-  /* Lake Powell branding overrides */
+  /* Lake Powell branding overrides (root styles load automatically) */
   --hero-primary-color: #0066cc;
 }
 ```
 
-## Upgrading Base Blocks
-
-When a base block in `/libs/blocks/` is updated:
-
-1. **Check CHANGELOG.md** for breaking changes
-2. **Test extensions** - ensure hooks still work
-3. **Update hooks if needed** - adjust to new extension points
-4. **No changes needed** if only using documented hooks
-
-### Example Base Block Update
-
-```javascript
-// Before: /libs/blocks/hero/base.js v1.0.0
-export function decorate(block, options = {}) {
-  options.onBefore?.({ block });
-  // logic
-  options.onAfter?.({ block });
-}
-
-// After: /libs/blocks/hero/base.js v1.1.0
-export function decorate(block, options = {}) {
-  const ctx = { block, options, metadata: block.dataset };
-  options.onBefore?.(ctx); // Now passes more context
-  // improved logic
-  options.onAfter?.(ctx);
-}
-```
-
-Extensions automatically benefit from improvements without code changes!
-
 ## Best Practices
 
-### ✅ DO
+### DO
 
-- Use lifecycle hooks for customization
-- Import and extend base blocks
-- Document extension points in CHANGELOG.md
-- Test base blocks independently
+- Use lifecycle hooks for site-specific customization
+- Keep root blocks generic and reusable
+- Document extension points in README.md
+- Test blocks in both root and site contexts
 - Use CSS custom properties for theming
 - Add analytics in `onAfter` hooks
-- Use semantic HTML in base blocks
+- Use semantic HTML in block implementations
 
-### ❌ DON'T
+### DON'T
 
-- Modify `/libs/blocks/` directly (loses upgrade path)
-- Duplicate base block logic
+- Duplicate root block logic in site overrides
 - Use `!important` in CSS (makes debugging hard)
-- Modify block DOM structure in `onBefore` (breaks base logic)
-- Create site-specific overrides unless necessary
-- Fork blocks when hooks can solve the need
+- Modify block DOM structure in `onBefore` (can break logic)
+- Create site-specific overrides unless truly necessary
+- Hard-code site-specific values in root blocks
 
 ## Common Patterns
 
@@ -332,16 +264,11 @@ onAfter: ({ block }) => {
 
 ## Tools
 
-### Installed Tools
-
-- **@blueacornici/eds-cli** - Block scaffolding CLI
-- **Superpowers** - AI skills for block creation/extension
-
 ### AI Skills (in `.agents/skills/eds/`)
 
-- **block-creation** - Scaffold new base + extension blocks
-- **block-extension** - Extend existing base blocks
-- **site-spinup** - Create new site with override structure
+- **site-spinup** - Create new brand site with override structure
+
+> **Note:** `block-creation` and `block-extension` skills are archived (in `.agents/_archive/`). Only `site-spinup` is currently active.
 
 ## Troubleshooting
 
@@ -355,16 +282,16 @@ onAfter: ({ block }) => {
 ### Hooks Not Firing
 
 1. Verify hook names: `onBefore`, `onAfter` (case-sensitive)
-2. Check base block dispatches events
-3. Ensure extension passes hooks to baseDecorate
-4. Test base block in isolation first
+2. Check root block dispatches events
+3. Ensure site override passes hooks correctly
+4. Test root block in isolation first
 
 ### Styles Not Applied
 
-1. Confirm `@import url()` path is correct
-2. Check CSS specificity (avoid !important)
-3. Verify base.css loaded before extension CSS
-4. Test with browser dev tools
+1. Check CSS specificity (avoid !important)
+2. Verify CSS file is loading (check Network tab)
+3. Test with browser dev tools
+4. Confirm CSS custom properties are defined
 
 ### Universal Editor Issues
 
@@ -378,12 +305,18 @@ onAfter: ({ block }) => {
 - [EDS Block Collection](https://www.aem.live/developer/block-collection)
 - [EDS Documentation](https://www.aem.live/docs/)
 - [Universal Editor](https://experienceleague.adobe.com/docs/experience-manager-cloud-service/content/edge-delivery/wysiwyg-authoring/authoring.html)
-- Project Superpowers Skills: `.agents/skills/eds/`
+- [Brand Setup Guide](BRAND-SETUP-GUIDE.md)
+- Project AI Skills: `.agents/skills/eds/`
 
 ## Support
 
 For questions or issues:
-1. Check block CHANGELOG.md for known issues
+1. Check block README.md for usage documentation
 2. Review this guide's troubleshooting section
-3. Test base block in isolation
-4. Use AI skills for guidance: `@block-creation`, `@block-extension`
+3. Test root block in isolation
+4. Create an issue in the repository
+
+## Unknowns & TODOs
+
+- Zero test files exist — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #15
+- `buildAutoBlocks()` is a stub — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #7

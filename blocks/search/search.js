@@ -1,3 +1,10 @@
+/**
+ * Search Block
+ * - Provides lifecycle hooks (onBefore/onAfter)
+ * - Dispatches before/after events
+ * - Implements full-text search with highlighting
+ */
+
 import {
   createOptimizedPicture,
   decorateIcons,
@@ -250,7 +257,14 @@ function searchBox(block, config) {
   return box;
 }
 
-export default async function decorate(block) {
+export async function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('search:before', { detail: ctx }));
+
+  // === SEARCH BLOCK LOGIC ===
   const placeholders = await fetchPlaceholders();
   const source = block.querySelector('a[href]')?.href || `${window.hlx.codeBasePath}/query-index.json`;
   block.innerHTML = '';
@@ -266,4 +280,10 @@ export default async function decorate(block) {
   }
 
   decorateIcons(block);
+
+  // lifecycle hook + event (after)
+  options.onAfter?.(ctx);
+  block.dispatchEvent(new CustomEvent('search:after', { detail: ctx }));
 }
+
+export default (block) => decorate(block, window.Search?.hooks);

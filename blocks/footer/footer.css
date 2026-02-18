@@ -5,8 +5,8 @@ footer {
 
 footer .footer > div {
   margin: auto;
-  max-width: 1200px;
-  padding: 40px 24px 24px;
+  max-width: var(--layout-max-width-content);
+  padding: var(--spacing-040) var(--spacing-024) var(--spacing-024);
 }
 
 footer .footer p {
@@ -15,6 +15,6 @@ footer .footer p {
 
 @media (width >= 900px) {
   footer .footer > div {
-    padding: 40px 32px 24px;
+    padding: var(--spacing-040) var(--spacing-032) var(--spacing-024);
   }
 }
