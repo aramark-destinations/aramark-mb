@@ -1,12 +1,12 @@
 .video {
   text-align: center;
-  max-width: 900px;
-  margin: 24px auto;
+  max-width: var(--layout-max-width-narrow);
+  margin: var(--spacing-024) auto;
 }
 
 .video[data-embed-loaded='false']:not(.placeholder) {
   /* reserve an approximate space to avoid extensive layout shifts */
-  aspect-ratio: 16 / 9;
+  aspect-ratio: var(--aspect-ratio-video);
 }
 
 .video > div {
@@ -20,7 +20,7 @@
 
 .video .video-placeholder {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: var(--aspect-ratio-video);
   position: relative;
 }
 
@@ -48,10 +48,10 @@
 .video .video-placeholder-play button {
   position: relative;
   display: block;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  outline: 2px solid;
+  width: var(--spacing-048);
+  height: var(--spacing-048);
+  border-radius: var(--radius-circle);
+  outline: var(--weight-m) solid;
   padding: 0;
 }
 
@@ -61,11 +61,11 @@
   box-sizing: border-box;
   position: absolute;
   width: 0;
-  height: 24px;
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
+  height: var(--sizing-024);
+  border-top: var(--sizing-012) solid transparent;
+  border-bottom: var(--sizing-012) solid transparent;
   border-left: 18px solid;
   top: 50%;
-  left: calc(50% + 2px);
+  left: calc(50% + var(--spacing-002));
   transform: translate(-50%, -50%);
 }

@@ -60,7 +60,9 @@ export async function decorate(block, options = {}) {
 
     button.addEventListener('click', () => {
       // Allow hook to intercept tab click
-      options.onTabClick?.({ block, button, tabpanel, i });
+      options.onTabClick?.({
+        block, button, tabpanel, i,
+      });
 
       block.querySelectorAll('[role=tabpanel]').forEach((panel) => {
         panel.setAttribute('aria-hidden', true);

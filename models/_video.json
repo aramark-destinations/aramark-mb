@@ -48,14 +48,14 @@
         {
           "component": "reference",
           "valueType": "string",
-          "name": "placeholder_image",
+          "name": "placeholderImage",
           "label": "Placeholder Image",
           "multi": true
         },
         {
           "component": "text",
           "valueType": "string",
-          "name": "placeholder_imageAlt",
+          "name": "placeholderImageAlt",
           "value": "",
           "label": "Placeholder Image Alt Text"
         }

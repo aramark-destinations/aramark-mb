@@ -27,16 +27,16 @@
 }
 
 .table.block table thead tr {
-  border-top: 2px solid;
-  border-bottom: 2px solid;
+  border-top: var(--weight-m) solid;
+  border-bottom: var(--weight-m) solid;
 }
 
 .table.block table tbody tr {
-  border-bottom: 1px solid;
+  border-bottom: var(--weight-s) solid;
 }
 
 .table.block table th {
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 .table.block table th,
@@ -56,7 +56,7 @@
 
 /* no header variant */
 .table.block.no-header table tbody tr {
-  border-top: 1px solid;
+  border-top: var(--weight-s) solid;
 }
 
 /* striped variant */
@@ -67,5 +67,5 @@
 /* bordered variant */
 .table.block.bordered table th,
 .table.block.bordered table td {
-  border: 1px solid;
+  border: var(--weight-s) solid;
 }

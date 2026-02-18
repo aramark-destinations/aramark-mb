@@ -1,13 +1,13 @@
 mountpoints:
   # Default root - shared content
   /:
-    url: "https://author-p130360-e1272151.adobeaemcloud.com/bin/franklin.delivery/adobe-rnd/aem-boilerplate-xwalk/main"
+    url: "https://author-p179307-e1885056.adobeaemcloud.com/content/aramark-mb"
     type: "markup"
     suffix: ".html"
   
   # Lake Powell site-specific content
   /brands/lake-powell:
-    url: "https://author-p130360-e1272151.adobeaemcloud.com/bin/franklin.delivery/adobe-rnd/aem-boilerplate-xwalk/main/brands/lake-powell"
+    url: "https://author-p179307-e1885056.adobeaemcloud.com/content/lake-powell"
     type: "markup"
     suffix: ".html"
 

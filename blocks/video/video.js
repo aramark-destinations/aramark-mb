@@ -1,11 +1,11 @@
 /**
  * Video Block
  * Supports YouTube, Vimeo, and direct MP4 videos with autoplay and placeholder image support.
- * 
+ *
  * Similar to embed block but focused specifically on video content.
  */
 
-const loadScript = (url) => {
+const _loadScript = (url) => {
   const head = document.querySelector('head');
   const script = document.createElement('script');
   script.src = url;

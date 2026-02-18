@@ -20,11 +20,11 @@ export async function decorate(block, options = {}) {
 
   const [quotation, attribution] = [...block.children].map((c) => c.firstElementChild);
   const blockquote = document.createElement('blockquote');
-  
+
   // decorate quotation
   quotation.className = 'quote-quotation';
   blockquote.append(quotation);
-  
+
   // decoration attribution
   if (attribution) {
     attribution.className = 'quote-attribution';
@@ -36,7 +36,7 @@ export async function decorate(block, options = {}) {
       em.replaceWith(cite);
     });
   }
-  
+
   block.innerHTML = '';
   block.append(blockquote);
 

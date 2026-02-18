@@ -62,5 +62,21 @@ module.exports = {
         'no-empty-function': 'off',
       },
     },
+    {
+      files: ['tools/**/*.js'],
+      rules: {
+        'no-console': 'off',
+        'no-plusplus': 'off',
+        'no-restricted-syntax': 'off',
+        'no-await-in-loop': 'off',
+      },
+    },
+    {
+      files: ['scripts/aem.js', 'scripts/site-resolver.js'],
+      rules: {
+        'no-restricted-syntax': 'off',
+        'no-await-in-loop': 'off',
+      },
+    },
   ],
 };

@@ -14,7 +14,7 @@
 
 .form form > .field-wrapper + .field-wrapper,
 .form form fieldset .field-wrapper + .field-wrapper {
-  margin-top: 24px;
+  margin-top: var(--spacing-024);
 }
 
 .form form > .selection-wrapper + .selection-wrapper,
@@ -25,7 +25,7 @@
 @media (width >= 600px) {
   .form fieldset {
     grid-template-columns: repeat(2, auto);
-    gap: 0.25em 24px;
+    gap: 0.25em var(--spacing-024);
   }
 
   .form form > .selection-wrapper + .selection-wrapper,
@@ -45,12 +45,12 @@
 .form fieldset > legend {
   margin-bottom: 0.25em;
   font-size: var(--body-font-size-s);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 .form .selection-wrapper label {
   margin: 0;
-  font-weight: normal;
+  font-weight: var(--font-weight-normal);
 }
 
 .form input,
@@ -60,13 +60,13 @@
   display: block;
   width: 100%;
   margin: 0;
-  padding: 0.5em;
-  border-radius: 4px;
-  border: 1px solid var(--dark-color);
+  padding: var(--input-padding);
+  border-radius: var(--input-border-radius);
+  border: var(--input-border-width) solid var(--input-border-color);
   background-color: var(--background-color);
   color: var(--text-color);
   font-size: var(--body-font-size-s);
-  transition: border-color 0.2s;
+  transition: border-color var(--transition-duration-fast);
 }
 
 .form textarea {
@@ -76,14 +76,14 @@
 .form input:hover,
 .form select:hover,
 .form textarea:hover {
-  border: 1px solid var(--text-color);
+  border: var(--input-border-width) solid var(--input-border-color-hover);
 }
 
 .form input:focus,
 .form select:focus,
 .form textarea:focus {
-  outline: 2px solid var(--link-color);
-  outline-offset: 2px;
+  outline: var(--input-outline-width) solid var(--input-border-color-focus);
+  outline-offset: var(--input-outline-offset);
 }
 
 .form .selection-wrapper input {
@@ -141,19 +141,19 @@
   inset: 0;
   border-radius: 28px;
   background-color: var(--dark-color);
-  transition: background-color 0.2s;
+  transition: background-color var(--transition-duration-fast);
 }
 
 .form .toggle-wrapper .slider::before {
   content: '';
   position: absolute;
-  width: 24px;
-  height: 24px;
-  top: 2px;
-  left: 2px;
-  border-radius: 50%;
+  width: var(--sizing-024);
+  height: var(--sizing-024);
+  top: var(--spacing-002);
+  left: var(--spacing-002);
+  border-radius: var(--radius-circle);
   background-color: var(--background-color);
-  transition: transform 0.2s;
+  transition: transform var(--transition-duration-fast);
 }
 
 .form .toggle-wrapper input:checked + .slider {
@@ -161,10 +161,10 @@
 }
 
 .form .toggle-wrapper input:focus + .slider {
-  outline: 2px solid var(--link-color);
-  outline-offset: 2px;
+  outline: var(--input-outline-width) solid var(--input-border-color-focus);
+  outline-offset: var(--input-outline-offset);
 }
 
 .form .toggle-wrapper input:checked + .slider::before {
-  transform: translateX(24px);
+  transform: translateX(var(--sizing-024));
 }

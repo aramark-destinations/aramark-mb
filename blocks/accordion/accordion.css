@@ -1,10 +1,10 @@
 .accordion details {
-  border: 1px solid #dadada;
+  border: var(--weight-s) solid var(--color-grey-200);
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
 .accordion details + details {
-  margin-top: 24px;
+  margin-top: var(--spacing-024);
 }
 
 .accordion details p {
@@ -13,12 +13,12 @@
 
 .accordion details summary {
   position: relative;
-  padding: 0 16px;
-  padding-right: 46px;
+  padding: 0 var(--spacing-016);
+  padding-right: var(--spacing-048);
   cursor: pointer;
   list-style: none;
   overflow: auto;
-  transition: background-color 0.2s;
+  transition: background-color var(--transition-duration-fast);
 }
 
 .accordion details[open] summary {
@@ -38,13 +38,13 @@
   content: '';
   position: absolute;
   top: 50%;
-  right: 18px;
+  right: var(--spacing-016);
   transform: translateY(-50%) rotate(135deg);
-  width: 6px;
-  height: 6px;
-  border: 2px solid;
-  border-width: 2px 2px 0 0;
-  transition: transform 0.2s;
+  width: var(--sizing-006);
+  height: var(--sizing-006);
+  border: var(--weight-m) solid;
+  border-width: var(--weight-m) var(--weight-m) 0 0;
+  transition: transform var(--transition-duration-fast);
 }
 
 .accordion details[open] summary::after {
@@ -52,7 +52,7 @@
 }
 
 .accordion details .accordion-item-body {
-  padding: 0 16px;
+  padding: 0 var(--spacing-016);
 }
 
 .accordion details:not([open]) .accordion-item-body {
@@ -60,6 +60,6 @@
 }
 
 .accordion details[open] .accordion-item-body {
-  border-top: 1px solid #dadada;
+  border-top: var(--weight-s) solid var(--color-grey-200);
   background-color: var(--background-color);
 }

@@ -1,5 +1,5 @@
 # New Site Setup Guide
-
+## NEEDS TO BE UPDATED - OUTDATED AS OF 2/16
 ## Overview
 
 This guide walks through creating a new property site in the Aramark MB multi-site EDS platform.

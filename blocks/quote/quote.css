@@ -4,13 +4,13 @@
 
 .quote blockquote {
   margin: 0 auto;
-  padding: 0 24px;
-  max-width: 900px;
+  padding: 0 var(--spacing-024);
+  max-width: var(--layout-max-width-narrow);
 }
 
 @media (width >= 900px) {
   .quote blockquote {
-    padding: 0 32px;
+    padding: 0 var(--spacing-032);
   }
 }
 
@@ -24,7 +24,7 @@
 
 .quote blockquote .quote-quotation p:first-child::before,
 .quote blockquote .quote-quotation p:last-child::after {
-  line-height: 0;
+  line-height: var(--line-height-none);
 }
 
 .quote blockquote .quote-quotation p:first-child::before {

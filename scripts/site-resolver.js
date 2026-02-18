@@ -85,14 +85,14 @@ export async function resourceExists(url) {
  */
 export async function resolveBlockPath(blockName) {
   const paths = getBlockPaths(blockName);
-  
+
   for (const path of paths) {
     const jsPath = `${window.hlx.codeBasePath}${path}.js`;
     if (await resourceExists(jsPath)) {
       return path;
     }
   }
-  
+
   return null;
 }
 

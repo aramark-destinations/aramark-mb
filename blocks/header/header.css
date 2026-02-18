@@ -2,7 +2,7 @@
 header .nav-wrapper {
   background-color: var(--background-color);
   width: 100%;
-  z-index: 2;
+  z-index: var(--z-index-header);
   position: fixed;
 }
 
@@ -13,11 +13,11 @@ header nav {
     'hamburger brand tools' var(--nav-height)
     'sections sections sections' 1fr / auto 1fr auto;
   align-items: center;
-  gap: 0 24px;
+  gap: 0 var(--spacing-024);
   margin: auto;
-  max-width: 1248px;
+  max-width: var(--layout-max-width-header-mobile);
   height: var(--nav-height);
-  padding: 0 24px;
+  padding: 0 var(--spacing-024);
   font-family: var(--body-font-family);
 }
 
@@ -34,9 +34,9 @@ header nav[aria-expanded='true'] {
   header nav {
     display: flex;
     justify-content: space-between;
-    gap: 0 32px;
-    max-width: 1264px;
-    padding: 0 32px;
+    gap: 0 var(--spacing-032);
+    max-width: var(--layout-max-width-header-desktop);
+    padding: 0 var(--spacing-032);
   }
 
   header nav[aria-expanded='true'] {
@@ -47,7 +47,7 @@ header nav[aria-expanded='true'] {
 
 header nav p {
   margin: 0;
-  line-height: 1;
+  line-height: var(--line-height-tight);
 }
 
 header nav a:any-link {
@@ -81,7 +81,7 @@ header nav .nav-hamburger-icon::after {
   box-sizing: border-box;
   display: block;
   position: relative;
-  width: 20px;
+  width: var(--sizing-024);
 }
 
 header nav .nav-hamburger-icon::before,
@@ -94,8 +94,8 @@ header nav .nav-hamburger-icon::after {
 header nav[aria-expanded='false'] .nav-hamburger-icon,
 header nav[aria-expanded='false'] .nav-hamburger-icon::before,
 header nav[aria-expanded='false'] .nav-hamburger-icon::after {
-  height: 2px;
-  border-radius: 2px;
+  height: var(--weight-m);
+  border-radius: var(--weight-m);
   background: currentcolor;
 }
 
@@ -116,10 +116,10 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   top: 3px;
   left: 1px;
   transform: rotate(45deg);
-  transform-origin: 2px 1px;
-  width: 24px;
-  height: 2px;
-  border-radius: 2px;
+  transform-origin: var(--spacing-002) 1px;
+  width: var(--sizing-024);
+  height: var(--weight-m);
+  border-radius: var(--weight-m);
 }
 
 header nav[aria-expanded='true'] .nav-hamburger-icon::after {
@@ -138,14 +138,14 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
 /* brand */
 header .nav-brand {
   grid-area: brand;
-  flex-basis: 128px;
+  flex-basis: var(--spacing-120);
   font-size: var(--heading-font-size-s);
-  font-weight: 700;
-  line-height: 1;
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
 }
 
 header nav .nav-brand img {
-  width: 128px;
+  width: var(--spacing-120);
   height: auto;
 }
 
@@ -170,7 +170,7 @@ header nav .nav-sections ul {
 }
 
 header nav .nav-sections ul > li {
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 header nav .nav-sections ul > li > ul {
@@ -178,7 +178,7 @@ header nav .nav-sections ul > li > ul {
 }
 
 header nav .nav-sections ul > li > ul > li {
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
 }
 
 @media (width >= 900px) {
@@ -194,7 +194,7 @@ header nav .nav-sections ul > li > ul > li {
 
   header nav .nav-sections .nav-drop {
     position: relative;
-    padding-right: 16px;
+    padding-right: var(--spacing-016);
     cursor: pointer;
   }
 
@@ -202,25 +202,25 @@ header nav .nav-sections ul > li > ul > li {
     content: '';
     display: inline-block;
     position: absolute;
-    top: 2px;
-    right: 2px;
+    top: var(--spacing-002);
+    right: var(--spacing-002);
     transform: rotate(135deg);
-    width: 6px;
-    height: 6px;
-    border: 2px solid currentcolor;
+    width: var(--sizing-006);
+    height: var(--sizing-006);
+    border: var(--weight-m) solid currentcolor;
     border-radius: 0 1px 0 0;
-    border-width: 2px 2px 0 0;
-  }
+    border-width: var(--weight-m) var(--weight-m) 0 0;
+}
 
   header nav .nav-sections .nav-drop[aria-expanded='true']::after {
     top: unset;
-    bottom: 2px;
+    bottom: var(--spacing-002);
     transform: rotate(315deg);
   }
 
   header nav .nav-sections ul {
     display: flex;
-    gap: 24px;
+    gap: var(--spacing-024);
     margin: 0;
   }
 
@@ -237,29 +237,29 @@ header nav .nav-sections ul > li > ul > li {
   header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
     display: block;
     position: absolute;
-    left: -24px;
+    left: calc(-1 * var(--spacing-024));
     width: 200px;
     top: 150%;
-    padding: 16px;
+    padding: var(--spacing-016);
     background-color: var(--light-color);
     white-space: initial;
-    z-index: 1;
+    z-index: var(--z-index-base);
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li > ul::before {
     content: '';
     position: absolute;
-    top: -8px;
-    left: 16px;
+    top: calc(-1 * var(--spacing-008));
+    left: var(--spacing-016);
     width: 0;
     height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--light-color);
+    border-left: var(--spacing-008) solid transparent;
+    border-right: var(--spacing-008) solid transparent;
+    border-bottom: var(--spacing-008) solid var(--light-color);
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
-    padding: 8px 0;
+    padding: var(--spacing-008) 0;
   }
 }
 
@@ -280,9 +280,9 @@ header nav .nav-tools .button {
 header .breadcrumbs {
   display: none;
   margin: auto;
-  max-width: 1248px;
+  max-width: var(--layout-max-width-header-mobile);
   height: var(--breadcrumbs-height);
-  padding: 0 24px;
+  padding: 0 var(--spacing-024);
   font-size: var(--body-font-size-xs);
   overflow: hidden;
 }
@@ -316,7 +316,7 @@ header .breadcrumbs ol li[aria-current] {
 @media (width >= 900px) {
   header .breadcrumbs {
     display: block;
-    max-width: 1264px;
-    padding: 0 32px;
+    max-width: var(--layout-max-width-header-desktop);
+    padding: 0 var(--spacing-032);
   }
 }

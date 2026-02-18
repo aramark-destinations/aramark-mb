@@ -405,6 +405,20 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
+## Codebase Cleanup (Resolved)
+
+> Items 36-42 were identified and resolved during codebase consistency audit.
+
+- ~~**36. Remove Redundant package-lock.json**~~ - Removed; added to `.gitignore`
+- ~~**37. Remove Completed Migration Script**~~ - Removed `tools/migrate-blocks.js`
+- ~~**38. Remove Dead Code Functions**~~ - Removed `_autolinkModals()` and `_handleSelection()`
+- ~~**39. Create Missing Model Files for Header and Footer**~~ - Added `_header.json` and `_footer.json`
+- ~~**40. Add Missing icon-close.svg**~~ - Added `icons/close.svg`
+- ~~**41. Add Missing Block READMEs**~~ - Added READMEs for accordion, cards, form, hero, modal, search, tabs
+- ~~**42. Clean Up .git/.COMMIT_EDITMSG.swp**~~ - Removed
+
+---
+
 ## Next Steps
 
 This document should be reviewed periodically and items promoted to active specification as needed:

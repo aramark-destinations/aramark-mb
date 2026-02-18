@@ -1,0 +1,311 @@
+/* ==========================================================================
+   Fixed Design Tokens — DERIVED & CONSTANT
+   These tokens are generated from or alias the configurable tokens in
+   root-tokens.css. They should not need editing per brand.
+
+   root-tokens.css is imported first so all base values are available.
+   ========================================================================== */
+
+@import url('root-tokens.css');
+
+:root {
+  /* ========================================================================
+     Color Shades (generated via color-mix)
+     To add a new color family: define the base color in root-tokens.css,
+     then copy any block below and replace the variable name.
+       50-400  = tints (mixed toward white)
+       600-950 = shades (mixed toward black)
+     The percentage is the amount of the BASE color retained.
+     ======================================================================== */
+
+  /* Primary */
+  --color-primary-50:  color-mix(in srgb, var(--color-primary) 10%, var(--color-base-white));
+  --color-primary-100: color-mix(in srgb, var(--color-primary) 20%, var(--color-base-white));
+  --color-primary-200: color-mix(in srgb, var(--color-primary) 40%, var(--color-base-white));
+  --color-primary-300: color-mix(in srgb, var(--color-primary) 60%, var(--color-base-white));
+  --color-primary-400: color-mix(in srgb, var(--color-primary) 80%, var(--color-base-white));
+  --color-primary-600: color-mix(in srgb, var(--color-primary) 80%, var(--color-base-black));
+  --color-primary-700: color-mix(in srgb, var(--color-primary) 60%, var(--color-base-black));
+  --color-primary-800: color-mix(in srgb, var(--color-primary) 40%, var(--color-base-black));
+  --color-primary-900: color-mix(in srgb, var(--color-primary) 20%, var(--color-base-black));
+  --color-primary-950: color-mix(in srgb, var(--color-primary) 10%, var(--color-base-black));
+
+  /* Secondary */
+  --color-secondary-50:  color-mix(in srgb, var(--color-secondary) 10%, var(--color-base-white));
+  --color-secondary-100: color-mix(in srgb, var(--color-secondary) 20%, var(--color-base-white));
+  --color-secondary-200: color-mix(in srgb, var(--color-secondary) 40%, var(--color-base-white));
+  --color-secondary-300: color-mix(in srgb, var(--color-secondary) 60%, var(--color-base-white));
+  --color-secondary-400: color-mix(in srgb, var(--color-secondary) 80%, var(--color-base-white));
+  --color-secondary-600: color-mix(in srgb, var(--color-secondary) 80%, var(--color-base-black));
+  --color-secondary-700: color-mix(in srgb, var(--color-secondary) 60%, var(--color-base-black));
+  --color-secondary-800: color-mix(in srgb, var(--color-secondary) 40%, var(--color-base-black));
+  --color-secondary-900: color-mix(in srgb, var(--color-secondary) 20%, var(--color-base-black));
+  --color-secondary-950: color-mix(in srgb, var(--color-secondary) 10%, var(--color-base-black));
+
+  /* Grey */
+  --color-grey-50:  color-mix(in srgb, var(--color-grey) 10%, var(--color-base-white));
+  --color-grey-100: color-mix(in srgb, var(--color-grey) 20%, var(--color-base-white));
+  --color-grey-200: color-mix(in srgb, var(--color-grey) 40%, var(--color-base-white));
+  --color-grey-300: color-mix(in srgb, var(--color-grey) 60%, var(--color-base-white));
+  --color-grey-400: color-mix(in srgb, var(--color-grey) 80%, var(--color-base-white));
+  --color-grey-600: color-mix(in srgb, var(--color-grey) 80%, var(--color-base-black));
+  --color-grey-700: color-mix(in srgb, var(--color-grey) 60%, var(--color-base-black));
+  --color-grey-800: color-mix(in srgb, var(--color-grey) 40%, var(--color-base-black));
+  --color-grey-900: color-mix(in srgb, var(--color-grey) 20%, var(--color-base-black));
+  --color-grey-950: color-mix(in srgb, var(--color-grey) 10%, var(--color-base-black));
+
+  /* Alerts — Success */
+  --color-alerts-success-50:  color-mix(in srgb, var(--color-alerts-success) 10%, var(--color-base-white));
+  --color-alerts-success-100: color-mix(in srgb, var(--color-alerts-success) 20%, var(--color-base-white));
+  --color-alerts-success-200: color-mix(in srgb, var(--color-alerts-success) 40%, var(--color-base-white));
+  --color-alerts-success-300: color-mix(in srgb, var(--color-alerts-success) 60%, var(--color-base-white));
+  --color-alerts-success-400: color-mix(in srgb, var(--color-alerts-success) 80%, var(--color-base-white));
+  --color-alerts-success-600: color-mix(in srgb, var(--color-alerts-success) 80%, var(--color-base-black));
+  --color-alerts-success-700: color-mix(in srgb, var(--color-alerts-success) 60%, var(--color-base-black));
+  --color-alerts-success-800: color-mix(in srgb, var(--color-alerts-success) 40%, var(--color-base-black));
+  --color-alerts-success-900: color-mix(in srgb, var(--color-alerts-success) 20%, var(--color-base-black));
+  --color-alerts-success-950: color-mix(in srgb, var(--color-alerts-success) 10%, var(--color-base-black));
+
+  /* Alerts — Caution */
+  --color-alerts-caution-50:  color-mix(in srgb, var(--color-alerts-caution) 10%, var(--color-base-white));
+  --color-alerts-caution-100: color-mix(in srgb, var(--color-alerts-caution) 20%, var(--color-base-white));
+  --color-alerts-caution-200: color-mix(in srgb, var(--color-alerts-caution) 40%, var(--color-base-white));
+  --color-alerts-caution-300: color-mix(in srgb, var(--color-alerts-caution) 60%, var(--color-base-white));
+  --color-alerts-caution-400: color-mix(in srgb, var(--color-alerts-caution) 80%, var(--color-base-white));
+  --color-alerts-caution-600: color-mix(in srgb, var(--color-alerts-caution) 80%, var(--color-base-black));
+  --color-alerts-caution-700: color-mix(in srgb, var(--color-alerts-caution) 60%, var(--color-base-black));
+  --color-alerts-caution-800: color-mix(in srgb, var(--color-alerts-caution) 40%, var(--color-base-black));
+  --color-alerts-caution-900: color-mix(in srgb, var(--color-alerts-caution) 20%, var(--color-base-black));
+  --color-alerts-caution-950: color-mix(in srgb, var(--color-alerts-caution) 10%, var(--color-base-black));
+
+  /* Alerts — Error */
+  --color-alerts-error-50:  color-mix(in srgb, var(--color-alerts-error) 10%, var(--color-base-white));
+  --color-alerts-error-100: color-mix(in srgb, var(--color-alerts-error) 20%, var(--color-base-white));
+  --color-alerts-error-200: color-mix(in srgb, var(--color-alerts-error) 40%, var(--color-base-white));
+  --color-alerts-error-300: color-mix(in srgb, var(--color-alerts-error) 60%, var(--color-base-white));
+  --color-alerts-error-400: color-mix(in srgb, var(--color-alerts-error) 80%, var(--color-base-white));
+  --color-alerts-error-600: color-mix(in srgb, var(--color-alerts-error) 80%, var(--color-base-black));
+  --color-alerts-error-700: color-mix(in srgb, var(--color-alerts-error) 60%, var(--color-base-black));
+  --color-alerts-error-800: color-mix(in srgb, var(--color-alerts-error) 40%, var(--color-base-black));
+  --color-alerts-error-900: color-mix(in srgb, var(--color-alerts-error) 20%, var(--color-base-black));
+  --color-alerts-error-950: color-mix(in srgb, var(--color-alerts-error) 10%, var(--color-base-black));
+
+  /* Alerts — General */
+  --color-alerts-general-50:  color-mix(in srgb, var(--color-alerts-general) 10%, var(--color-base-white));
+  --color-alerts-general-100: color-mix(in srgb, var(--color-alerts-general) 20%, var(--color-base-white));
+  --color-alerts-general-200: color-mix(in srgb, var(--color-alerts-general) 40%, var(--color-base-white));
+  --color-alerts-general-300: color-mix(in srgb, var(--color-alerts-general) 60%, var(--color-base-white));
+  --color-alerts-general-400: color-mix(in srgb, var(--color-alerts-general) 80%, var(--color-base-white));
+  --color-alerts-general-600: color-mix(in srgb, var(--color-alerts-general) 80%, var(--color-base-black));
+  --color-alerts-general-700: color-mix(in srgb, var(--color-alerts-general) 60%, var(--color-base-black));
+  --color-alerts-general-800: color-mix(in srgb, var(--color-alerts-general) 40%, var(--color-base-black));
+  --color-alerts-general-900: color-mix(in srgb, var(--color-alerts-general) 20%, var(--color-base-black));
+  --color-alerts-general-950: color-mix(in srgb, var(--color-alerts-general) 10%, var(--color-base-black));
+
+  /* ========================================================================
+     Sizing
+     Fixed dimension values for component sizing (unitless).
+     ======================================================================== */
+
+  --sizing-000: 0;
+  --sizing-002: 2;
+  --sizing-004: 4;
+  --sizing-006: 6;
+  --sizing-008: 8;
+  --sizing-010: 10;
+  --sizing-012: 12;
+  --sizing-016: 16;
+  --sizing-024: 24;
+  --sizing-032: 32;
+  --sizing-040: 40;
+  --sizing-048: 48;
+  --sizing-056: 56;
+  --sizing-064: 64;
+  --sizing-072: 72;
+  --sizing-080: 80;
+  --sizing-088: 88;
+  --sizing-096: 96;
+  --sizing-104: 104;
+  --sizing-112: 112;
+  --sizing-120: 120;
+
+  /* ========================================================================
+     Spacing
+     Layout spacing values with units.
+     ======================================================================== */
+
+  --spacing-000: 0px;
+  --spacing-002: 2px;
+  --spacing-004: 4px;
+  --spacing-006: 6px;
+  --spacing-008: 8px;
+  --spacing-010: 10px;
+  --spacing-012: 12px;
+  --spacing-016: 16px;
+  --spacing-024: 24px;
+  --spacing-032: 32px;
+  --spacing-040: 40px;
+  --spacing-048: 48px;
+  --spacing-056: 56px;
+  --spacing-064: 64px;
+  --spacing-072: 72px;
+  --spacing-080: 80px;
+  --spacing-088: 88px;
+  --spacing-096: 96px;
+  --spacing-120: 120px;
+
+  /* ========================================================================
+     Stroke Weights
+     Border/outline thickness primitives.
+     ======================================================================== */
+
+  --weight-none: 0;
+  --weight-s: 1;
+  --weight-m: 2;
+  --weight-l: 4;
+
+  /* ========================================================================
+     Aspect Ratios
+     Common image and media aspect ratios.
+     ======================================================================== */
+
+  --aspect-ratio-square: 1 / 1;
+  --aspect-ratio-landscape: 4 / 3;
+  --aspect-ratio-portrait: 3 / 4;
+  --aspect-ratio-video: 16 / 9;
+  --aspect-ratio-ultrawide: 21 / 9;
+
+  /* ========================================================================
+     Z-Index Scale
+     Consistent stacking order throughout the application.
+     ======================================================================== */
+
+  --z-index-behind: -1;
+  --z-index-base: 1;
+  --z-index-header: 2;
+  --z-index-dropdown: 10;
+  --z-index-sticky: 50;
+  --z-index-modal: 100;
+  --z-index-popover: 150;
+  --z-index-tooltip: 200;
+
+  /* ========================================================================
+     Semantic Tokens — Surface
+     Background colors for regions, cards, and containers.
+     Derived from the color palette.
+     ======================================================================== */
+
+  /* Light surfaces (lightest → darkest) */
+  --surface-light-0: var(--color-base-white);
+  --surface-light-1: var(--color-grey-50);
+  --surface-light-2: var(--color-grey-100);
+  --surface-light-3: var(--color-grey-200);
+
+  /* Dark surfaces (darkest → lightest) */
+  --surface-dark-0: var(--color-grey-900);
+  --surface-dark-1: var(--color-grey-800);
+  --surface-dark-2: var(--color-grey-700);
+  --surface-dark-3: var(--color-grey-600);
+
+  /* Brand surfaces */
+  --surface-brand-primary: var(--color-primary);
+  --surface-brand-primary-light: var(--color-primary-100);
+  --surface-brand-primary-dark: var(--color-primary-900);
+  --surface-brand-secondary: var(--color-secondary);
+  --surface-brand-secondary-light: var(--color-secondary-100);
+  --surface-brand-secondary-dark: var(--color-secondary-900);
+
+  /* Utility surfaces */
+  --surface-utility-success: var(--color-alerts-success);
+  --surface-utility-success-tint: var(--color-alerts-success-100);
+  --surface-utility-caution: var(--color-alerts-caution);
+  --surface-utility-caution-tint: var(--color-alerts-caution-200);
+  --surface-utility-error: var(--color-alerts-error);
+  --surface-utility-error-tint: var(--color-alerts-error-200);
+  --surface-utility-general: var(--color-alerts-general);
+  --surface-utility-general-tint: var(--color-alerts-general-100);
+  --surface-utility-focus: var(--color-alerts-general-400);
+
+  /* ========================================================================
+     Semantic Tokens — Text (brand & utility)
+     Derived from the color palette.
+     ======================================================================== */
+
+  /* Brand text */
+  --text-primary-main: var(--color-primary);
+  --text-primary-light: var(--color-primary-200);
+  --text-primary-dark: var(--color-primary-800);
+  --text-secondary-main: var(--color-secondary);
+  --text-secondary-light: var(--color-secondary-100);
+  --text-secondary-dark: var(--color-secondary-800);
+
+  /* Utility text */
+  --text-utility-success: var(--color-alerts-success);
+  --text-utility-caution: var(--color-alerts-caution);
+  --text-utility-error: var(--color-alerts-error);
+  --text-utility-general: var(--color-alerts-general);
+
+  /* ========================================================================
+     Semantic Tokens — Stroke
+     Border and outline colors. Derived from the color palette.
+     ======================================================================== */
+
+  /* Light strokes (lightest → darkest) */
+  --stroke-light-1: var(--color-base-white);
+  --stroke-light-2: var(--color-grey-100);
+  --stroke-light-3: var(--color-grey-200);
+  --stroke-light-4: var(--color-grey-300);
+
+  /* Dark strokes (darkest → lightest) */
+  --stroke-dark-1: var(--color-grey-900);
+  --stroke-dark-2: var(--color-grey-800);
+  --stroke-dark-3: var(--color-grey-700);
+  --stroke-dark-4: var(--color-grey-600);
+
+  /* Brand strokes */
+  --stroke-brand-primary: var(--color-primary);
+  --stroke-brand-primary-light: var(--color-primary-100);
+  --stroke-brand-primary-dark: var(--color-primary-900);
+  --stroke-brand-secondary: var(--color-secondary);
+  --stroke-brand-secondary-light: var(--color-secondary-100);
+  --stroke-brand-secondary-dark: var(--color-secondary-900);
+
+  /* Utility strokes */
+  --stroke-utility-success: var(--color-alerts-success);
+  --stroke-utility-success-tint: var(--color-alerts-success-300);
+  --stroke-utility-caution: var(--color-alerts-caution);
+  --stroke-utility-tint: var(--color-alerts-caution-300);
+  --stroke-utility-error: var(--color-alerts-error);
+  --stroke-utility-error-tint: var(--color-alerts-error-300);
+  --stroke-utility-general: var(--color-alerts-general);
+  --stroke-utility-general-tint: var(--color-alerts-general-300);
+
+  /* Stroke weights */
+  --stroke-weight-s: var(--weight-s);
+  --stroke-weight-m: var(--weight-m);
+  --stroke-weight-l: var(--weight-l);
+
+  /* ========================================================================
+     Semantic Tokens — Icon Colors
+     Derived from the color palette.
+     ======================================================================== */
+
+  /* Brand */
+  --icons-color-primary-main: var(--color-primary);
+  --icons-color-primary-light: var(--color-primary-200);
+  --icons-color-primary-dark: var(--color-primary-800);
+  --icons-color-secondary-main: var(--color-secondary);
+  --icons-color-secondary-light: var(--color-secondary-200);
+  --icons-color-secondary-dark: var(--color-secondary-800);
+
+  /* Greyscale */
+  --icons-color-greyscale-light: var(--color-base-white);
+  --icons-color-greyscale-med: var(--color-grey-400);
+  --icons-color-greyscale-dark: var(--color-grey-900);
+
+  /* Utility */
+  --icons-color-utility-success: var(--color-alerts-success);
+  --icons-color-utility-caution: var(--color-alerts-caution);
+  --icons-color-utility-error: var(--color-alerts-error);
+  --icons-color-utility-general: var(--color-alerts-general);
+}

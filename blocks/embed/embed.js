@@ -2,7 +2,7 @@
  * Embed Block - Implementation
  * Show videos and social posts directly on your page
  * https://www.hlx.live/developer/block-collection/embed
- * 
+ *
  * Supports: YouTube, Vimeo, Twitter/X, and generic iframes
  * Features: Lazy loading, placeholder images, autoplay on click
  */

@@ -18,14 +18,14 @@ export function decorate(block, options = {}) {
   // === CARDS BLOCK LOGIC ===
   // Convert block structure to ul/li for better semantics
   const ul = document.createElement('ul');
-  
+
   [...block.children].forEach((row) => {
     const li = document.createElement('li');
     moveInstrumentation(row, li);
-    
+
     // Move all children from row to li
     while (row.firstElementChild) li.append(row.firstElementChild);
-    
+
     // Classify card content (image vs body)
     [...li.children].forEach((div) => {
       if (div.children.length === 1 && div.querySelector('picture')) {
@@ -34,17 +34,17 @@ export function decorate(block, options = {}) {
         div.className = 'cards-card-body';
       }
     });
-    
+
     ul.append(li);
   });
-  
+
   // Optimize all card images
   ul.querySelectorAll('picture > img').forEach((img) => {
     const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
     moveInstrumentation(img, optimizedPic.querySelector('img'));
     img.closest('picture').replaceWith(optimizedPic);
   });
-  
+
   // Replace block children with the new ul
   block.replaceChildren(ul);
 

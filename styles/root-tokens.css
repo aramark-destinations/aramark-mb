@@ -1,0 +1,149 @@
+/* ==========================================================================
+   Root Design Tokens — CONFIGURABLE
+   Tokens that change per brand / project. Update these values when
+   onboarding a new brand.
+
+   Imported by fixed-tokens.css, which derives the rest of the system.
+   ========================================================================== */
+
+:root {
+  /* ========================================================================
+     Base Colors
+     Core brand and system colors. These feed into the generated shade
+     scale in fixed-tokens.css. Update these values per brand.
+     ======================================================================== */
+
+  --color-base-white: #fff;
+  --color-base-black: #000;
+  --color-primary: #b04c1a;
+  --color-secondary: #174355;
+  --color-alerts-success: #008545;
+  --color-alerts-caution: #edc700;
+  --color-alerts-error: #d73044;
+  --color-alerts-general: #0084ff;
+  --color-grey-50: #f6f9fb;
+  --color-grey-100: #e7ecf1;
+  --color-grey-200: #c4ccd8;
+  --color-grey-300: #abb5c5;
+  --color-grey-400: #727f96;
+  --color-grey-500: #4f5b76;
+  --color-grey-600: #3f4b66;
+  --color-grey-700: #2e3a55;
+  --color-grey-800: #152a3f;
+  --color-grey-900: #041526;
+
+  /* ========================================================================
+     Border Radius
+     Adjust per brand for sharper or rounder UI.
+     ======================================================================== */
+
+  --radius-none: 0px;
+  --radius-xs: 4px;
+  --radius-s: 8px;
+  --radius-m: 16px;
+  --radius-l: 24px;
+  --radius-xl: 32px;
+  --radius-full: 999px;
+  --radius-circle: 50%;
+
+  /* ========================================================================
+     Text — Light & Dark
+     Neutral text colors. Adjust per brand for contrast / tone.
+     ======================================================================== */
+
+  /* Light text (on dark backgrounds) */
+  --text-light-1: var(--color-base-white);
+  --text-light-2: var(--color-grey-300);
+  --text-light-3: var(--color-grey-600);
+
+  /* Dark text (on light backgrounds) */
+  --text-dark-1: var(--color-grey-900);
+  --text-dark-2: var(--color-grey-700);
+  --text-dark-3: var(--color-grey);
+
+  /* ========================================================================
+     Icon Sizes
+     Adjust per brand / project.
+     ======================================================================== */
+
+  --icons-size-icon-small: var(--sizing-016);
+  --icons-size-icon-medium: var(--sizing-024);
+  --icons-size-icon-large: var(--sizing-032);
+
+  /* ========================================================================
+     Layout Max Widths
+     Standard container widths used throughout the site.
+     ======================================================================== */
+
+  --layout-max-width-content: 1200px;
+  --layout-max-width-header-mobile: 1248px;
+  --layout-max-width-header-desktop: 1264px;
+  --layout-max-width-narrow: 900px;
+  --layout-max-width-media: 800px;
+
+  /* ========================================================================
+     Transition Durations
+     Standard animation/transition timings.
+     ======================================================================== */
+
+  --transition-duration-instant: 0s;
+  --transition-duration-fast: 0.2s;
+  --transition-duration-normal: 0.3s;
+  --transition-duration-slow: 0.5s;
+
+  /* ========================================================================
+     Typography — Font Weights
+     Adjust to match brand font family capabilities.
+     ======================================================================== */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ========================================================================
+     Typography — Line Heights
+     ======================================================================== */
+
+  --line-height-none: 0;
+  --line-height-tight: 1;
+  --line-height-snug: 1.25;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.75;
+
+  /* ========================================================================
+     Breakpoints
+     For documentation/reference. Cannot be used in media queries directly.
+     ======================================================================== */
+
+  --breakpoint-mobile: 0px;
+  --breakpoint-tablet: 600px;
+  --breakpoint-desktop: 900px;
+  --breakpoint-wide: 1200px;
+
+  /* ========================================================================
+     Component-Specific — Input Fields
+     ======================================================================== */
+
+  --input-padding: 0.5em;
+  --input-border-radius: var(--radius-xs);
+  --input-border-width: var(--weight-s);
+  --input-border-color: var(--color-grey-600);
+  --input-border-color-hover: var(--color-grey-900);
+  --input-border-color-focus: var(--color-alerts-general);
+  --input-outline-width: var(--weight-m);
+  --input-outline-offset: var(--spacing-002);
+
+  /* ========================================================================
+     Component-Specific — Buttons
+     ======================================================================== */
+
+  --button-padding-vertical: 0.5em;
+  --button-padding-horizontal: 1.2em;
+  --button-border-radius: 2.4em;
+  --button-border-width: var(--weight-m);
+  --button-font-weight: var(--font-weight-medium);
+  --button-line-height: var(--line-height-snug);
+  --button-transition: var(--transition-duration-fast);
+  --button-touch-target: var(--sizing-048);
+}

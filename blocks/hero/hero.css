@@ -5,12 +5,12 @@
 
 .hero {
   position: relative;
-  padding: 40px 24px;
+  padding: var(--spacing-040) var(--spacing-024);
   min-height: 300px;
 }
 
 .hero h1 {
-  max-width: 1200px;
+  max-width: var(--layout-max-width-content);
   margin-left: auto;
   margin-right: auto;
   color: var(--background-color);
@@ -32,6 +32,6 @@
 
 @media (width >= 900px) {
   .hero {
-    padding: 40px 32px;
+    padding: var(--spacing-040) var(--spacing-032);
   }
 }

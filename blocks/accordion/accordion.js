@@ -15,7 +15,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  * @param {Function} options.onBefore Lifecycle hook called before decoration
  * @param {Function} options.onAfter Lifecycle hook called after decoration
  */
-export default function decorate(block, options = {}) {
+export function decorate(block, options = {}) {
   const ctx = { block, options };
 
   // lifecycle hook + event (before)
@@ -29,11 +29,11 @@ export default function decorate(block, options = {}) {
     const summary = document.createElement('summary');
     summary.className = 'accordion-item-label';
     summary.append(...label.childNodes);
-    
+
     // decorate accordion item body
     const body = row.children[1];
     body.className = 'accordion-item-body';
-    
+
     // decorate accordion item
     const details = document.createElement('details');
     moveInstrumentation(row, details);
@@ -46,3 +46,10 @@ export default function decorate(block, options = {}) {
   options.onAfter?.(ctx);
   block.dispatchEvent(new CustomEvent('accordion:after', { detail: ctx }));
 }
+
+/**
+ * Default export
+ * - Calls decorate()
+ * - Allows global hook injection via window.Accordion?.hooks
+ */
+export default (block) => decorate(block, window.Accordion?.hooks);
