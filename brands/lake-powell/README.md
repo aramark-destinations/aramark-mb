@@ -1,4 +1,4 @@
-# Lake Powell Site
+# Lake Powell Brand
 
 This directory contains Lake Powell brand-specific configuration and overrides.
 
@@ -8,34 +8,40 @@ This directory contains Lake Powell brand-specific configuration and overrides.
 brands/lake-powell/
 ├── README.md        # This file
 ├── tokens.css       # Brand design tokens (CSS custom properties) - PRIMARY styling mechanism
-├── config.json      # (Optional) Brand configuration (analytics, integrations, etc.)
 ├── blocks/          # (Optional) Created only when overriding specific block behavior
 │   └── {block}/     # Override block logic from /blocks (root)
 └── scripts/         # (Optional) Brand-specific scripts if needed
 ```
 
-**Note:** Subdirectories and config files are created on-demand, not by default.
-
 ## Brand Styling via Design Tokens
 
 **Primary customization method:** Override CSS custom properties in `tokens.css`
 
-Lake Powell's visual identity (colors, typography, spacing) is controlled through design tokens that override root values from `/styles/styles.css`.
+Lake Powell's visual identity (colors, typography, spacing) is controlled through design tokens that override root values from `/styles/root-tokens.css`.
+
+### How It Works
+
+1. Root tokens are defined in `/styles/root-tokens.css` (imported via the `styles.css` → `fixed-tokens.css` → `root-tokens.css` chain)
+2. `scripts.js` detects the Lake Powell brand (via AEM metadata or URL path)
+3. `loadCSS()` injects `brands/lake-powell/tokens.css` before first paint
+4. Brand tokens override root tokens via CSS cascade
 
 ### Example: `tokens.css`
 ```css
 /* Lake Powell Brand Tokens */
 :root {
-  /* Brand Colors */
-  --color-primary-base: #0066cc;
-  --color-primary-light: #3385d6;
-  --color-primary-dark: #004d99;
-  
-  /* Typography */
-  --font-family-heading: 'Custom Brand Font', serif;
-  
-  /* Spacing overrides (if needed) */
-  --spacing-section-vertical: 4rem;
+  /* Brand Colors — override root-tokens.css values */
+  --color-primary: #0066cc;
+  --color-secondary: #1a4d2e;
+
+  /* All derived tokens (shades, surfaces, strokes) in fixed-tokens.css
+     automatically recalculate from these base values. */
+
+  /* Optional overrides (uncomment as needed):
+  --color-grey-50: #f5f7fa;
+  --radius-s: 6px;
+  --button-border-radius: 4px;
+  */
 }
 ```
 
@@ -45,7 +51,7 @@ All blocks automatically use these tokens. No block-specific CSS needed for colo
 
 Only create block overrides when you need to change **behavior** or **structure**, not styling.
 
-**When to use:** Custom analytics, unique interactions, additional DOM elements  
+**When to use:** Custom analytics, unique interactions, additional DOM elements
 **When NOT to use:** Colors, fonts, spacing (use `tokens.css` instead)
 
 ### Pattern: Override Block with Lifecycle Hooks
@@ -90,37 +96,22 @@ Only create if tokens cannot achieve the desired styling:
 }
 ```
 
-## Brand Configuration
-
-Create `config.json` for brand-specific integrations:
-
-```json
-{
-  "brand": "lake-powell",
-  "analytics": {
-    "googleAnalyticsId": "GA-XXXXXXX",
-    "adobeAnalyticsId": "..."
-  },
-  "integrations": {
-    "bynder": {
-      "portalId": "...",
-      "assetPrefix": "lake-powell"
-    },
-    "booking": {
-      "widgetEnabled": true,
-      "apiEndpoint": "..."
-    }
-  }
-}
-```
-
 ## Quick Reference
 
 | Customization Type | Method | File Location |
 |-------------------|--------|---------------|
 | Colors, fonts, spacing | Design tokens | `tokens.css` |
 | Analytics, tracking | Block hooks | `blocks/{block}/{block}.js` |
-| Integrations, features | Configuration | `config.json` |
 | Layout structure | Block CSS (rare) | `blocks/{block}/{block}.css` |
 
 **Best Practice:** Start with `tokens.css`. Only create block overrides if tokens are insufficient.
+
+## Related Docs
+
+- [Brand Setup Guide](/docs/BRAND-SETUP-GUIDE.md) - How new brands are added
+- [Block Extensibility Guide](/docs/BLOCK-EXTENSIBILITY-GUIDE.md) - Block override patterns
+
+## TODOs
+
+- Brand token values are placeholders — final brand colors need confirmation
+- Font family tokens (`--body-font-family`, `--heading-font-family`) not yet in `root-tokens.css` — see [ARCHITECTURE-TODO.md](/docs/ARCHITECTURE-TODO.md) #5

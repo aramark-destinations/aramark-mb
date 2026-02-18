@@ -1,7 +1,28 @@
-# Architecture TODO - Lower Priority Items
+# Architecture TODO
 
-This document tracks lower-priority technical decisions and implementation details that have been deferred from the immediate architecture specification. These items should be revisited during implementation phases or as needs arise.
+This document tracks technical decisions and implementation details. Items are organized by category with status indicators.
 
+---
+
+## Resolved Items
+
+The following items have been completed or clarified:
+
+- ~~**Import Order Enforcement**~~ — Resolved via `@import` chain (`styles.css` → `fixed-tokens.css` → `root-tokens.css`) + runtime `loadCSS()` for brand tokens
+- ~~**Wire token @import chain**~~ — `head.html` loads `styles.css`, which imports `fixed-tokens.css`, which imports `root-tokens.css`
+- ~~**Fix grey token conflict**~~ — Grey scale is explicit hand-picked values in `root-tokens.css`, not derived via `color-mix()`
+- ~~**Fix --text-dark-3 reference**~~ — Resolved; points to `--color-grey-500` in `root-tokens.css`
+- ~~**Alias legacy tokens**~~ — Legacy aliases (`--background-color`, `--text-color`, etc.) mapped to design tokens in `styles.css`
+- ~~**Implement brand token loading**~~ — `loadEager()` in `scripts.js` dynamically loads `brands/{brand}/tokens.css` via `loadCSS()`
+- ~~**Brand detection via AEM metadata**~~ — `site-resolver.js` `getCurrentBrand()` checks AEM page metadata first, URL path fallback for local dev
+- ~~**Create brand setup docs**~~ — `docs/BRAND-SETUP-GUIDE.md` created
+- ~~**Remove Redundant package-lock.json**~~ — Removed; added to `.gitignore`
+- ~~**Remove Completed Migration Script**~~ — Removed `tools/migrate-blocks.js`
+- ~~**Remove Dead Code Functions**~~ — Removed `_autolinkModals()` and `_handleSelection()`
+- ~~**Create Missing Model Files for Header and Footer**~~ — Added `_header.json` and `_footer.json`
+- ~~**Add Missing icon-close.svg**~~ — Added `icons/close.svg`
+- ~~**Add Missing Block READMEs**~~ — Added READMEs for accordion, cards, form, hero, modal, search, tabs
+- ~~**Clean Up .git/.COMMIT_EDITMSG.swp**~~ — Removed
 
 ---
 
@@ -46,12 +67,52 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
+### 4. --nav-height Not in Design Token System
+**Question**: Should `--nav-height: 64px` be moved from `styles.css` to `root-tokens.css`?
+
+**Context**: `--nav-height` is defined directly in `styles.css` rather than in the design token system. This means brands cannot override it via `tokens.css`.
+
+**Recommendation**: Move to `root-tokens.css` so brands can customize nav height.
+
+---
+
+### 5. Font Sizes Not in Design Token System
+**Question**: Should responsive font size tokens be moved into the design token system?
+
+**Context**: Body and heading font sizes (`--body-font-size-m`, `--heading-font-size-xxl`, etc.) are defined in `styles.css` with responsive `@media` overrides at `900px`. They live outside the token chain and cannot be overridden by brand `tokens.css`.
+
+**Options to Consider**:
+- Move to `root-tokens.css` (brands could override base sizes)
+- Keep in `styles.css` (responsive breakpoints are structural, not brand-specific)
+- Split: base sizes in `root-tokens.css`, responsive rules in `styles.css`
+
+---
+
+### 6. lazy-styles.css Is Empty
+**Question**: Should `lazy-styles.css` be populated or removed?
+
+**Context**: `styles/lazy-styles.css` is loaded in `loadLazy()` but contains only a placeholder comment. It adds an unnecessary network request.
+
+**Recommendation**: Either populate with below-the-fold styles or remove the `loadCSS()` call from `scripts.js`.
+
+---
+
+### 7. buildAutoBlocks() Is a Stub
+**Question**: What auto-blocks should be implemented?
+
+**Context**: `buildAutoBlocks()` in `scripts.js:66` contains only a `// TODO` comment. EDS auto-blocks typically handle things like auto-linking images to lightboxes or wrapping video URLs in embed blocks.
+
+**Options to Consider**:
+- Implement common auto-block patterns (video embeds, image lightboxes)
+- Remove the stub if auto-blocks are not needed
+- Document planned auto-block behavior
+
+---
+
 ## Build & Performance
 
-### 4. Bundle Splitting
+### 8. Bundle Splitting
 **Question**: How are shared dependencies handled across blocks?
-
-**Context**: Multiple blocks may import common utilities. Intelligent bundling reduces payload.
 
 **Options to Consider**:
 - Current state: EDS handles bundling automatically
@@ -61,10 +122,8 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 5. Source Maps
+### 9. Source Maps
 **Question**: Are source maps generated for production debugging? Where stored?
-
-**Context**: Production debugging is easier with source maps, but they expose implementation details.
 
 **Options to Consider**:
 - Generate source maps, upload to separate secure location
@@ -74,10 +133,8 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 6. Build Artifact Storage
+### 10. Build Artifact Storage
 **Question**: Where are merged models and optimized assets stored between stages?
-
-**Context**: Build pipeline may generate intermediate artifacts (merged JSON, optimized CSS).
 
 **Options to Consider**:
 - EDS handles automatically via edge caching
@@ -89,10 +146,8 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ## Universal Editor & Authoring
 
-### 7. UE Preview Environment
+### 11. UE Preview Environment
 **Question**: Does Universal Editor preview use production edge, staging, or local dev server?
-
-**Context**: Authors need realistic previews without publishing to production.
 
 **Current Assumption**: Preview uses branch-specific EDS preview URLs
 
@@ -100,10 +155,8 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 8. Variant Selection UI
+### 12. Variant Selection UI
 **Question**: How do authors discover available variants when authoring blocks?
-
-**Context**: Universal Editor should guide authors to valid variant choices.
 
 **Options to Consider**:
 - Dropdown populated from component-models.json
@@ -113,10 +166,8 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 9. Metadata Validation Timing
+### 13. Metadata Validation Timing
 **Question**: Are invalid metadata values caught at authoring time or runtime?
-
-**Context**: Early validation prevents publishing broken configurations.
 
 **Options to Consider**:
 - JSON schema validation in Universal Editor
@@ -126,10 +177,8 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 10. UE Form Configuration
+### 14. UE Form Configuration
 **Question**: Where are the Universal Editor forms for token authoring defined?
-
-**Context**: Root and Brand token forms are mentioned but configuration location unclear.
 
 **Investigation Needed**: Document AEM Universal Editor form setup
 
@@ -137,7 +186,19 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ## Testing & Quality
 
-### 11. Coverage Targets
+### 15. Zero Test Files Exist
+**Question**: When will tests be written?
+
+**Context**: Jest and Playwright are installed and configured in `package.json` but no test files exist anywhere outside `node_modules/`. The `pnpm test` command has nothing to run.
+
+**Recommendation**: Prioritize writing tests for:
+- `site-resolver.js` (brand detection logic)
+- Block `decorate()` functions (core rendering)
+- E2E smoke tests via Playwright (critical pages load)
+
+---
+
+### 16. Coverage Targets
 **Question**: What unit test coverage percentage is required? Enforced in CI?
 
 **Options to Consider**:
@@ -148,19 +209,19 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 12. E2E Test Scenarios
+### 17. E2E Test Scenarios
 **Question**: What end-to-end tests are actually implemented?
 
-**Context**: Playwright is available in package.json but test suite status unclear.
+**Context**: Playwright is available in package.json but no test files exist.
 
-**Investigation Needed**: 
+**Investigation Needed**:
 - Document existing E2E tests
 - Prioritize critical user journeys
 - Define test data management strategy
 
 ---
 
-### 13. Visual Regression Testing
+### 18. Visual Regression Testing
 **Question**: Is automated screenshot comparison implemented?
 
 **Options to Consider**:
@@ -171,17 +232,16 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 14. Browser Support Matrix
+### 19. Browser Support Matrix
 **Question**: Which browsers and versions are officially supported?
 
-**Recommendation**: Define and document matrix:
-- Last 2 versions of Chrome, Firefox, Safari, Edge
-- iOS Safari (last 2 major versions)
-- Accessibility testing browsers
+**Current State**: `package.json` specifies `browserslist: "baseline widely available"` which targets browsers with broad support for modern features.
+
+**Recommendation**: Document the specific browser/version matrix this resolves to and ensure all team members understand the support boundary.
 
 ---
 
-### 15. Accessibility CI Automation
+### 20. Accessibility CI Automation
 **Question**: Beyond linting, are axe-core tests automated in CI?
 
 **Options to Consider**:
@@ -194,7 +254,7 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ## Monitoring & Operations
 
-### 16. RUM Data Storage
+### 21. RUM Data Storage
 **Question**: Where is Real User Monitoring data sent and analyzed?
 
 **Context**: sampleRUM() calls in aem.js suggest RUM is implemented.
@@ -203,17 +263,17 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 17. RUM Event Catalog
+### 22. RUM Event Catalog
 **Question**: What is the complete list of tracked events beyond errors?
 
-**Investigation Needed**: 
+**Investigation Needed**:
 - Audit all sampleRUM() calls in codebase
 - Document custom event tracking
 - Define success metrics
 
 ---
 
-### 18. Error Tracking Service
+### 23. Error Tracking Service
 **Question**: Is Sentry, New Relic, or another APM service used?
 
 **Options to Consider**:
@@ -224,7 +284,7 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 19. Lighthouse CI
+### 24. Lighthouse CI
 **Question**: Is Lighthouse CI implemented? Blocking or advisory? What thresholds?
 
 **Options to Consider**:
@@ -235,7 +295,7 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 20. Alert Routing
+### 25. Alert Routing
 **Question**: Who receives performance/error alerts? Via what channels?
 
 **Recommendation**: Define alerting strategy:
@@ -246,7 +306,7 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 21. Deployment Notifications
+### 26. Deployment Notifications
 **Question**: How is the team notified of deployments?
 
 **Options to Consider**:
@@ -257,7 +317,7 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 22. Deployment Windows
+### 27. Deployment Windows
 **Question**: Are there any blackout periods or deployment restrictions?
 
 **Recommendation**: Define deployment policy:
@@ -269,38 +329,30 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ## Security & Compliance
 
-### 23. CSP Configuration
-**Question**: What Content Security Policy headers are enforced? Where configured?
+### 28. CSP Configuration
+**Question**: Are the current Content Security Policy headers sufficient?
+
+**Current State**: `head.html` includes a CSP `<meta>` tag with `move-to-http-header="true"`:
+```
+script-src 'nonce-aem' 'strict-dynamic' 'unsafe-inline' http: https:;
+base-uri 'self'; object-src 'none';
+```
 
 **Investigation Needed**:
-- Document current CSP policy
 - Review for XSS protections
 - Test third-party integrations (maps, booking widgets)
+- Verify the `move-to-http-header` directive works as expected in EDS
 
 ---
 
-### 24. AEM Authentication
+### 29. AEM Authentication
 **Question**: How is Universal Editor access controlled? SSO? Role-based?
 
 **Investigation Needed**: Document AEM authentication and authorization model
 
 ---
 
-### 25. SharePoint Permissions
-**Question**: How are per-site content permissions managed?
-
-**Investigation Needed**: Document SharePoint permission model per brand
-
----
-
-### 26. Bynder Asset Permissions
-**Question**: How are asset permissions scoped per site/brand?
-
-**Investigation Needed**: Document Bynder access control integration
-
----
-
-### 27. PII Handling
+### 30. PII Handling
 **Question**: Are there special requirements for form data? Where is it stored?
 
 **Context**: Forms may collect email, phone, booking details.
@@ -313,7 +365,7 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 28. GDPR Compliance
+### 31. GDPR Compliance
 **Question**: How are cookie consent, data retention policies, and user rights implemented?
 
 **Components Needed**:
@@ -324,7 +376,7 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 29. Security Audit Logging
+### 32. Security Audit Logging
 **Question**: What actions are logged? Retention period?
 
 **Recommendation**: Define audit strategy:
@@ -337,17 +389,17 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ## Third-Party Integrations
 
-### 30. Vendor SLAs
-**Question**: What are Adobe/SharePoint/Bynder availability guarantees?
+### 33. Vendor SLAs
+**Question**: What are Adobe availability guarantees?
 
-**Action Required**: 
+**Action Required**:
 - Review vendor contracts
 - Document uptime commitments
 - Define backup procedures
 
 ---
 
-### 31. Figma Integration
+### 34. Figma Integration
 **Question**: Direct API connection or manual export/import for Root tokens?
 
 **Options to Consider**:
@@ -358,7 +410,7 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 32. Booking Widget APIs
+### 35. Booking Widget APIs
 **Question**: Authentication, failover, rate limiting for booking integrations?
 
 **Investigation Needed**:
@@ -369,7 +421,7 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 33. Weather Service Integration
+### 36. Weather Service Integration
 **Question**: Provider, API keys, caching strategy for weather data?
 
 **Options to Consider**:
@@ -380,7 +432,7 @@ This document tracks lower-priority technical decisions and implementation detai
 
 ---
 
-### 34. Map Integration
+### 37. Map Integration
 **Question**: Google Maps or Mapbox? Configuration approach?
 
 **Options to Consider**:
@@ -388,34 +440,6 @@ This document tracks lower-priority technical decisions and implementation detai
 - Mapbox (more customization)
 - API key management per brand
 - Static maps for performance
-
----
-
-## CSS & Styling
-
-### 35. Import Order Enforcement
-**Question**: Is CSS import order sufficient or is runtime injection needed?
-
-**Current Assumption**: Import order in HTML <head> is sufficient:
-1. Root tokens
-2. Brand tokens  
-3. Block styles
-
-**Validation Needed**: Test across all scenarios
-
----
-
-## Codebase Cleanup (Resolved)
-
-> Items 36-42 were identified and resolved during codebase consistency audit.
-
-- ~~**36. Remove Redundant package-lock.json**~~ - Removed; added to `.gitignore`
-- ~~**37. Remove Completed Migration Script**~~ - Removed `tools/migrate-blocks.js`
-- ~~**38. Remove Dead Code Functions**~~ - Removed `_autolinkModals()` and `_handleSelection()`
-- ~~**39. Create Missing Model Files for Header and Footer**~~ - Added `_header.json` and `_footer.json`
-- ~~**40. Add Missing icon-close.svg**~~ - Added `icons/close.svg`
-- ~~**41. Add Missing Block READMEs**~~ - Added READMEs for accordion, cards, form, hero, modal, search, tabs
-- ~~**42. Clean Up .git/.COMMIT_EDITMSG.swp**~~ - Removed
 
 ---
 
@@ -431,3 +455,4 @@ This document should be reviewed periodically and items promoted to active speci
 Related documents:
 - [BLOCK-RENDERING-BUILD-CONFIG.md](BLOCK-RENDERING-BUILD-CONFIG.md) - Main architecture specification
 - [FED-SOLUTION-DESIGN.md](FED-SOLUTION-DESIGN.md) - Design token system architecture
+- [BRAND-SETUP-GUIDE.md](BRAND-SETUP-GUIDE.md) - Adding new brands

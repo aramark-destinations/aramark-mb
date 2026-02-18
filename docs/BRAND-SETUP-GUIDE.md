@@ -18,7 +18,7 @@ head.html → styles.css → fixed-tokens.css → root-tokens.css   (shared base
 
 Brand detection priority:
 1. **AEM page metadata** `brand` field (production — custom domains)
-2. **URL path** `/brands/{brand}/` fallback (local development)
+2. **URL path** `/brands/{brand}/` fallback (local development ONLY)
 
 ## Step-by-Step: Adding a New Brand
 
@@ -150,3 +150,10 @@ The planned workflow for non-developer brand token management:
 5. After review/merge, EDS serves the updated tokens from the edge network
 
 This is not yet implemented — current workflow is direct CSS file editing.
+
+## Unknowns & TODOs
+
+- UE Token Editor / App Builder integration is not yet implemented — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) and [FED-SOLUTION-DESIGN.md](FED-SOLUTION-DESIGN.md) open items
+- Font family and font size tokens live in `styles.css`, not in the design token chain — brands cannot yet override them via `tokens.css` — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #5
+- `--nav-height` is not in the design token system — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #4
+- Zero test files exist for brand detection or token loading — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #15

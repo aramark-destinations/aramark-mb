@@ -35,6 +35,7 @@ eds/
         │   └── hero/         # Only created if LP needs custom hero
         │       ├── hero.js
         │       └── hero.css
+        ├── tokens.css        # Brand design tokens
         └── README.md
 ```
 
@@ -192,7 +193,7 @@ export default function decorate(block) {
 
 ## Best Practices
 
-### ✅ DO
+### DO
 
 - Use lifecycle hooks for site-specific customization
 - Keep root blocks generic and reusable
@@ -202,7 +203,7 @@ export default function decorate(block) {
 - Add analytics in `onAfter` hooks
 - Use semantic HTML in block implementations
 
-### ❌ DON'T
+### DON'T
 
 - Duplicate root block logic in site overrides
 - Use `!important` in CSS (makes debugging hard)
@@ -263,16 +264,11 @@ onAfter: ({ block }) => {
 
 ## Tools
 
-### Installed Tools
-
-- **@blueacornici/eds-cli** - Block scaffolding CLI
-- **Superpowers** - AI skills for block creation/extension
-
 ### AI Skills (in `.agents/skills/eds/`)
 
-- **block-creation** - Scaffold new base + extension blocks
-- **block-extension** - Extend existing base blocks
-- **site-spinup** - Create new site with override structure
+- **site-spinup** - Create new brand site with override structure
+
+> **Note:** `block-creation` and `block-extension` skills are archived (in `.agents/_archive/`). Only `site-spinup` is currently active.
 
 ## Troubleshooting
 
@@ -309,7 +305,8 @@ onAfter: ({ block }) => {
 - [EDS Block Collection](https://www.aem.live/developer/block-collection)
 - [EDS Documentation](https://www.aem.live/docs/)
 - [Universal Editor](https://experienceleague.adobe.com/docs/experience-manager-cloud-service/content/edge-delivery/wysiwyg-authoring/authoring.html)
-- Project Superpowers Skills: `.agents/skills/eds/`
+- [Brand Setup Guide](BRAND-SETUP-GUIDE.md)
+- Project AI Skills: `.agents/skills/eds/`
 
 ## Support
 
@@ -318,3 +315,8 @@ For questions or issues:
 2. Review this guide's troubleshooting section
 3. Test root block in isolation
 4. Create an issue in the repository
+
+## Unknowns & TODOs
+
+- Zero test files exist — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #15
+- `buildAutoBlocks()` is a stub — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #7
