@@ -1,19 +1,14 @@
-## Jira Ticket
-
-Please provide the Jira Ticket Number for the Ticket you are working on. If you are working on multiple tickets, please provide multiple ticket IDs.
-
-**Related Issues/PRs:**
-<!-- Link to related work -->
-TICKET ID: 
-
+## ADO Ticket
+Please provide the ADO Ticket Number for the Ticket you are working on. If you are working on multiple tickets, please provide multiple ticket IDs.
+- **ADO Ticket(s):** {{ADO_TICKET_ID}}
 ---
 
 ## Test URLs
 
 **REQUIRED:** Include before/after URLs to demonstrate your changes
 
-- **Before:** https://main--aramark-nv--blueacorninc.aem.live/
-- **After:** https://{{BRANCH}}--aramark-nv--blueacorninc.aem.live/
+- **Before:** https://main--aramark-mb--blueacorninc.aem.live/
+- **After:** https://{{BRANCH}}--aramark-mb--blueacorninc.aem.live/
 
 ---
 
@@ -33,9 +28,3 @@ TICKET ID:
 ## Additional Context
 
 <!-- Any additional information that reviewers should know -->
-
-**Breaking Changes:**
-<!-- List any breaking changes and migration steps -->
-
-**Dependencies:**
-<!-- List any PRs this depends on or blocks -->
