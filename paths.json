@@ -2,7 +2,8 @@
   "mappings": [
     "/content/lake-powell/:/",
     "/content/lake-powell/configuration:/.helix/config.json",
-    "/content/lake-powell/metadata:/metadata.json"
+    "/content/lake-powell/metadata:/metadata.json",
+    "/content/lake-powell/headers:/.helix/headers.json"
   ],
   "includes": [
     "/content/lake-powell/"
