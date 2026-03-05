@@ -1,13 +1,5 @@
 mountpoints:
-  # Default root - shared content
   /:
-    url: "https://author-p179307-e1885056.adobeaemcloud.com/content/lake-powell"
-    type: "markup"
+    url: https://author-p179307-e1885056.adobeaemcloud.com/bin/franklin.delivery/BlueAcornInc/aramark-mb/main
+    type: markup
     suffix: ".html"
-  
-  # # Lake Powell site-specific content
-  # /brands/lake-powell:
-  #   url: "https://author-p179307-e1885056.adobeaemcloud.com/content/lake-powell"
-  #   type: "markup"
-  #   suffix: ".html"
-

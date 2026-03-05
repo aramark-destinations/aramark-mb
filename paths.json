@@ -1,10 +1,11 @@
 {
   "mappings": [
-    "/content/lake-powell/:/",
-    "/content/lake-powell/configuration:/.helix/config.json",
-    "/content/lake-powell/metadata:/metadata.json"
+    "/content/:/",
+    "/content/configuration:/.helix/config.json",
+    "/content/metadata:/metadata.json",
+    "/content/headers:/.helix/headers.json"
   ],
   "includes": [
-    "/content/lake-powell/"
+    "/content/"
   ]
 }
