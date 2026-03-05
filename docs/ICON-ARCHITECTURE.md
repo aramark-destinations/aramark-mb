@@ -1,13 +1,14 @@
 # Icon Architecture
 
-This project uses a two-tier icon system: **Phosphor** SVGs for developer-managed system UI icons (`ph-*`) and **AEM Assets DAM** SVGs for author-managed project/brand icons (`prj-*`). Both are consumed through the standard EDS `:iconname:` token syntax and resolved to inline SVG by a custom icon resolver in `scripts/scripts.js`.
+This project uses a three-tier icon system: **Phosphor** SVGs for developer-managed system UI icons (`ph-*`), **custom global** SVGs for non-Phosphor icons needed globally (no prefix), and **AEM Assets DAM** SVGs for author-managed project/brand icons (`mb-*`). All are consumed through the standard EDS `:iconname:` token syntax and resolved to inline SVG by a custom icon resolver in `scripts/scripts.js`.
 
 ## Icon Types
 
 | Type | Prefix | Source | Managed By |
 |---|---|---|---|
 | System icons | `ph-*` | `/icons/ph-{name}.svg` in repo | Developers |
-| Project / brand icons | `prj-*` | AEM Assets Delivery (Dynamic Media) | Authors / Brand Governance |
+| Custom global icons | _(none)_ | `/icons/{name}.svg` in repo | Developers |
+| Project / brand icons | `mb-*` | AEM Assets Delivery (Dynamic Media) | Authors / Brand Governance |
 
 ## Authoring Syntax
 
@@ -15,14 +16,16 @@ EDS converts `:iconname:` tokens in content to icon spans during page rendering.
 
 ```
 :ph-map-pin:
-:prj-tennis:
+:visa:
+:mb-tennis:
 ```
 
 Output HTML (produced by EDS token parser):
 
 ```html
 <span class="icon icon-ph-map-pin"></span>
-<span class="icon icon-prj-tennis"></span>
+<span class="icon icon-visa"></span>
+<span class="icon icon-mb-tennis"></span>
 ```
 
 The custom `decorateIcons()` resolver then fetches and inlines the SVG into each span.
@@ -50,6 +53,27 @@ These files are committed to the repo and loaded by the resolver from `${codeBas
 
 System icons are not author-managed. Changes require a developer to update the `/icons/` directory and deploy.
 
+## Custom Global Icons
+
+Custom global icons are non-Phosphor SVGs that are needed globally across the site — for example, payment provider logos (Visa, Mastercard, Amex, Discover). They are committed to the repo in `/icons/` with no prefix and loaded by the resolver the same way as `ph-*` icons.
+
+**When to use this tier:**
+- The icon is not available in the Phosphor library
+- The icon is needed globally (not a one-off project icon)
+- The icon must be developer-controlled (not author-managed via DAM)
+
+**File naming:** `{slug}.svg` — lowercase kebab-case, no prefix.
+
+```
+icons/
+├── visa.svg
+├── mastercard.svg
+├── amex.svg
+└── discover.svg
+```
+
+Do not use this tier for Phosphor icons (use `ph-*`) or for author-managed/brand icons (use `mb-*` via DAM).
+
 ## Project Icons (DAM)
 
 Project and brand icons are stored in AEM Assets and served via **AEM Assets Delivery (Dynamic Media with Open APIs)**.
@@ -58,19 +82,19 @@ Project and brand icons are stored in AEM Assets and served via **AEM Assets Del
 
 ```
 /content/dam/aramark/icons/project/
-├── prj-tennis.svg
-├── prj-hiking.svg
-└── prj-trailhead.svg
+├── mb-tennis.svg
+├── mb-hiking.svg
+└── mb-trailhead.svg
 ```
 
 ### Naming Convention
 
-All project icons must use the `prj-{slug}.svg` format. The slug maps directly to the authoring token:
+All project icons must use the `mb-{slug}.svg` format. The slug maps directly to the authoring token:
 
 | DAM asset | Token |
 |---|---|
-| `prj-tennis.svg` | `:prj-tennis:` |
-| `prj-hiking.svg` | `:prj-hiking:` |
+| `mb-tennis.svg` | `:mb-tennis:` |
+| `mb-hiking.svg` | `:mb-hiking:` |
 
 ### Icon Update Workflow
 
@@ -80,7 +104,7 @@ Authors update icons entirely through DAM — no code changes required:
 2. Replace the existing asset
 3. Publish the asset
 
-After publish, AEM Assets Delivery invalidates the CDN cache automatically. All pages using `:prj-tennis:` display the updated icon.
+After publish, AEM Assets Delivery invalidates the CDN cache automatically. All pages using `:mb-tennis:` display the updated icon.
 
 ## Icon Resolver
 
@@ -89,14 +113,15 @@ The custom `decorateIcons()` in `scripts/scripts.js` replaces the default EDS bo
 ### Resolver Logic
 
 ```javascript
-// ph-* → fetch from local /icons/ directory
-// prj-* → fetch from AEM Assets Delivery
+// ph-* → fetch from local /icons/ directory (Phosphor icons)
+// mb-* → fetch from AEM Assets Delivery (DAM project icons)
+// no prefix → fetch from local /icons/ directory (custom global icons)
 async function decorateIcon(span) {
   const iconName = [...span.classList]
     .find((c) => c.startsWith('icon-'))
     .substring(5);
 
-  const url = iconName.startsWith('prj-')
+  const url = iconName.startsWith('mb-')
     ? `${getIconBaseUrl()}/${iconName}.svg`
     : `${window.hlx.codeBasePath}/icons/${iconName}.svg`;
 
@@ -112,7 +137,7 @@ The Assets Delivery base URL is environment-specific and must be configured per 
 
 | Key | Value |
 |---|---|
-| `icon-base-url` | `https://assets.example.adobeaemcloud.com/adobe/assets/urn:.../prj-` |
+| `icon-base-url` | `https://assets.example.adobeaemcloud.com/adobe/assets/urn:.../mb-` |
 
 The resolver reads this at runtime via `getMetadata('icon-base-url')`.
 
@@ -130,7 +155,7 @@ Only the following teams may add or replace icons in the DAM folder:
 All icons must:
 
 - Be SVG format
-- Use the `prj-{slug}.svg` naming convention
+- Follow the naming convention for their tier (`ph-{name}.svg`, `{name}.svg`, or `mb-{name}.svg`)
 - Contain no embedded scripts or external references
 - Be optimized (run through SVGO or equivalent)
 
