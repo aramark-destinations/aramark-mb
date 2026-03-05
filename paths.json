@@ -1,11 +1,11 @@
 {
   "mappings": [
-    "/content/:/",
-    "/content/configuration:/.helix/config.json",
-    "/content/metadata:/metadata.json",
-    "/content/headers:/.helix/headers.json"
+    "/content/brand-dummy/:/",
+    "/content/brand-dummy/configuration:/.helix/config.json",
+    "/content/brand-dummy/metadata:/metadata.json",
+    "/content/brand-dummy/headers:/.helix/headers.json"
   ],
   "includes": [
-    "/content/"
+    "/content/brand-dummy/"
   ]
 }
