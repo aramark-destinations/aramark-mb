@@ -3,3 +3,8 @@ mountpoints:
     url: https://author-p179307-e1885056.adobeaemcloud.com/bin/franklin.delivery/BlueAcornInc/aramark-mb/main
     type: markup
     suffix: ".html"
+
+  /brands/lake-powell:
+    url: https://author-p179307-e1885056.adobeaemcloud.com/bin/franklin.delivery/BlueAcornInc/aramark-mb/main/content/lake-powell
+    type: markup
+    suffix: ".html"
