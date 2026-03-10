@@ -16,7 +16,7 @@ Project documentation for architecture, design decisions, and developer guides. 
 
 | File | Description |
 |------|-------------|
-| [BRAND-SETUP-GUIDE.md](BRAND-SETUP-GUIDE.md) | Step-by-step guide for onboarding a new brand/property site. Covers directory structure, token setup, `fstab.yaml` mountpoints, and optional block overrides |
+| [BRAND-SETUP-GUIDE.md](BRAND-SETUP-GUIDE.md) | Step-by-step guide for onboarding a new brand/property site. Covers directory structure, token setup, repoless EDS site registration via admin API, and optional block overrides |
 | [BLOCK-EXTENSIBILITY-GUIDE.md](BLOCK-EXTENSIBILITY-GUIDE.md) | How to extend or override root blocks for a specific brand using lifecycle hooks (`onBefore`, `onAfter`) |
 
 ### Reference

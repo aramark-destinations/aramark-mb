@@ -4,8 +4,14 @@ A multi-brand Adobe Edge Delivery Services (EDS) website platform for Aramark MB
 
 ## Environments
 
-- **Preview:** https://staging--aramark-mb--blueacorninc.aem.page/
-- **Live:** https://main--aramark-mb--blueacorninc.aem.live/
+Each brand is a separate repoless EDS site with its own preview/live URLs:
+
+- **Preview:** `https://main--{brand}--blueacorninc.aem.page/`
+- **Live:** `https://main--{brand}--blueacorninc.aem.live/`
+
+Example (Lake Powell):
+- **Preview:** https://main--lake-powell--blueacorninc.aem.page/
+- **Live:** https://main--lake-powell--blueacorninc.aem.live/
 
 ## Project Structure
 
@@ -51,7 +57,7 @@ pnpm install
 
 1. Install the [AEM CLI](https://github.com/adobe/helix-cli): `npm install -g @adobe/aem-cli`
 2. Install dependencies: `pnpm install`
-3. Start the dev server: `pnpm start` (opens `http://localhost:3000`)
+3. Start the dev server for a brand: `pnpm start:brand {brand}` (opens `http://localhost:3000` proxying that brand's EDS site)
 
 ## Architecture
 
