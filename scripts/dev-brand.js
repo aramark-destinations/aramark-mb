@@ -35,7 +35,6 @@ const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const BRAND_URLS = {
   'lake-powell': 'https://main--lake-powell--blueacorninc.aem.page',
   unbranded: 'https://main--unbranded--blueacorninc.aem.page',
-  // 'brand-dummy': 'https://main--brand-dummy--blueacorninc.aem.page',
 };
 
 // Allow overrides via a local config file (not committed)
