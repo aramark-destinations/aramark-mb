@@ -76,22 +76,52 @@ Create `brands/{brand-name}/tokens.css`:
 
 **Note:** Design tokens automatically apply to all blocks. No block-specific CSS needed for colors/fonts.
 
-### 4. Update fstab.yaml
-Add brand mountpoint in `fstab.yaml`:
-```yaml
-mountpoints:
-  # Default root - shared content
-  /:
-    url: "https://author-p{program}-e{env}.adobeaemcloud.com/bin/franklin.delivery/{org}/{repo}/main"
-    type: "markup"
-    suffix: ".html"
-  
-  # {Brand Name} brand-specific content
-  /brands/{brand-name}:
-    url: "https://author-p{program}-e{env}.adobeaemcloud.com/bin/franklin.delivery/{org}/{repo}/main/brands/{brand-name}"
-    type: "markup"
-    suffix: ".html"
+### 4. Register Repoless EDS Site
+Register the brand as its own EDS site via the `admin.hlx.page` config API. No `fstab.yaml` needed.
+
+**Step 1: Create the site**
+```bash
+curl -X PUT \
+  "https://admin.hlx.page/config/{org}/sites/{brand-name}.json" \
+  -H "x-auth-token: $AUTH_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "code": {
+        "owner": "{org}",
+        "repo": "{repo}",
+        "source": {
+            "type": "github",
+            "url": "https://github.com/{org}/{repo}"
+        }
+    },
+    "content": {
+        "source": {
+            "type": "markup",
+            "url": "https://author-p{program}-e{env}.adobeaemcloud.com"
+        }
+    }
+}'
 ```
+
+**Step 2: Configure content path mappings**
+```bash
+curl -X POST \
+  "https://admin.hlx.page/config/{org}/sites/{brand-name}/public.json" \
+  -H "x-auth-token: $AUTH_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "paths": {
+        "mappings": [
+            "/content/{brand-name}/:/"
+        ],
+        "includes": [
+            "/content/{brand-name}/"
+        ]
+    }
+}'
+```
+
+The brand's preview URL will be: `https://main--{brand-name}--{org}.aem.page/`
 
 ### 5. Create Brand Configuration (Optional)
 Create `brands/{brand-name}/config.json` for integrations:
@@ -156,18 +186,21 @@ The `site-resolver.js` script checks paths in this order:
 ### In AEM Author
 ```
 /content/
-  └── aramark-mb/
-      └── {brand-name}/
-          ├── index (homepage)
-          ├── activities/
-          ├── lodging/
-          └── ...
+  └── {brand-name}/
+      ├── index (homepage)
+      ├── activities/
+      ├── lodging/
+      └── ...
 ```
 
-### Published Structure (After Franklin Delivery)
+### Published Structure (Repoless EDS Site)
+Each brand's content is mapped to the site root via `public.paths` config:
+- AEM path `/content/{brand-name}/` → site root `/`
+- Preview URL: `https://main--{brand-name}--{org}.aem.page/`
+
 ```
-/brands/{brand-name}/
-  ├── index.html (homepage)
+/                     (mapped from /content/{brand-name}/)
+  ├── index.html
   ├── activities/
   ├── lodging/
   └── ...
@@ -265,11 +298,10 @@ export default (block) => rootDecorate(block, {
 
 ### 1. Local Development
 ```bash
-# Start AEM proxy server
-aem up
+# Start local dev server for the brand
+pnpm start:brand {brand-name}
 
-# Opens browser at http://localhost:3000
-# Navigate to: http://localhost:3000/brands/{brand-name}/
+# Opens browser at http://localhost:3000 proxying the brand's EDS site
 ```
 
 ### 2. Verify Block Resolution
@@ -310,10 +342,10 @@ npm run lint
 - [ ] Brand directory created in `brands/{brand-name}/`
 - [ ] Brand README.md documented
 - [ ] Design tokens created in `tokens.css`
-- [ ] fstab.yaml mountpoint added
+- [ ] Repoless EDS site registered via admin.hlx.page config API
 - [ ] config.json created (if needed)
 - [ ] Block overrides created (if needed)
-- [ ] Local testing completed (`aem up`)
+- [ ] Local testing completed (`pnpm start:brand {brand-name}`)
 - [ ] Block resolution verified in console
 - [ ] Design tokens verified in DevTools
 - [ ] Content created in AEM (`/content/aramark-mb/{brand-name}/`)
@@ -336,8 +368,8 @@ To archive a brand:
 mkdir -p brands/_archived
 mv brands/{brand-name} brands/_archived/
 
-# 2. Remove from fstab.yaml
-# Delete the /brands/{brand-name} mountpoint
+# 2. Remove the repoless EDS site registration
+# Delete the site via: curl -X DELETE "https://admin.hlx.page/config/{org}/sites/{brand-name}.json" -H "x-auth-token: $AUTH_TOKEN"
 
 # 3. Archive AEM content
 # Move /content/aramark-mb/{brand-name} to archive in AEM
@@ -360,7 +392,7 @@ mv brands/{brand-name} brands/_archived/
 
 1. **Start Simple:** Begin with `tokens.css` only. Add overrides only when necessary.
 2. **Lifecycle Hooks:** Use `onBefore` for DOM prep, `onAfter` for enhancements.
-3. **Testing:** Always test in both local (`aem up`) and Universal Editor.
+3. **Testing:** Always test in both local (`pnpm start:brand {brand-name}`) and Universal Editor.
 4. **Documentation:** Update brand README.md when adding overrides.
 5. **Performance:** Each override adds HTTP requests. Use tokens when possible.
 6. **Version Control:** Commit brand directory with descriptive commit message.

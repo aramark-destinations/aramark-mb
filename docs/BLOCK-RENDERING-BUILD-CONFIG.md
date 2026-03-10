@@ -17,7 +17,7 @@ Block rendering is driven by the **Universal Editor (UE) authoring model** using
 
 **Nomenclature**: This project uses `/brands/{brand}/` directory structure where each "site" represents a distinct brand. Throughout this document, "brand" and "site" are used interchangeably, referring to the same entity.
 
-**Content Source**: AEM Author markup (`author-p179307-e1885056.adobeaemcloud.com`), delivered via Edge Delivery Services. Content is configured in `fstab.yaml` with `type: "markup"` and `suffix: ".html"`.
+**Content Source**: AEM Author markup (`author-p179307-e1885056.adobeaemcloud.com`), delivered via Edge Delivery Services. Each brand is registered as a repoless EDS site via the `admin.hlx.page` config API, with content path mappings (`/content/{brand}/` → `/`) configured per site.
 
 All block code and styles are version-controlled in Git and deployed through Adobe's Edge Delivery Services (EDS) infrastructure.
 
@@ -220,18 +220,13 @@ Brand detection is handled by `site-resolver.js` `getCurrentBrand()`:
 1. **AEM page metadata** (production): Reads `brand` field from the page's metadata sheet. On custom domains, the URL path won't contain `/brands/{brand}/`, so metadata is the primary detection mechanism.
 2. **URL path fallback** (local dev): Matches `/brands/{brand}/` in the URL pathname.
 
-```yaml
-# fstab.yaml — Content source configuration (no brand property)
-mountpoints:
-  /:
-    url: "https://author-p179307-e1885056.adobeaemcloud.com/content/aramark-mb"
-    type: "markup"
-    suffix: ".html"
-
-  /brands/lake-powell:
-    url: "https://author-p179307-e1885056.adobeaemcloud.com/content/lake-powell"
-    type: "markup"
-    suffix: ".html"
+```json
+// Site config at admin.hlx.page/config/{org}/sites/lake-powell.json
+{
+  "code": { "owner": "{org}", "repo": "{repo}" },
+  "content": { "source": { "url": "https://author-p179307-e1885056.adobeaemcloud.com", "type": "markup", "suffix": ".html" } },
+  "public": { "paths": { "mappings": ["/content/lake-powell/:/"], "includes": ["/content/lake-powell/"] } }
+}
 ```
 
 **Runtime behavior:**
@@ -382,7 +377,7 @@ pnpm start            # Launch EDS CLI dev server (aem up)
 - Multi-site support (auto-detects brand from URL path)
 
 **Branch Preview:**
-- Every branch automatically deployed to `https://main--{repo}--{org}.aem.page`
+- Each brand site gets its own preview URL: `https://{branch}--{brand}--{org}.aem.page`
 - Branch name embedded in preview URL
 - Authors can test changes before merge
 
