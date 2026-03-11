@@ -1,0 +1,7 @@
+/* ==========================================================================
+   Unbranded — Default Brand (No Token Overrides)
+
+   This brand uses the root design tokens as-is from /styles/root-tokens.css.
+   This file intentionally has no overrides. It exists so the brand directory
+   structure is consistent across all brands.
+   ========================================================================== */

@@ -14,6 +14,7 @@
     "build:json:models": "merge-json-cli -i \"models/_component-models.json\" -o \"component-models.json\"",
     "prepare": "husky",
     "start": "pnpm --package=@adobe/aem-cli dlx aem up",
+    "start:brand": "node scripts/dev-brand.js",
     "test": "jest --workerThread=true --maxWorkers=2",
     "test:coverage": "jest --coverage --outputFile=./coverage.json --json --maxWorkers=2 --workerThreads=true",
     "test:watch": "jest --watch"
