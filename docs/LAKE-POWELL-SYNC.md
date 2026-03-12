@@ -1,4 +1,4 @@
-# Lake Powell Content Sync — Investigation & Unblocking Guide
+# Lake Powell Content Sync — Investigation Guide
 
 **Status:** Blocked pending EDS org admin access  
 **URLs affected:**
@@ -7,7 +7,7 @@
 
 ---
 
-## Root Cause
+## Root Cause (Assumtions)
 
 The Lake Powell EDS site has not been fully registered via the **Helix/EDS Site Admin API**. This means:
 
@@ -26,21 +26,72 @@ In the repoless multi-brand architecture, path mappings are **not** read from `p
 ## Prerequisites to Unblock
 
 - GitHub account with **admin access** to the `BlueAcornInc` org (or a member of the org with `admin.hlx.page` admin rights)
+
+
 - A valid auth token from `https://admin.hlx.page/login` (GitHub identity linked to the org — **not** Adobe identity)
 - AEM content at `/content/lake-powell/` published/previewed (confirmed already set up)
 
+    - To grant Sourabh admin role on the site, run:
+```bash
+    curl -X POST \
+    "https://admin.hlx.page/config/BlueAcornInc/sites/lake-powell/access/admin.json" \
+    -H "Content-Type: application/json" \
+    -H "authorization: token YOUR_TOKEN" \
+    -d '{
+        "role": {
+        "admin": [
+            "sourabh.kumawat@blueacornici.com"
+        ]
+        },
+        "requireAuth": "auto"
+    }'
+---
+admin → list of emails allowed to fully administer the site (preview/publish via Admin API, headers, etc.)[access-admin]
+requireAuth: "auto" → standard setting used in current Edge Delivery docs; site operations require authenticated users when applicable.
+
+## Step-by-Step: Admin API Checklist
+
+Replace `<YOUR_TOKEN>` with the token obtained from `https://admin.hlx.page/login`.
+
+### Step 1 — Clear content chache and check 
+```bash
+curl -X POST \
+  "https://admin.hlx.page/cache/BlueAcornInc/lake-powell/main" \
+  -H "x-auth-token: YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "paths": [   
+      "/*"
+    ]
+  }'
+```
+
+Above call will wipe cached content for all paths of the branch:
+
+Tp clear Clear cache for
+https://main--aramark-mb--blueacorninc.aem.live/menu/lunch
+Path is /menu/lunch.
+
+### Step 1 — Verify the Full Config
+
+```bash
+curl -s \
+  "https://admin.hlx.page/config/blueacorninc/sites/lake-powell.json" \
+  -H "x-auth-token: <YOUR_TOKEN>" | python -m json.tool
+```
+
+Confirm the response contains all four sections: `code`, `content`, `access`, `public` (paths).
+
+if anything is not configured properly check the below calls
+
 ---
 
-## Step-by-Step: Admin API Registration
-
-Replace `<your-github-auth-token>` with the token obtained from `https://admin.hlx.page/login`.
-
-### Step 1 — Create the Lake Powell Site (PUT)
+### Step 2 — For Creating the Lake Powell Site (PUT)
 
 ```bash
 curl -v -X PUT \
   "https://admin.hlx.page/config/blueacorninc/sites/lake-powell.json" \
-  -H "x-auth-token: <your-github-auth-token>" \
+  -H "x-auth-token: <YOUR_TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{
     "version": 1,
@@ -66,14 +117,14 @@ Use `-v` to see the `x-error` header if debugging a `400` (no response body is r
 
 ---
 
-### Step 2 — Apply Path Mappings (POST)
+### Step 3 — For Appling Path Mappings (POST)
 
 This maps AEM content paths to EDS URL paths:
 
 ```bash
 curl -v -X POST \
   "https://admin.hlx.page/config/blueacorninc/sites/lake-powell/public.json" \
-  -H "x-auth-token: <your-github-auth-token>" \
+  -H "x-auth-token: <YOUR_TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{
     "paths": {
@@ -92,12 +143,12 @@ curl -v -X POST \
 
 ---
 
-### Step 3 — Apply Access Config (POST)
+### Step 4 — For Appling Access Config (POST)
 
 ```bash
 curl -v -X POST \
   "https://admin.hlx.page/config/blueacorninc/sites/lake-powell/access.json" \
-  -H "x-auth-token: <your-github-auth-token>" \
+  -H "x-auth-token: <YOUR_TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{
     "admin": {
@@ -112,12 +163,12 @@ curl -v -X POST \
 
 ---
 
-### Step 4 — Verify the Full Config
+### Step 5 — Reverify the Full Config and see all configs are fine now,
 
 ```bash
 curl -s \
   "https://admin.hlx.page/config/blueacorninc/sites/lake-powell.json" \
-  -H "x-auth-token: <your-github-auth-token>" | python -m json.tool
+  -H "x-auth-token: <YOUR_TOKEN>" | python -m json.tool
 ```
 
 Confirm the response contains all four sections: `code`, `content`, `access`, `public` (paths).
@@ -145,107 +196,17 @@ After creating/editing content in AEM Author, it must be **previewed** (not just
 # Preview the homepage
 curl -X POST \
   "https://admin.hlx.page/preview/blueacorninc/aramark-mb/main/content/lake-powell/index" \
-  -H "x-auth-token: <your-github-auth-token>"
+  -H "x-auth-token: <YOUR_TOKEN>"
 
 # Preview the nav fragment
 curl -X POST \
   "https://admin.hlx.page/preview/blueacorninc/aramark-mb/main/content/lake-powell/nav" \
-  -H "x-auth-token: <your-github-auth-token>"
+  -H "x-auth-token: <YOUR_TOKEN>"
 
 # Preview the footer fragment
 curl -X POST \
   "https://admin.hlx.page/preview/blueacorninc/aramark-mb/main/content/lake-powell/footer" \
-  -H "x-auth-token: <your-github-auth-token>"
+  -H "x-auth-token: <YOUR_TOKEN>"
 ```
 
 ---
-
-## Verification Steps (Once Admin Steps Are Complete)
-
-1. **Check the preview URL loads:**
-   ```
-   https://main--lake-powell--blueacorninc.aem.page/
-   ```
-   Should return an HTML page (not 404).
-
-2. **Check the nav fragment:**
-   ```
-   https://main--lake-powell--blueacorninc.aem.page/nav
-   ```
-   Should return the navigation HTML.
-
-3. **Check the footer fragment:**
-   ```
-   https://main--lake-powell--blueacorninc.aem.page/footer
-   ```
-   Should return the footer HTML.
-
-4. **Check metadata:**
-   ```
-   https://main--lake-powell--blueacorninc.aem.page/metadata.json
-   ```
-   Should return JSON including `{ "brand": "lake-powell" }`.
-
-5. **Check the live URL:**
-   ```
-   https://main--lake-powell--blueacorninc.aem.live/
-   ```
-   Should return the page (`.aem.live` = published content, `.aem.page` = previewed content).
-
----
-
-## Local Development (Once Site Is Live)
-
-Once the Lake Powell EDS site is registered and content is syncing, local development works via:
-
-```bash
-pnpm start:brand lake-powell
-```
-
-This proxies `https://main--lake-powell--blueacorninc.aem.page` as the content source and runs the local EDS dev server. Brand detection will work automatically via AEM page metadata.
-
----
-
-## Header/Footer Hang — Technical Explanation
-
-The header block (`blocks/header/header.js`) calls:
-
-```javascript
-const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-const fragment = await loadFragment(navPath);
-```
-
-`loadFragment()` fetches `/nav` as an HTML document from the EDS origin. When the site config isn't registered, EDS returns a 404 for this fetch. The `loadFragment` implementation in `scripts/aem.js` awaits the response, which either:
-- Returns a 404 → `fragment` is empty → the header renders with no content (appears blank/hanging)
-- Times out → the header render never completes (appears stuck)
-
-The same applies to the footer (`loadFooter` calls `loadFragment('/footer')`).
-
-**Resolution:** Once the admin API config is applied and AEM content is previewed, these fetches will resolve correctly.
-
----
-
-## Related Files
-
-| File | Purpose |
-|---|---|
-| `brands/lake-powell/tokens.css` | Lake Powell brand design tokens |
-| `scripts/site-resolver.js` | Brand detection from AEM metadata |
-| `scripts/scripts.js` | Loads brand tokens in `loadEager()` |
-| `scripts/dev-brand.js` | Local dev brand proxy launcher |
-| `blocks/header/header.js` | Header/nav fragment loading |
-| `archive-fstab.yaml` | Legacy fstab config (superseded by Admin API) |
-| `docs/BRAND-SETUP-GUIDE.md` | Full brand onboarding reference |
-
----
-
-## Summary
-
-| Item | Status |
-|---|---|
-| AEM content at `/content/lake-powell/` | ✅ Confirmed set up |
-| `brands/lake-powell/` directory in repo | ✅ Exists with `tokens.css` |
-| Brand detection code (`site-resolver.js`) | ✅ Implemented |
-| EDS site admin API registration | ❌ Blocked — requires org admin access |
-| Path mappings applied via Admin API | ❌ Blocked — requires org admin access |
-| Content previewed in AEM | ⚠️ Needs verification after admin API steps |
