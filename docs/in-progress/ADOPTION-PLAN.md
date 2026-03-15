@@ -80,14 +80,6 @@ Replace `use.typekit.net` with the actual font origin observed in the Network ta
 
 ---
 
-### 4. Biome (Deferred)
-
-**Decision:** Defer until a test suite exists.
-
-Biome replaces ESLint + Prettier with a single faster tool. The risk is migration without tests — any linting rule change that silently reformats files is difficult to validate. `ARCHITECTURE-TODO.md #15` tracks that zero test files exist. Revisit after Playwright E2E tests and Jest unit tests cover critical paths (`site-resolver.js`, `decorate()` functions, form submission).
-
----
-
 ## Patterns to Maintain
 
 These conventions are established and should be followed by all new blocks.
@@ -97,12 +89,8 @@ These conventions are established and should be followed by all new blocks.
 - **Scroll-snap + IntersectionObserver** — the standard pattern for mobile swipe containers. Carousel and columns mobileslider are the reference implementations. Do not introduce touch libraries.
 - **IntersectionObserver for lazy loading** — all blocks that load external resources defer until the block enters viewport. Do not use `scroll` event listeners.
 - **Fragment-first for repeated regions** — header, footer, and any region appearing on multiple pages loads via `loadFragment()`.
-- **Lifecycle hooks** — every block dispatches `{block}:before` / `{block}:after` custom events and calls `options.onBefore?.(ctx)` / `options.onAfter?.(ctx)`.
+- **Lifecycle hooks** — every block dispatches `{block}:before` / `{block}:after` custom events and calls `options.onBefore?.(ctx)` / `options.onAfter?.(ctx)`. Exception: `modal` is a lightweight trigger block with no async decoration lifecycle and does not implement hooks.
 
 ## Patterns to Avoid
 
-- **CSS Modules** — requires a build step; breaks the runtime brand cascade override pattern.
-- **Preact or any component framework** — no justification; vanilla JS handles all current blocks.
-- **Commerce utilities** (`schemaOrg.js`, purchase event dataLayer) — no equivalent in Aramark's food service model.
 - **Alt-text label syntax (`decorateLabels`)** — encodes non-accessible metadata in `alt` text; conflicts with WCAG intent.
-- **Git branch naming hooks enforcement** — external JIRA workflow conventions are not enforced here.
