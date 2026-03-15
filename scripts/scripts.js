@@ -48,6 +48,20 @@ export function moveInstrumentation(from, to) {
 }
 
 /**
+ * Reads the first variant class from a block and sets block.dataset.variant.
+ * @param {Element} block
+ * @returns {string|undefined} The variant class, if any
+ */
+export function readVariant(block) {
+  const blockName = block.dataset.blockName || block.classList[0];
+  const variant = [...block.classList].find(
+    (c) => c !== 'block' && c !== blockName,
+  );
+  if (variant) block.dataset.variant = variant;
+  return variant;
+}
+
+/**
  * load fonts.css and set a session storage flag
  */
 async function loadFonts() {
@@ -59,17 +73,75 @@ async function loadFonts() {
   }
 }
 
+const EMBED_HOSTS = ['youtube.com', 'youtu.be', 'vimeo.com'];
+
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
-function buildAutoBlocks() {
+function buildAutoBlocks(main) {
   try {
-    // TODO: add auto block, if needed
+    // Auto-embed: convert bare YouTube/Vimeo links into embed blocks
+    main.querySelectorAll('a:only-child').forEach((a) => {
+      if (a.closest('div[class]')) return; // already inside a block
+      if (!EMBED_HOSTS.some((h) => a.href.includes(h))) return;
+      const embedBlock = document.createElement('div');
+      embedBlock.className = 'embed';
+      const row = document.createElement('div');
+      const cell = document.createElement('div');
+      cell.append(a.cloneNode(true));
+      row.append(cell);
+      embedBlock.append(row);
+      a.closest('p')?.replaceWith(embedBlock);
+    });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
   }
+}
+
+function decorateExternalLinks(main) {
+  main.querySelectorAll('a[href]').forEach((a) => {
+    try {
+      const url = new URL(a.href);
+      if (url.hostname !== window.location.hostname) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch {
+      // malformed href, skip
+    }
+  });
+}
+
+function decorateVideos(main) {
+  main.querySelectorAll('a[href$=".mp4"], a[href$=".webm"]').forEach((a) => {
+    if (a.closest('.block')) return;
+    const video = document.createElement('video');
+    video.src = a.href;
+    video.setAttribute('autoplay', '');
+    video.setAttribute('muted', '');
+    video.setAttribute('loop', '');
+    video.setAttribute('playsinline', '');
+    a.replaceWith(video);
+  });
+}
+
+function decorateMediaWithLinks(main) {
+  main.querySelectorAll('p > picture:only-child').forEach((picture) => {
+    const p = picture.parentElement;
+    const next = p.nextElementSibling;
+    if (next?.tagName === 'P') {
+      const a = next.querySelector('a:only-child');
+      if (a && next.childNodes.length === 1) {
+        const link = a.cloneNode(true);
+        link.innerHTML = '';
+        link.append(picture.cloneNode(true));
+        p.replaceWith(link);
+        next.remove();
+      }
+    }
+  });
 }
 
 function a11yLinks(main) {
@@ -93,6 +165,9 @@ export function decorateMain(main) {
   // hopefully forward compatible button decoration
   decorateButtons(main);
   decorateIcons(main);
+  decorateExternalLinks(main);
+  decorateVideos(main);
+  decorateMediaWithLinks(main);
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
@@ -149,7 +224,6 @@ async function loadLazy(doc) {
   loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
 
-  loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 }
 

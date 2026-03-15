@@ -6,7 +6,7 @@
  * - Uses native details/summary elements for accessibility
  */
 
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 
 /**
  * Decorates the accordion block
@@ -23,6 +23,7 @@ export function decorate(block, options = {}) {
   block.dispatchEvent(new CustomEvent('accordion:before', { detail: ctx }));
 
   // === ACCORDION BLOCK LOGIC ===
+  readVariant(block);
   [...block.children].forEach((row) => {
     // decorate accordion item label
     const label = row.children[0];

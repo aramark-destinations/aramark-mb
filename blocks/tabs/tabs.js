@@ -3,7 +3,7 @@
  * Display content with accessible tab interface
  */
 
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 
 // keep track globally of the number of tab blocks on the page
 let tabBlockCnt = 0;
@@ -23,6 +23,8 @@ export async function decorate(block, options = {}) {
   // Lifecycle hook + event (before)
   options.onBefore?.(ctx);
   block.dispatchEvent(new CustomEvent('tabs:before', { detail: ctx }));
+
+  readVariant(block);
 
   // build tablist
   const tablist = document.createElement('div');

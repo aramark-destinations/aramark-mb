@@ -4,7 +4,7 @@
  * https://www.hlx.live/developer/block-collection/table
  */
 
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 
 /**
  * Decorates the table block with lifecycle hooks and events
@@ -21,6 +21,7 @@ export async function decorate(block, options = {}) {
   options.onBefore?.(ctx);
   block.dispatchEvent(new CustomEvent('table:before', { detail: ctx }));
 
+  readVariant(block);
   const table = document.createElement('table');
   const thead = document.createElement('thead');
   const tbody = document.createElement('tbody');

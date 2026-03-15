@@ -6,7 +6,7 @@
  */
 
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 
 export function decorate(block, options = {}) {
   const ctx = { block, options };
@@ -16,6 +16,7 @@ export function decorate(block, options = {}) {
   block.dispatchEvent(new CustomEvent('cards:before', { detail: ctx }));
 
   // === CARDS BLOCK LOGIC ===
+  readVariant(block);
   // Convert block structure to ul/li for better semantics
   const ul = document.createElement('ul');
 

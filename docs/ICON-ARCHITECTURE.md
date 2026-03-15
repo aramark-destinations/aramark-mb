@@ -1,5 +1,7 @@
 # Icon Architecture
 
+> **Note:** This document describes the intended icon architecture and has not yet been implemented. It will be revisited for accuracy when icons are developed in a future sprint. The implementation status table at the bottom of this document reflects the current state.
+
 This project uses a three-tier icon system: **Phosphor** SVGs for developer-managed system UI icons (`ph-*`), **custom global** SVGs for non-Phosphor icons needed globally (no prefix), and **AEM Assets DAM** SVGs for author-managed project/brand icons (`mb-*`). All are consumed through the standard EDS `:iconname:` token syntax and resolved to inline SVG by a custom icon resolver in `scripts/scripts.js`.
 
 ## Icon Types

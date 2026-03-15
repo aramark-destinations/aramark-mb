@@ -5,6 +5,8 @@
  * Similar to embed block but focused specifically on video content.
  */
 
+import { readVariant } from '../../scripts/scripts.js';
+
 const _loadScript = (url) => {
   const head = document.querySelector('head');
   const script = document.createElement('script');
@@ -77,6 +79,7 @@ export default function decorate(block, options = {}) {
   options.onBefore?.(ctx);
   block.dispatchEvent(new CustomEvent('video:before', { detail: ctx }));
 
+  readVariant(block);
   block.dataset.embedLoaded = 'false';
   const placeholder = block.querySelector('picture');
   const link = block.querySelector('a')?.href;

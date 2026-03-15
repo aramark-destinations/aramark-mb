@@ -3,9 +3,12 @@
  * Show videos and social posts directly on your page
  * https://www.hlx.live/developer/block-collection/embed
  *
+ * Supported variants: set via block class name (e.g. "embed autoplay")
  * Supports: YouTube, Vimeo, Twitter/X, and generic iframes
  * Features: Lazy loading, placeholder images, autoplay on click
  */
+
+import { readVariant } from '../../scripts/scripts.js';
 
 const loadScript = (url, callback, type) => {
   const head = document.querySelector('head');
@@ -93,6 +96,8 @@ export function decorate(block, options = {}) {
   // Lifecycle hook + event (before)
   options.onBefore?.(ctx);
   block.dispatchEvent(new CustomEvent('embed:before', { detail: ctx }));
+
+  readVariant(block);
 
   const EMBEDS_CONFIG = options.embedsConfig || [
     {

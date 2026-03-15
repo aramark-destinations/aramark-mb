@@ -12,10 +12,20 @@
       "image",
       "button",
       "title",
-      "hero",
+      "accordion",
+      "banner",
       "cards",
+      "carousel",
       "columns",
-      "fragment"
+      "embed",
+      "form",
+      "fragment",
+      "hero",
+      "quote",
+      "search",
+      "table",
+      "tabs",
+      "video"
     ]
   },
   {
@@ -76,10 +86,26 @@
     ]
   },
   {
+    "id": "table-5-columns",
+    "components": [
+      "table-col-5"
+    ]
+  },
+  {
     "id": "tabs",
     "components": [
       "tabs-item"
     ]
+  },
+  {
+    "id": "banner",
+    "components": [
+      "banner-item"
+    ]
+  },
+  {
+    "id": "search",
+    "components": []
   },
   {
     "id": "video",
