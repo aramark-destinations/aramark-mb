@@ -73,37 +73,12 @@ async function loadFonts() {
   }
 }
 
-const EMBED_HOSTS = ['youtube.com', 'youtu.be', 'vimeo.com'];
-
-/**
- * Builds all synthetic blocks in a container element.
- * @param {Element} main The container element
- */
-function buildAutoBlocks(main) {
-  try {
-    // Auto-embed: convert bare YouTube/Vimeo links into embed blocks
-    main.querySelectorAll('a:only-child').forEach((a) => {
-      if (a.closest('div[class]')) return; // already inside a block
-      if (!EMBED_HOSTS.some((h) => a.href.includes(h))) return;
-      const embedBlock = document.createElement('div');
-      embedBlock.className = 'embed';
-      const row = document.createElement('div');
-      const cell = document.createElement('div');
-      cell.append(a.cloneNode(true));
-      row.append(cell);
-      embedBlock.append(row);
-      a.closest('p')?.replaceWith(embedBlock);
-    });
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Auto Blocking failed', error);
-  }
-}
 
 function decorateExternalLinks(main) {
   main.querySelectorAll('a[href]').forEach((a) => {
     try {
       const url = new URL(a.href);
+      if (!['http:', 'https:'].includes(url.protocol)) return;
       if (url.hostname !== window.location.hostname) {
         a.setAttribute('target', '_blank');
         a.setAttribute('rel', 'noopener noreferrer');
@@ -114,35 +89,6 @@ function decorateExternalLinks(main) {
   });
 }
 
-function decorateVideos(main) {
-  main.querySelectorAll('a[href$=".mp4"], a[href$=".webm"]').forEach((a) => {
-    if (a.closest('.block')) return;
-    const video = document.createElement('video');
-    video.src = a.href;
-    video.setAttribute('autoplay', '');
-    video.setAttribute('muted', '');
-    video.setAttribute('loop', '');
-    video.setAttribute('playsinline', '');
-    a.replaceWith(video);
-  });
-}
-
-function decorateMediaWithLinks(main) {
-  main.querySelectorAll('p > picture:only-child').forEach((picture) => {
-    const p = picture.parentElement;
-    const next = p.nextElementSibling;
-    if (next?.tagName === 'P') {
-      const a = next.querySelector('a:only-child');
-      if (a && next.childNodes.length === 1) {
-        const link = a.cloneNode(true);
-        link.innerHTML = '';
-        link.append(picture.cloneNode(true));
-        p.replaceWith(link);
-        next.remove();
-      }
-    }
-  });
-}
 
 function a11yLinks(main) {
   const links = main.querySelectorAll('a');
@@ -166,9 +112,6 @@ export function decorateMain(main) {
   decorateButtons(main);
   decorateIcons(main);
   decorateExternalLinks(main);
-  decorateVideos(main);
-  decorateMediaWithLinks(main);
-  buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
   a11yLinks(main);

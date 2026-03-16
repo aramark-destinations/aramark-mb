@@ -15,6 +15,17 @@ import {
   loadSections,
 } from '../../scripts/aem.js';
 
+// TODO: Add fragment caching
+// Currently every loadFragment() call makes a fresh fetch(), so repeated loads
+// of the same path result in redundant network requests.
+// Future fix: cache a Promise<string> (raw HTML text) keyed by path in a
+// module-level Map, e.g.:
+//   const fragmentCache = new Map();
+//   if (!fragmentCache.has(path)) fragmentCache.set(path, fetch(...).then(r => r.text()));
+//   const html = await fragmentCache.get(path);
+// Do NOT cache the DOM element — callers mutate it via replaceWith(),
+// which would corrupt a shared cached reference.
+
 /**
  * Loads a fragment from a given path
  * @param {string} path The path to the fragment

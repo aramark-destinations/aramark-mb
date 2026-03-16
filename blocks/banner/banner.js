@@ -47,6 +47,24 @@ export async function decorate(block, options = {}) {
     slidesEl.append(row);
   });
 
+  // Auto-rotate when multiple slides (WCAG 2.2.2: pause, stop, hide)
+  let intervalId = null;
+  if (rows.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let current = 0;
+    const rotate = () => {
+      rows[current].classList.remove('banner-slide-active');
+      current = (current + 1) % rows.length;
+      rows[current].classList.add('banner-slide-active');
+    };
+    intervalId = setInterval(rotate, 5000);
+
+    // Pause on hover or focus (WCAG 2.2.2)
+    slidesEl.addEventListener('mouseenter', () => clearInterval(intervalId));
+    slidesEl.addEventListener('mouseleave', () => { intervalId = setInterval(rotate, 5000); });
+    slidesEl.addEventListener('focusin', () => clearInterval(intervalId));
+    slidesEl.addEventListener('focusout', () => { intervalId = setInterval(rotate, 5000); });
+  }
+
   // Close button
   const closeBtn = document.createElement('button');
   closeBtn.className = 'banner-close';
@@ -54,21 +72,12 @@ export async function decorate(block, options = {}) {
   closeBtn.setAttribute('aria-label', 'Close banner');
   closeBtn.innerHTML = '&times;';
   closeBtn.addEventListener('click', () => {
+    clearInterval(intervalId);
     sessionStorage.setItem(storageKey, '1');
     block.closest('.section')?.remove();
   });
 
   block.append(slidesEl, closeBtn);
-
-  // Auto-rotate when multiple slides
-  if (rows.length > 1) {
-    let current = 0;
-    setInterval(() => {
-      rows[current].classList.remove('banner-slide-active');
-      current = (current + 1) % rows.length;
-      rows[current].classList.add('banner-slide-active');
-    }, 5000);
-  }
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
