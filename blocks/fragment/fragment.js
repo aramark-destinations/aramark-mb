@@ -15,8 +15,6 @@ import {
   loadSections,
 } from '../../scripts/aem.js';
 
-const fragmentCache = new Map();
-
 /**
  * Loads a fragment from a given path
  * @param {string} path The path to the fragment
@@ -24,8 +22,6 @@ const fragmentCache = new Map();
  */
 export async function loadFragment(path) {
   if (path && path.startsWith('/')) {
-    if (fragmentCache.has(path)) return fragmentCache.get(path);
-
     const resp = await fetch(`${path}.plain.html`);
     if (resp.ok) {
       const main = document.createElement('main');
@@ -42,7 +38,6 @@ export async function loadFragment(path) {
 
       decorateMain(main);
       await loadSections(main);
-      fragmentCache.set(path, main);
       return main;
     }
   }
