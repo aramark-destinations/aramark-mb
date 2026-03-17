@@ -9,6 +9,7 @@
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
               "name": "Cards",
+              "model": "cards-container",
               "filter": "cards"
             }
           }
@@ -33,6 +34,19 @@
   ],
   "models": [
     {
+      "id": "cards-container",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "css-class",
+          "label": "CSS Class",
+          "value": "",
+          "description": "Enter space-separated CSS class names for custom styling"
+        }
+      ]
+    },
+    {
       "id": "card",
       "fields": [
         {
@@ -47,7 +61,43 @@
           "name": "text",
           "value": "",
           "label": "Text",
+          "valueType": "string",
+          "required": true
+        },
+        {
+          "component": "select",
+          "name": "orientation",
+          "label": "Orientation",
+          "options": [
+            { "name": "Image Above Text", "value": "image-above-text" },
+            { "name": "Image Left, Text Right", "value": "image-left-text-right" },
+            { "name": "Text Left, Image Right", "value": "text-left-image-right" },
+            { "name": "Text Above Image", "value": "text-above-image-below" }
+          ],
+          "valueType": "string",
+          "value": "image-above-text"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "css-class",
+          "label": "CSS Class",
+          "value": "",
+          "description": "Enter space-separated CSS class names"
+        },
+        {
+          "component": "aem-content",
+          "name": "link",
+          "label": "Link",
           "valueType": "string"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link-label",
+          "label": "Link Label (aria-label)",
+          "value": "",
+          "description": "Required when Link is populated. Describes the link purpose for screen readers."
         }
       ]
     }
@@ -55,7 +105,9 @@
   "filters": [
     {
       "id": "cards",
-      "components": ["card"]
+      "components": [
+        "card"
+      ]
     }
   ]
 }
