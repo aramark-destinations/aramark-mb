@@ -26,6 +26,21 @@ The following items have been completed or clarified:
 
 ---
 
+## CSS Architecture
+
+### 38. CSS Nesting — Migrate All Block CSS to Nested Syntax
+
+**Decision**: CSS nesting is the preferred syntax for block stylesheets going forward. Blocks will be converted to nested CSS as they are worked on (opportunistic migration during dev work, not a dedicated refactor sprint).
+
+**Context**: Native CSS nesting (the `&` selector) is Baseline 2024 and supported in Chrome 120+, Firefox 117+, Safari 17.2+. The project's `browserslist: "baseline widely available"` target will converge on these browsers as the Baseline 2024 window matures. The `accordion` block (upgraded March 2026) is the first block using nested CSS.
+
+**Action Required**:
+- Verify that the current PostCSS/build tooling passes nested CSS through correctly for the `browserslist` target without flattening or erroring
+- If tooling needs updating, document the change in this file
+- Each block upgrade on the `block-shopping` branch will use nested CSS — no back-conversion to flat
+
+---
+
 ## Design Token Management
 
 ### 1. Zombie Token Prevention
