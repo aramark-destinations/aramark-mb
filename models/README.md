@@ -1,6 +1,6 @@
 # Models
 
-Component model definitions for AEM Universal Editor (XWalk). These JSON files define the field schemas, data types, and component metadata that power the Universal Editor authoring interface.
+Component model definitions for AEM Universal Editor (XWalk). These JSON files define the field schemas, data types, and component metadata that power the Universal Editor authoring interface {updated}.
 
 ## How It Works
 
