@@ -33,7 +33,7 @@ const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
  * Update this map when adding a new brand.
  */
 const BRAND_URLS = {
-  'lake-powell: 'https://main--lake-powell--blueacorninc.aem.page',
+  'lake-powell': 'https://main--lake-powell--blueacorninc.aem.page',
   unbranded: 'https://main--unbranded--blueacorninc.aem.page',
   // 'brand-dummy': 'https://main--brand-dummy--blueacorninc.aem.page',
 };
