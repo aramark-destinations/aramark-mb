@@ -6,16 +6,6 @@
     ]
   },
   {
-    "id": "section",
-    "components": [
-      "text",
-      "image",
-      "button",
-      "title",
-      "hero",
-      "cards",
-      "columns",
-      "fragment"
-    ]
+    "...": "blocks/*/_*.json#/filters"
   }
 ]

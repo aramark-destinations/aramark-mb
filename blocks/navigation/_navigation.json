@@ -1,0 +1,293 @@
+{
+  "definitions": [
+    {
+      "title": "Navigation Section",
+      "id": "navigation-section",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/section/v1/section",
+            "template": {
+              "name": "Navigation Section",
+              "model": "navigation-section",
+              "filter": "navigation-section"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Navigation Group",
+      "id": "navigation-group",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Navigation Group",
+              "model": "navigation-group",
+              "filter": "navigation-group"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Navigation Item",
+      "id": "navigation-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Navigation Item",
+              "model": "navigation-item",
+              "key-value": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Navigation Group Item",
+      "id": "navigation-group-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Navigation Group Item",
+              "model": "navigation-group-item",
+              "key-value": true
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "navigation-section",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "name",
+          "value": "Navigation Section",
+          "label": "Section Name",
+          "description": "Organizational AEM Content Tree Display Name for this Navigation Section."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Dropdown Label",
+          "value": "Menu",
+          "description": "Label for the Dropdown Menu. If empty, child items render directly at top level."
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link",
+          "label": "Menu Link",
+          "description": "Optional link for the menu title (when title is set), For example / for the site homepage, or /cart for the cart page."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "custom-classes",
+          "label": "Custom Classes",
+          "description": "Additional CSS classes for styling."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "type",
+          "label": "Section Type",
+          "value": "navigation",
+          "description": "Type of the section, used for identification purposes when rendering. Hidden in the editor.",
+          "hidden": true,
+          "required": true,
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "id": "navigation-group",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "name",
+          "value": "Navigation Group",
+          "label": "Navigation Group",
+          "description": "Organizational AEM Content Tree Display Name for this Navigation Group."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Navigation Group Title",
+          "value": "Menu Group",
+          "required": true,
+          "description": "Display heading text for this navigation group, shown above the group items. Link text if link is provided."
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link",
+          "label": "Group Link",
+          "description": "Optional link for the group heading. For example / for the site homepage, or /cart for the cart page."
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "is-header-only",
+          "label": "Header Only",
+          "value": true,
+          "description": "When true, group name is non-interactive header text."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "classes",
+          "label": "Type",
+          "value": "navigation-group",
+          "description": "Type of the component, used for identification purposes when rendering. Hidden in the editor.",
+          "hidden": true,
+          "required": true,
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "id": "navigation-item",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "name",
+          "label": "Navigation Item",
+          "value": "Navigation Item",
+          "required": true,
+          "description": "Organizational AEM Content Tree Display Name for this Navigation Item"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Menu Item Text",
+          "value": "Menu Item Text",
+          "required": true,
+          "description": "Display Text for the Link"
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link",
+          "label": "Item Link",
+          "value": "/",
+          "required": true,
+          "description": "URL for this Link. For example / for the site homepage, or /cart for the cart page."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "description",
+          "label": "Description",
+          "description": "Optional description text shown below link"
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "open-in-new-tab",
+          "label": "Open in New Tab",
+          "value": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "classes",
+          "label": "Type",
+          "value": "navigation-item",
+          "description": "Type of the component, used for identification purposes when rendering. Hidden in the editor.",
+          "hidden": true,
+          "required": true,
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "id": "navigation-group-item",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "name",
+          "label": "Group Navigation Item",
+          "value": "Group Navigation Item",
+          "required": true,
+          "description": "Organizational AEM Content Tree Display Name for this Group Navigation Item"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Item Name",
+          "value": "Menu Item",
+          "required": true,
+          "description": "Display name for this navigation item"
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link",
+          "label": "Item Link",
+          "value": "/",
+          "required": true,
+          "description": "URL for this navigation item. For example / for the site homepage, or /cart for the cart page."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "description",
+          "label": "Description",
+          "description": "Optional description text shown below link"
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "open-in-new-tab",
+          "label": "Open in New Tab",
+          "value": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "classes",
+          "label": "Type",
+          "value": "navigation-group-item",
+          "description": "Type of the component, used for identification purposes when rendering. Hidden in the editor.",
+          "hidden": true,
+          "required": true,
+          "readOnly": true
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "navigation-section",
+      "components": [
+        "navigation-group",
+        "navigation-item"
+      ]
+    },
+    {
+      "id": "navigation-group",
+      "components": [
+        "navigation-group-item"
+      ]
+    }
+  ]
+}

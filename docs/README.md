@@ -18,12 +18,16 @@ Project documentation for architecture, design decisions, and developer guides. 
 |------|-------------|
 | [BRAND-SETUP-GUIDE.md](BRAND-SETUP-GUIDE.md) | Step-by-step guide for onboarding a new brand/property site. Covers directory structure, token setup, repoless EDS site registration via admin API, and optional block overrides |
 | [BLOCK-EXTENSIBILITY-GUIDE.md](BLOCK-EXTENSIBILITY-GUIDE.md) | How to extend or override root blocks for a specific brand using lifecycle hooks (`onBefore`, `onAfter`) |
+| [MULTI-BRAND-LOCAL-DEV.md](MULTI-BRAND-LOCAL-DEV.md) | Repoless multi-brand architecture and brand-aware dev server configuration for local development |
+| [REPO-MIGRATION.md](REPO-MIGRATION.md) | Admin API authentication, org setup, and repoless site registration process |
 
 ### Reference
 
 | File | Description |
 |------|-------------|
 | [PROJECT-README.md](PROJECT-README.md) | Expanded project overview and onboarding reference |
+| [ICON-ARCHITECTURE.md](ICON-ARCHITECTURE.md) | Three-tier icon system: Phosphor system icons, custom global icons, and AEM Assets DAM project icons |
+| [LAKE-POWELL-SYNC.md](LAKE-POWELL-SYNC.md) | Content sync investigation guide and Admin API checklist for Lake Powell |
 
 ## Related Documentation
 
