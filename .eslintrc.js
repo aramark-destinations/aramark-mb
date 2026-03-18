@@ -45,6 +45,7 @@ module.exports = {
       rules: {
         'xwalk/max-cells': 'off',
         'xwalk/no-orphan-collapsible-fields': 'off',
+        'xwalk/no-duplicate-fields': 'off',
       },
     },
     {
