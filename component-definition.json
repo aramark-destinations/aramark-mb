@@ -32,7 +32,70 @@
       "id": "blocks",
       "components": [
         {
-          "...": "blocks/*/_*.json#/definitions"
+          "...": "blocks/accordion/_accordion.json#/definitions"
+        },
+        {
+          "...": "blocks/banner/_banner.json#/definitions"
+        },
+        {
+          "...": "blocks/cards/_cards.json#/definitions"
+        },
+        {
+          "...": "blocks/carousel/_carousel.json#/definitions"
+        },
+        {
+          "...": "blocks/columns/_columns.json#/definitions"
+        },
+        {
+          "...": "blocks/embed/_embed.json#/definitions"
+        },
+        {
+          "...": "blocks/form/_form.json#/definitions"
+        },
+        {
+          "...": "blocks/fragment/_fragment.json#/definitions"
+        },
+        {
+          "...": "blocks/hero/_hero.json#/definitions"
+        },
+        {
+          "...": "blocks/modal/_modal.json#/definitions"
+        },
+        {
+          "...": "blocks/quote/_quote.json#/definitions"
+        },
+        {
+          "...": "blocks/search/_search.json#/definitions"
+        },
+        {
+          "...": "blocks/table/_table.json#/definitions"
+        },
+        {
+          "...": "blocks/tabs/_tabs.json#/definitions"
+        },
+        {
+          "...": "blocks/video/_video.json#/definitions"
+        }
+      ]
+    },
+    {
+      "title": "Page Structure",
+      "id": "page-structure",
+      "components": [
+        {
+          "...": "blocks/header/_header.json#/definitions"
+        },
+        {
+          "...": "blocks/footer/_footer.json#/definitions"
+        }
+      ]
+    },
+    {
+      "title": "Navigation",
+      "id": "navigation",
+      "components": [
+        {
+          "...": "blocks/navigation/_navigation.json#/definitions"
         }
       ]
     }
