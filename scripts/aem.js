@@ -748,11 +748,25 @@ async function loadSections(element) {
   }
 }
 
+function extractAueConfig(block) {
+  const config = {};
+  const auePropElements = block.querySelectorAll('[data-aue-prop]');
+  auePropElements.forEach((el) => {
+    const prop = el.getAttribute('data-aue-prop');
+    const value = el.textContent.trim();
+    if (prop && value) {
+      config[prop] = value;
+    }
+  });
+  return config;
+}
+
 init();
 
 export {
   buildBlock,
   createOptimizedPicture,
+  extractAueConfig,
   decorateBlock,
   decorateBlocks,
   decorateButtons,

@@ -6,8 +6,24 @@
  * - Supports navigation buttons, indicators, and keyboard controls
  */
 
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholders.js';
+
+function preloadNextSlide(block, activeIndex) {
+  const slides = block.querySelectorAll('.carousel-slide');
+  const nextIndex = (activeIndex + 1) % slides.length;
+  const nextSlide = slides[nextIndex];
+  const source = nextSlide?.querySelector('picture source[type="image/webp"]');
+  if (!source?.srcset) return;
+  const href = source.srcset.split(' ')[0];
+  if (!href || document.head.querySelector(`link[rel="preload"][href="${href}"]`)) return;
+  const preload = document.createElement('link');
+  preload.rel = 'preload';
+  preload.as = 'image';
+  preload.href = href;
+  preload.setAttribute('fetchpriority', 'low');
+  document.head.append(preload);
+}
 
 function updateActiveSlide(slide) {
   const block = slide.closest('.carousel');
@@ -35,6 +51,8 @@ function updateActiveSlide(slide) {
       indicator.querySelector('button').setAttribute('disabled', 'true');
     }
   });
+
+  preloadNextSlide(block, slideIndex);
 }
 
 export function showSlide(block, slideIndex = 0, behavior = 'smooth') {
@@ -116,6 +134,7 @@ export async function decorate(block, options = {}) {
   block.dispatchEvent(new CustomEvent('carousel:before', { detail: ctx }));
 
   // === CAROUSEL BLOCK LOGIC ===
+  readVariant(block);
   carouselId += 1;
   block.setAttribute('id', `carousel-${carouselId}`);
   const rows = block.querySelectorAll(':scope > div');

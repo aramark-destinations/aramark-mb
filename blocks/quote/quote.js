@@ -3,6 +3,8 @@
  * Display quotations with optional attribution
  */
 
+import { readVariant } from '../../scripts/scripts.js';
+
 /**
  * Decorates the quote block with lifecycle hooks and events
  * @param {HTMLElement} block - The quote block element
@@ -18,6 +20,7 @@ export async function decorate(block, options = {}) {
   options.onBefore?.(ctx);
   block.dispatchEvent(new CustomEvent('quote:before', { detail: ctx }));
 
+  readVariant(block);
   const [quotation, attribution] = [...block.children].map((c) => c.firstElementChild);
   const blockquote = document.createElement('blockquote');
 

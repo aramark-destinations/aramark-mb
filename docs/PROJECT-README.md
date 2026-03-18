@@ -170,6 +170,7 @@ See: `docs/BRAND-SETUP-GUIDE.md` for the complete process.
 ## Available Blocks
 
 - **Accordion** - Collapsible content sections
+- **Banner** - Dismissible announcement bar with rotating slides
 - **Cards** - Grid of content cards with images
 - **Carousel** - Image/content carousel
 - **Columns** - Multi-column layouts

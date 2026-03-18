@@ -1,0 +1,157 @@
+.cards > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
+  gap: var(--spacing-024);
+}
+
+.cards > ul > li,
+.cards > ul > a {
+  border: 1px solid var(--color-grey-200);
+  background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Linked cards — anchor replaces li as direct child of ul (known trade-off for whole-card a11y) */
+.cards > ul > a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.cards > ul > a:hover {
+  box-shadow: 0 4px 8px rgb(0 0 0 / 15%);
+}
+
+.cards > ul > a:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.cards > ul > a * {
+  text-decoration: none;
+}
+
+.cards .cards-card-image {
+  line-height: 0;
+}
+
+.cards > ul > li img,
+.cards > ul > a img {
+  width: 100%;
+  aspect-ratio: var(--aspect-ratio-landscape);
+  object-fit: cover;
+}
+
+/* Orientation: Image Above Text (default) */
+.cards > ul > li .cards-card-image,
+.cards > ul > a .cards-card-image {
+  order: 1;
+}
+
+.cards > ul > li .cards-card-body,
+.cards > ul > a .cards-card-body {
+  order: 2;
+  margin: var(--spacing-016);
+}
+
+/* Orientation: Horizontal layouts (image-left-text-right, text-left-image-right) */
+.cards > ul > li.cards-card-horizontal,
+.cards > ul > a.cards-card-horizontal {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.cards > ul > li.cards-card-horizontal .cards-card-image,
+.cards > ul > a.cards-card-horizontal .cards-card-image {
+  flex: 0 0 40%;
+  order: 1;
+}
+
+.cards > ul > li.cards-card-horizontal .cards-card-body,
+.cards > ul > a.cards-card-horizontal .cards-card-body {
+  flex: 1;
+  order: 2;
+  margin: var(--spacing-016);
+}
+
+/* Orientation: Text Left, Image Right */
+.cards > ul > li.cards-card-horizontal.cards-card-reverse .cards-card-body,
+.cards > ul > a.cards-card-horizontal.cards-card-reverse .cards-card-body {
+  order: 1;
+}
+
+.cards > ul > li.cards-card-horizontal.cards-card-reverse .cards-card-image,
+.cards > ul > a.cards-card-horizontal.cards-card-reverse .cards-card-image {
+  order: 2;
+}
+
+/* Orientation: Text Above Image */
+.cards > ul > li.cards-card-inverted .cards-card-body,
+.cards > ul > a.cards-card-inverted .cards-card-body {
+  order: 1;
+}
+
+.cards > ul > li.cards-card-inverted .cards-card-image,
+.cards > ul > a.cards-card-inverted .cards-card-image {
+  order: 2;
+}
+
+/* Text-only and Image-only modifiers */
+.cards > ul > li.cards-card-text-only .cards-card-body,
+.cards > ul > a.cards-card-text-only .cards-card-body {
+  margin: var(--spacing-024);
+}
+
+.cards > ul > li.cards-card-image-only .cards-card-image,
+.cards > ul > a.cards-card-image-only .cards-card-image {
+  width: 100%;
+}
+
+/* Responsive: Mobile (<600px) — single column */
+@media (max-width: 600px) {
+  .cards > ul {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-016);
+  }
+
+  .cards > ul > li.cards-card-horizontal,
+  .cards > ul > a.cards-card-horizontal {
+    flex-direction: column;
+  }
+
+  .cards > ul > li.cards-card-horizontal .cards-card-image,
+  .cards > ul > a.cards-card-horizontal .cards-card-image {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+}
+
+/* Responsive: Tablet (601–900px) — two columns */
+@media (min-width: 601px) and (max-width: 900px) {
+  .cards > ul {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-024);
+  }
+}
+
+/* Responsive: Desktop (901–1200px) — three columns */
+@media (min-width: 901px) and (max-width: 1200px) {
+  .cards > ul {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-024);
+  }
+}
+
+/* Responsive: Wide (>1200px) — three columns, constrained width */
+@media (min-width: 1201px) {
+  .cards > ul {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-032);
+    max-width: var(--layout-max-width-content);
+    margin: 0 auto;
+  }
+}

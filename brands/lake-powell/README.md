@@ -63,7 +63,7 @@ Only create block overrides when you need to change **behavior** or **structure*
 **Example:** Adding analytics tracking to hero block
 ```javascript
 // brands/lake-powell/blocks/hero/hero.js
-import { decorate as rootDecorate } from '../../../blocks/hero/hero.js';
+import decorateRoot from '../../../blocks/hero/hero.js';
 
 const lakePowellHooks = {
   onBefore: ({ block }) => {
@@ -80,7 +80,7 @@ const lakePowellHooks = {
   }
 };
 
-export default (block) => rootDecorate(block, lakePowellHooks);
+export default (block) => decorateRoot(block, lakePowellHooks);
 ```
 
 ### Block CSS Overrides (Very Rare)

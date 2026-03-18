@@ -16,7 +16,7 @@
  * metadata sheet) — same as production on custom domains.
  */
 
-import { execSync } from 'child_process';
+import { spawn } from 'child_process';
 import {
   existsSync, readFileSync, readdirSync, statSync,
 } from 'fs';
@@ -84,7 +84,39 @@ if (!url) {
 console.log(`Starting dev server for brand: ${brand}`);
 console.log(`Content proxy: ${url}\n`);
 
-execSync(
-  `npx aem up --url ${url}`,
-  { cwd: projectRoot, stdio: 'inherit' },
-);
+const sassArgs = [
+  '--style=expanded',
+  '--no-source-map',
+  '--watch',
+  'styles/:dist/styles/',
+  'blocks/:blocks/',
+];
+
+const sassProc = spawn('pnpm', ['exec', 'sass', ...sassArgs], {
+  cwd: projectRoot,
+  stdio: 'inherit',
+});
+
+const aemProc = spawn('npx', ['aem', 'up', '--url', url], {
+  cwd: projectRoot,
+  stdio: 'inherit',
+});
+
+const cleanup = () => {
+  sassProc.kill();
+  aemProc.kill();
+};
+
+process.on('SIGINT', cleanup);
+process.on('SIGTERM', cleanup);
+
+aemProc.on('exit', (code) => {
+  sassProc.kill();
+  process.exit(code ?? 0);
+});
+
+sassProc.on('exit', (code) => {
+  if (code !== null && code !== 0) {
+    console.error(`sass watcher exited with code ${code}`);
+  }
+});

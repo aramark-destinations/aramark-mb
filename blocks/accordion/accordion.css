@@ -1,65 +1,159 @@
+@charset "UTF-8";
+/* TODO (architecture): All block CSS should use CSS nesting syntax as blocks are upgraded.
+   Verify PostCSS/build tooling handles nesting for the project's browserslist target.
+   CSS nesting is Baseline 2024 (Chrome 120+, Firefox 117+, Safari 17.2+).
+   See docs/ARCHITECTURE-TODO.md for the full nesting migration item. */
+:root {
+  --accordion-title-color: var(--color-text-primary);
+  --accordion-title-padding-left: 0;
+  --accordion-title-padding-top: 27.5px;
+  --accordion-title-padding-right: 30px;
+  --accordion-title-padding-bottom: 27.5px;
+  --accordion-title-padding: 27.5px 0;
+  --accordion-title-font-family: var(--font-family-display);
+  --accordion-title-font-size: 20px;
+  --accordion-title-font-weight: 500;
+  --accordion-title-line-height: 1.4;
+  --accordion-title-letter-spacing: 1px;
+  --accordion-title-text-transform: uppercase;
+  --accordion-title-font: normal var(--accordion-title-font-weight)
+      var(--accordion-title-font-size) / var(--accordion-title-line-height)
+      var(--accordion-title-font-family);
+  --accordion-subtitle-color: var(--accordion-title-color);
+  --accordion-subtitle-font-family: var(--font-family-display);
+  --accordion-subtitle-font-size: 18px;
+  --accordion-subtitle-font-weight: 300;
+  --accordion-subtitle-letter-spacing: 1px;
+  --accordion-subtitle-text-transform: uppercase;
+  --accordion-subtitle-line-height: var(--accordion-title-line-height);
+  --accordion-subtitle-font: normal var(--accordion-subtitle-font-weight)
+      var(--accordion-subtitle-font-size) / var(--accordion-subtitle-line-height)
+      var(--accordion-subtitle-font-family);
+  --accordion-border: 1px solid var(--color-neutral-400);
+  --accordion-closed-icon: '+';
+  --accordion-open-icon: '−';
+  --accordion-open-background-color: var(--background-color);
+  --accordion-open-body-background-color: var(--accordion-open-background-color);
+  --accordion-body-padding: 0;
+  --accordion-body-color: var(--color-text-primary);
+  --accordion-body-heading-color: var(--accordion-body-color);
+  --accordion-body-paragraph-color: var(--accordion-body-color);
+  --accordion-body-list-color: var(--accordion-body-color);
+  --accordion-body-anchor-color: var(--accordion-body-color);
+  --accordion-body-anchor-hover-color: var(--accordion-body-anchor-color);
+  --accordion-body-anchor-active-color: var(--accordion-body-anchor-color);
+}
+
+/* TODO (accordion dev): Review +/− character icon vs. original arrow icon.
+   Original used CSS border trick (rotating chevron). Current uses +/− characters.
+   Decision deferred — reanalyze during accordion feature dev work. */
 .accordion details {
-  border: var(--weight-s) solid var(--color-grey-200);
+  border-bottom: var(--accordion-border);
+  border-radius: 0;
+  margin-bottom: 0;
 }
-
-/* stylelint-disable-next-line no-descending-specificity */
 .accordion details + details {
-  margin-top: var(--spacing-024);
+  border-top: none;
 }
-
 .accordion details p {
   margin-bottom: 0.8em;
 }
-
 .accordion details summary {
   position: relative;
-  padding: 0 var(--spacing-016);
-  padding-right: var(--spacing-048);
+  padding: 0;
   cursor: pointer;
   list-style: none;
-  overflow: auto;
-  transition: background-color var(--transition-duration-fast);
+  overflow: visible;
+  transition: background-color 0.2s;
+  color: var(--accordion-title-color, #231f20);
 }
-
-.accordion details[open] summary {
-  background-color: var(--light-color);
-}
-
-.accordion details summary:focus,
-.accordion details summary:hover {
-  background-color: var(--light-color);
-}
-
 .accordion details summary::-webkit-details-marker {
   display: none;
 }
-
+.accordion details summary .accordion-title-container {
+  display: flex;
+  flex-direction: column;
+  padding: var(--accordion-title-padding);
+  min-height: 48px;
+}
+.accordion details summary .accordion-title {
+  margin: 0;
+  font: var(--accordion-title-font);
+  text-transform: var(--accordion-title-text-transform);
+  letter-spacing: var(--accordion-title-letter-spacing);
+  color: var(--accordion-title-color, #231f20);
+}
+.accordion details summary .accordion-subtitle {
+  margin: 8px 0 0;
+  font: var(--accordion-subtitle-font);
+  text-transform: var(--accordion-subtitle-text-transform);
+  letter-spacing: var(--accordion-subtitle-letter-spacing);
+  color: var(--accordion-subtitle-color, #231f20);
+}
 .accordion details summary::after {
-  content: '';
+  content: "+"/"";
+  font-family: var(--font-family-display);
+  font-weight: 300;
   position: absolute;
-  top: 50%;
-  right: var(--spacing-016);
-  transform: translateY(-50%) rotate(135deg);
-  width: var(--sizing-006);
-  height: var(--sizing-006);
-  border: var(--weight-m) solid;
-  border-width: var(--weight-m) var(--weight-m) 0 0;
-  transition: transform var(--transition-duration-fast);
+  right: 0;
+  top: 25px;
+  font-size: 28px;
+  line-height: 28px;
+  display: inline-block;
+  overflow: hidden;
+  text-align: center;
+  vertical-align: middle;
+  color: inherit;
+  transition: transform 0.2s ease-out;
+  transform: rotate(0deg);
 }
-
+.accordion details[open] summary {
+  background-color: var(--accordion-open-background-color, #fff);
+}
 .accordion details[open] summary::after {
-  transform: translateY(-50%) rotate(-45deg);
+  content: "−"/"";
+  transform: rotate(-180deg);
 }
-
 .accordion details .accordion-item-body {
-  padding: 0 var(--spacing-016);
+  padding: var(--accordion-body-padding);
+  background-color: var(--accordion-open-body-background-color, #fff);
+  color: var(--accordion-body-color, #231f20);
 }
-
+.accordion details .accordion-item-body h1,
+.accordion details .accordion-item-body h2,
+.accordion details .accordion-item-body h3,
+.accordion details .accordion-item-body h4,
+.accordion details .accordion-item-body h5,
+.accordion details .accordion-item-body h6 {
+  color: var(--accordion-body-heading-color, var(--accordion-body-color));
+}
+.accordion details .accordion-item-body p {
+  color: var(--accordion-body-paragraph-color, var(--accordion-body-color));
+}
+.accordion details .accordion-item-body ul,
+.accordion details .accordion-item-body ol,
+.accordion details .accordion-item-body li {
+  color: var(--accordion-body-list-color, var(--accordion-body-color));
+}
+.accordion details .accordion-item-body a {
+  color: var(--accordion-body-anchor-color, var(--accordion-body-color));
+}
+.accordion details .accordion-item-body a:hover {
+  color: var(--accordion-body-anchor-hover-color, var(--accordion-body-anchor-color, var(--accordion-body-color)));
+}
+.accordion details .accordion-item-body a:active {
+  color: var(--accordion-body-anchor-active-color, var(--accordion-body-anchor-color, var(--accordion-body-color)));
+}
 .accordion details:not([open]) .accordion-item-body {
   display: none;
 }
+.accordion.no-motion details summary {
+  transition: none;
+}
+.accordion.no-motion details summary::after {
+  transition: none;
+}
 
-.accordion details[open] .accordion-item-body {
-  border-top: var(--weight-s) solid var(--color-grey-200);
-  background-color: var(--background-color);
+.keyfocus .accordion summary:focus, .keyfocus .accordion summary:focus-within {
+  outline: var(--focus-outline, 3px solid var(--color-brand-primary, #de1219));
 }

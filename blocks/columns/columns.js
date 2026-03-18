@@ -6,6 +6,8 @@
  * - Automatically detects and classifies image columns
  */
 
+import { readVariant } from '../../scripts/scripts.js';
+
 /**
  * Decorates the columns block
  * @param {Element} block The columns block element
@@ -21,6 +23,8 @@ export function decorate(block, options = {}) {
   block.dispatchEvent(new CustomEvent('columns:before', { detail: ctx }));
 
   // === COLUMNS BLOCK LOGIC ===
+  readVariant(block);
+
   const cols = [...block.firstElementChild.children];
   block.classList.add(`columns-${cols.length}-cols`);
 

@@ -1,0 +1,20 @@
+footer {
+  background-color: var(--light-color);
+  font-size: var(--body-font-size-xs);
+}
+
+footer .footer > div {
+  margin: auto;
+  max-width: var(--layout-max-width-content);
+  padding: var(--spacing-040) var(--spacing-024) var(--spacing-024);
+}
+
+footer .footer p {
+  margin: 0;
+}
+
+@media (width >= 900px) {
+  footer .footer > div {
+    padding: var(--spacing-040) var(--spacing-032) var(--spacing-024);
+  }
+}
