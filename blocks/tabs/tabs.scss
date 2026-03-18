@@ -1,4 +1,3 @@
-@charset "UTF-8";
 .tabs {
   position: relative;
 }
@@ -16,11 +15,13 @@
     font-size: var(--body-font-size-s);
   }
 }
+
 @media (width >= 900px) {
   .tabs .tabs-list {
     font-size: var(--body-font-size-m);
   }
 }
+
 .tabs .tabs-list button {
   flex: 0 0 max-content;
   margin: 0;
@@ -43,11 +44,11 @@
   margin: 0;
 }
 
-.tabs .tabs-list button:hover:not([aria-selected=true]) {
+.tabs .tabs-list button:hover:not([aria-selected='true']) {
   background-color: var(--color-neutral-300);
 }
 
-.tabs .tabs-list button[aria-selected=true] {
+.tabs .tabs-list button[aria-selected='true'] {
   border-bottom: 1px solid var(--background-color);
   background-color: var(--background-color);
   cursor: initial;
@@ -59,6 +60,7 @@
     border-bottom: none;
   }
 }
+
 .tabs .tabs-panel {
   /* Negative margin overlaps with tab list border for seamless visual alignment */
   margin-top: -1px;
@@ -67,18 +69,19 @@
   overflow: auto;
 }
 
-.tabs .tabs-panel[aria-hidden=true] {
+.tabs .tabs-panel[aria-hidden='true'] {
   /* Use visibility instead of position to avoid transition jump */
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
+
   /* Remove from layout flow */
   position: absolute;
   width: 100%;
   height: 0;
 }
 
-.tabs .tabs-panel[aria-hidden=false] {
+.tabs .tabs-panel[aria-hidden='false'] {
   visibility: visible;
   opacity: 1;
   pointer-events: auto;
@@ -97,11 +100,11 @@
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 }
 
-.tabs-transition-slide .tabs-panel[aria-hidden=false] {
+.tabs-transition-slide .tabs-panel[aria-hidden='false'] {
   transform: translateX(0);
 }
 
-.tabs-transition-slide .tabs-panel[aria-hidden=true] {
+.tabs-transition-slide .tabs-panel[aria-hidden='true'] {
   transform: translateX(-20px);
 }
 
@@ -119,6 +122,7 @@
     transition: none !important;
   }
 }
+
 /* Vertical tabs: Stack tabs list and panels horizontally */
 .tabs-vertical {
   display: flex;
@@ -147,13 +151,13 @@
   border-bottom: 1px solid var(--color-border, #dadada);
 }
 
-.tabs-vertical .tabs-list button[aria-selected=true] {
+.tabs-vertical .tabs-list button[aria-selected='true'] {
   border-right: 1px solid var(--background-color);
   border-bottom: 1px solid var(--color-border, #dadada);
   background-color: var(--background-color);
 }
 
-.tabs-vertical .tabs-list button[aria-selected=true]:last-child {
+.tabs-vertical .tabs-list button[aria-selected='true']:last-child {
   border-bottom: 1px solid var(--color-border, #dadada);
 }
 
@@ -164,7 +168,7 @@
   width: auto;
 }
 
-.tabs-vertical .tabs-panel[aria-hidden=true] {
+.tabs-vertical .tabs-panel[aria-hidden='true'] {
   /* Override base absolute positioning for vertical tabs */
   position: absolute;
   width: 0;
@@ -172,7 +176,7 @@
   overflow: hidden;
 }
 
-.tabs-vertical .tabs-panel[aria-hidden=false] {
+.tabs-vertical .tabs-panel[aria-hidden='false'] {
   position: relative;
   width: auto;
   height: auto;
@@ -189,7 +193,7 @@
   display: none; /* Hide desktop tablist */
 }
 
-.tabs.mobile-accordion button[role=tab] {
+.tabs.mobile-accordion button[role='tab'] {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -206,24 +210,24 @@
   transition: background-color 0.2s;
 }
 
-.tabs.mobile-accordion button[role=tab]:last-of-type {
+.tabs.mobile-accordion button[role='tab']:last-of-type {
   border-bottom: 1px solid var(--color-border, #dadada);
 }
 
-.tabs.mobile-accordion button[role=tab]::after {
-  content: "+";
+.tabs.mobile-accordion button[role='tab']::after {
+  content: '+';
   font-size: 1.5em;
   line-height: 1;
   transition: transform 0.2s;
 }
 
-.tabs.mobile-accordion button[role=tab][aria-expanded=true] {
+.tabs.mobile-accordion button[role='tab'][aria-expanded='true'] {
   background-color: var(--background-color);
   font-weight: bold;
 }
 
-.tabs.mobile-accordion button[role=tab][aria-expanded=true]::after {
-  content: "−";
+.tabs.mobile-accordion button[role='tab'][aria-expanded='true']::after {
+  content: '−';
 }
 
 .tabs.mobile-accordion .tabs-panel {
@@ -237,6 +241,6 @@
   border-bottom: 1px solid var(--color-border, #dadada);
 }
 
-.tabs.mobile-accordion .tabs-panel[aria-hidden=true] {
+.tabs.mobile-accordion .tabs-panel[aria-hidden='true'] {
   display: none;
 }

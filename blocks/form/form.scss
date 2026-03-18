@@ -27,17 +27,20 @@
     grid-template-columns: repeat(2, auto);
     gap: 0.25em var(--spacing-024);
   }
+
   .form form > .selection-wrapper + .selection-wrapper,
   .form form fieldset .field-wrapper + .field-wrapper,
   .form form fieldset .selection-wrapper + .selection-wrapper {
     margin-top: 0;
   }
 }
+
 @media (width >= 900px) {
   .form fieldset {
     grid-template-columns: repeat(3, auto);
   }
 }
+
 .form label,
 .form fieldset > legend {
   margin-bottom: 0.25em;
@@ -94,10 +97,12 @@
   .form textarea {
     max-width: 50vw;
   }
+
   .form .button {
     max-width: max-content;
   }
 }
+
 @media (width >= 900px) {
   .form input,
   .form select,
@@ -105,6 +110,7 @@
     max-width: 33vw;
   }
 }
+
 .form .field-wrapper.selection-wrapper {
   grid-auto-flow: column;
   justify-content: start;
@@ -112,7 +118,7 @@
 }
 
 .form label[data-required]::after {
-  content: "*";
+  content: '*';
   color: firebrick;
   margin-inline-start: 1ch;
 }
@@ -140,7 +146,7 @@
 }
 
 .form .toggle-wrapper .slider::before {
-  content: "";
+  content: '';
   position: absolute;
   width: var(--sizing-024);
   height: var(--sizing-024);

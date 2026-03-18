@@ -1,5 +1,6 @@
 .table.block {
   width: 100%;
+
   --table-background-color: var(--surface-background-color, var(--background-color));
 }
 
@@ -65,11 +66,13 @@
     font-size: var(--body-font-size-s);
   }
 }
+
 @media (width >= 900px) {
   .table.block table {
     font-size: var(--body-font-size-m);
   }
 }
+
 .table.block caption {
   caption-side: top;
   text-align: left;
@@ -149,6 +152,7 @@
     z-index: 1;
   }
 }
+
 .table.block.no-header table tbody tr {
   border-top: 1px solid var(--border-color, currentColor);
 }

@@ -1,0 +1,50 @@
+@layer base {
+  :root,
+  .dropin-design {
+      --nav-item-desktop-min-width: var(--nav-dropdown-desktop-child-min-width, 170px);
+      --nav-item-min-width: var(--nav-dropdown-child-min-width);
+      --nav-item-desktop-padding: var(--nav-dropdown-desktop-child-padding, 0);
+      --nav-item-color: var(--nav-dropdown-color);
+      --nav-item-hover-color: var(--nav-dropdown-hover-color);
+      --nav-item-font: var(--nav-dropdown-child-font);
+      --nav-item-desktop-font: var(--nav-dropdown-desktop-child-font);
+      --nav-item-text-transform: var(--nav-dropdown-child-text-transform);
+      --nav-item-desktop-text-transform: var(--nav-dropdown-desktop-child-text-transform);
+      --nav-item-letter-spacing: var(--nav-dropdown-letter-spacing, 1px);
+  }
+}
+
+.navigation-item {
+    flex: 0 0 auto;
+    min-width: var(--nav-item-min-width, fit-content);
+    color: var(--nav-item-color);
+    font: var(--nav-item-font);
+    text-transform: var(--nav-item-text-transform);
+    letter-spacing: var(--nav-item-letter-spacing);
+
+    a:not(.dropin-design a) {
+        color: inherit;
+        font: inherit;
+        text-transform: inherit;
+        letter-spacing: inherit;
+        display: inline-block;
+        padding: var(--nav-item-padding, 0);
+
+        &:hover {
+            color: var(--nav-item-hover-color);
+        }
+    }
+}
+
+@media (width >= 768px) {
+    .navigation-item {
+        min-width: var(--nav-item-desktop-min-width);
+        text-transform: var(--nav-item-desktop-text-transform);
+        font: var(--nav-item-desktop-font);
+        grid-column: 1;
+
+        a:not(.dropin-design a) {
+            padding: var(--nav-item-desktop-padding);
+        }
+    }
+}

@@ -8,6 +8,8 @@ node_modules
 .pnpm-store/**
 .playwright-mcp/*
 
+.shopping
+
 helix-importer-ui
 .DS_Store
 *.bak
