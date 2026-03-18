@@ -6,7 +6,7 @@
  * NOTE: Autoplay is disabled
  */
 
-import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
+import { moveInstrumentation } from '../../scripts/scripts.js';
 
 const _loadScript = (url) => {
   const head = document.querySelector('head');

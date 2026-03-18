@@ -1,5 +1,5 @@
 import { readBlockConfig } from '../../scripts/aem.js';
-import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
+import { readVariant } from '../../scripts/scripts.js';
 
 // keep track globally of the number of tab blocks on the page
 let tabBlockCnt = 0;

@@ -73,7 +73,6 @@ async function loadFonts() {
   }
 }
 
-
 function decorateExternalLinks(main) {
   main.querySelectorAll('a[href]').forEach((a) => {
     try {
@@ -88,7 +87,6 @@ function decorateExternalLinks(main) {
     }
   });
 }
-
 
 function a11yLinks(main) {
   const links = main.querySelectorAll('a');
