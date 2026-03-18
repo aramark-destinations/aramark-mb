@@ -1,4 +1,5 @@
 import { readBlockConfig } from '../../scripts/aem.js';
+import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 
 // keep track globally of the number of tab blocks on the page
 let tabBlockCnt = 0;
@@ -308,6 +309,8 @@ export default async function decorate(block) {
     const useMobileLayout = stackOnMobile && isMobile;
     return useMobileLayout;
   };
+
+  readVariant(block);
 
   // Build tablist
   const tablist = document.createElement('div');

@@ -48,6 +48,20 @@ export function moveInstrumentation(from, to) {
 }
 
 /**
+ * Reads the first variant class from a block and sets block.dataset.variant.
+ * @param {Element} block
+ * @returns {string|undefined} The variant class, if any
+ */
+export function readVariant(block) {
+  const blockName = block.dataset.blockName || block.classList[0];
+  const variant = [...block.classList].find(
+    (c) => c !== 'block' && c !== blockName,
+  );
+  if (variant) block.dataset.variant = variant;
+  return variant;
+}
+
+/**
  * load fonts.css and set a session storage flag
  */
 async function loadFonts() {
@@ -59,18 +73,22 @@ async function loadFonts() {
   }
 }
 
-/**
- * Builds all synthetic blocks in a container element.
- * @param {Element} main The container element
- */
-function buildAutoBlocks() {
-  try {
-    // TODO: add auto block, if needed
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Auto Blocking failed', error);
-  }
+
+function decorateExternalLinks(main) {
+  main.querySelectorAll('a[href]').forEach((a) => {
+    try {
+      const url = new URL(a.href);
+      if (!['http:', 'https:'].includes(url.protocol)) return;
+      if (url.hostname !== window.location.hostname) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch {
+      // malformed href, skip
+    }
+  });
 }
+
 
 function a11yLinks(main) {
   const links = main.querySelectorAll('a');
@@ -93,7 +111,7 @@ export function decorateMain(main) {
   // hopefully forward compatible button decoration
   decorateButtons(main);
   decorateIcons(main);
-  buildAutoBlocks(main);
+  decorateExternalLinks(main);
   decorateSections(main);
   decorateBlocks(main);
   a11yLinks(main);
@@ -149,7 +167,6 @@ async function loadLazy(doc) {
   loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
 
-  loadCSS(`${window.hlx.codeBasePath}/dist/styles/lazy-styles.css`);
   loadFonts();
 }
 

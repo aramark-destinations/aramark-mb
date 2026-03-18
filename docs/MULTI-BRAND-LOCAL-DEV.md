@@ -74,8 +74,8 @@ Additional brands can be added locally via `.dev-brands.json` (gitignored) witho
 | `pnpm start:brand unbranded` | `main--unbranded--{org}.aem.page` | `/content/unbranded/` via path mappings |
 
 Brand detection in `site-resolver.js` uses two methods:
-1. **AEM metadata** (`brand` field in metadata sheet) — primary mechanism (production + local dev)
-2. **URL path** (`/brands/{brand}/`) — fallback for local development
+1. **AEM metadata** (`brand` field in metadata sheet) — primary mechanism for all environments
+2. **URL path** (`/brands/{brand}/`) — local development fallback only (when metadata is unavailable)
 
 ---
 

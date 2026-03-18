@@ -159,7 +159,15 @@ When a user visits `brandsite.com/about`:
 
 ### 6. Update Local Dev Config
 
-Add the brand's site-specific preview URL to `scripts/dev-brand.js`:
+Add the brand's site-specific preview URL. The preferred method is a local `.dev-brands.json` file (gitignored) so the committed file stays clean:
+
+```json
+{
+  "{brand-name}": "https://main--{brand-name}--{org}.aem.page"
+}
+```
+
+Alternatively, add it directly to the committed `BRAND_URLS` map in `scripts/dev-brand.js`:
 
 ```javascript
 const BRAND_URLS = {
@@ -167,6 +175,7 @@ const BRAND_URLS = {
   '{brand-name}': 'https://main--{brand-name}--{org}.aem.page',
 };
 ```
+
 
 Then run local dev:
 

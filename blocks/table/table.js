@@ -1,5 +1,5 @@
 import { readBlockConfig } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 
 const SCROLL_INSTRUCTIONS = 'Scroll horizontally to view all columns. Use Shift + mouse wheel or arrow keys.';
 const PLACEHOLDER_GLYPH = '-';
@@ -81,6 +81,7 @@ const buildTableStructure = (block, { captionOverride = '', hasHeaderRow } = {})
     if (!rows.includes(row)) row.remove();
   });
 
+  readVariant(block);
   const table = document.createElement('table');
   const tableHead = document.createElement('thead');
   const tableBody = document.createElement('tbody');

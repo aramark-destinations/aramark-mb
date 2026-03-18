@@ -11,7 +11,7 @@
  */
 
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 import { pushAnalyticsEvent } from '../../scripts/analytics.js';
 
 function sanitizeCSSClass(className) {
@@ -206,6 +206,7 @@ export function decorate(block, options = {}) {
   block.dispatchEvent(new CustomEvent('cards:before', { detail: ctx }));
 
   // === CARDS BLOCK LOGIC ===
+  readVariant(block);
   const containerCSSClass = block.getAttribute('data-css-class');
   if (containerCSSClass) {
     const sanitized = sanitizeCSSClass(containerCSSClass);

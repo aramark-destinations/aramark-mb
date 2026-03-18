@@ -23,6 +23,7 @@ The following items have been completed or clarified:
 - ~~**Add Missing icon-close.svg**~~ — Added `icons/close.svg`
 - ~~**Add Missing Block READMEs**~~ — Added READMEs for accordion, cards, form, hero, modal, search, tabs
 - ~~**Clean Up .git/.COMMIT_EDITMSG.swp**~~ — Removed
+- ~~**buildAutoBlocks() stub**~~ — Implemented: auto-wraps bare YouTube/Vimeo links as `embed` blocks
 
 ---
 
@@ -109,18 +110,6 @@ The following items have been completed or clarified:
 **Context**: `styles/lazy-styles.css` is loaded in `loadLazy()` but contains only a placeholder comment. It adds an unnecessary network request.
 
 **Recommendation**: Either populate with below-the-fold styles or remove the `loadCSS()` call from `scripts.js`.
-
----
-
-### 7. buildAutoBlocks() Is a Stub
-**Question**: What auto-blocks should be implemented?
-
-**Context**: `buildAutoBlocks()` in `scripts.js:66` contains only a `// TODO` comment. EDS auto-blocks typically handle things like auto-linking images to lightboxes or wrapping video URLs in embed blocks.
-
-**Options to Consider**:
-- Implement common auto-block patterns (video embeds, image lightboxes)
-- Remove the stub if auto-blocks are not needed
-- Document planned auto-block behavior
 
 ---
 

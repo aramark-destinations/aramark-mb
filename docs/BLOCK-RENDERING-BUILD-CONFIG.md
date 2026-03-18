@@ -716,7 +716,7 @@ The following App Builder capabilities are referenced throughout this architectu
 
 ## Unknowns & TODOs
 
-- `buildAutoBlocks()` is a stub — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #7
+- `buildAutoBlocks()` auto-wraps bare YouTube/Vimeo links as `embed` blocks; expand for additional patterns as needed
 - `lazy-styles.css` is empty — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #6
 - Zero test files exist (Jest + Playwright installed but unused) — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #15
 - `--nav-height` not in design token system — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #4

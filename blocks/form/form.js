@@ -6,6 +6,7 @@
  */
 
 import createField from './form-fields.js';
+import { readVariant } from '../../scripts/scripts.js';
 
 async function createForm(formHref, submitHref) {
   const { pathname } = new URL(formHref);
@@ -92,6 +93,7 @@ export async function decorate(block, options = {}) {
   block.dispatchEvent(new CustomEvent('form:before', { detail: ctx }));
 
   // === FORM BLOCK LOGIC ===
+  readVariant(block);
   const links = [...block.querySelectorAll('a')].map((a) => a.href);
   const formLink = links.find((link) => link.startsWith(window.location.origin) && link.endsWith('.json'));
   const submitLink = links.find((link) => link !== formLink);

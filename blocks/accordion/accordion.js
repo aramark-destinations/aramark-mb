@@ -12,7 +12,7 @@
  * TODO (accordion dev): Review whether subtitle (h5) column is used; remove if not needed
  */
 
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 
 /**
  * Decorates the accordion block
@@ -29,6 +29,7 @@ export function decorate(block, options = {}) {
   block.dispatchEvent(new CustomEvent('accordion:before', { detail: ctx }));
 
   // === ACCORDION BLOCK LOGIC ===
+  readVariant(block);
   const allSummaries = [];
   let accordionIndex = 0;
 

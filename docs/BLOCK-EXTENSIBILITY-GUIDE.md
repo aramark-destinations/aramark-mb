@@ -86,7 +86,7 @@ export default function decorate(block, options = {}) {
  * - Adds site-specific customizations via hooks
  */
 
-import decorate as decorateRoot from '../../../blocks/{block}/{block}.js';
+import decorateRoot from '../../../blocks/{block}/{block}.js';
 
 export default function decorate(block) {
   // Use root implementation with site-specific hooks

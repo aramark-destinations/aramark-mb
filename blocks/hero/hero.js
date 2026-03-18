@@ -5,6 +5,8 @@
  * - Implements core hero block functionality
  */
 
+import { readVariant } from '../../scripts/scripts.js';
+
 export function decorate(block, options = {}) {
   const ctx = { block, options };
 
@@ -13,6 +15,7 @@ export function decorate(block, options = {}) {
   block.dispatchEvent(new CustomEvent('hero:before', { detail: ctx }));
 
   // === HERO BLOCK LOGIC ===
+  readVariant(block);
   // The hero block is already properly structured by AEM
   // It contains a picture element and text content (typically h1)
   // No additional DOM manipulation needed for the base implementation

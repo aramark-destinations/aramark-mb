@@ -6,7 +6,15 @@
  * NOTE: Autoplay is disabled
  */
 
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
+
+const _loadScript = (url) => {
+  const head = document.querySelector('head');
+  const script = document.createElement('script');
+  script.src = url;
+  head.append(script);
+  return script;
+};
 
 // Constants
 const PROGRESS_CHECK_INTERVAL = 1000; // milliseconds
