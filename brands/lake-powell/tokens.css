@@ -9,22 +9,9 @@
    Only include tokens that DIFFER from root-tokens.css defaults.
    ========================================================================== */
 
-/* Montserrat — brand heading font (weight 700 used for all headings per Figma) */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
-
 :root {
   /* Brand Colors — replace with actual Lake Powell brand values */
   /* stylelint-disable-next-line color-hex-length */
   --color-primary: #0066cc;
   --color-secondary: #1a4d2e;
-
-  /* Heading font — Figma specifies Montserrat for all heading levels */
-  --heading-font-family: montserrat, montserrat-fallback, sans-serif;
-}
-
-/* Montserrat system-font fallback for CLS prevention */
-@font-face {
-  font-family: montserrat-fallback;
-  size-adjust: 94.5%;
-  src: local('Arial');
 }
