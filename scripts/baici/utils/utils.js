@@ -1,3 +1,13 @@
+import { getMetadata } from '../../aem.js';
+
+/**
+ * Gets the brand code from page metadata.
+ * @returns {string} Brand code from the 'brand' meta tag, or empty string if not set.
+ */
+export function getBrandCode() {
+  return getMetadata('brand');
+}
+
 /**
  * Fetches an image from a URL.
  * @param {string} href The URL of the image to fetch.
@@ -82,32 +92,6 @@ export function detectKeyboardNavigation() {
 
   document.addEventListener('keydown', handleKeyDown);
   document.addEventListener('mousedown', handleMouseDown);
-}
-
-/**
- * Extract brand code from hostname
- * Expected domain formats:
- * - Brand subdomains: kershaw.kaiusa.com → 'kershaw', shun.kaiusa.com → 'shun'
- * - Main domain: kaiusa.com → 'kai' (splits on non-alpha chars, takes first part)
- * - Edge cases: kai-usa.com → 'kai' (regex /[^a-z]/i splits on hyphen)
- * @returns {string} Brand code (e.g., 'kershaw', 'shun', 'kai')
- */
-export function getBrandCode() {
-  const { hostname } = window.location;
-  const parts = hostname.split('.');
-  // For subdomains like kershaw.kaiusa.com, return 'kershaw'
-  // For main domain like kaiusa.com, return 'kai'
-  if (parts.length > 2 && parts[0] !== 'www') {
-    return parts[0];
-  }
-  // Extract first alphabetic segment of the main domain.
-  // Examples:
-  //   - kaiusa.com    -> parts[0] = "kaiusa"   -> "kai"
-  //   - kai-usa.com   -> parts[0] = "kai-usa"  -> "kai"
-  //   - kaiusa.co.uk  -> parts[0] = "kaiusa"   -> "kai"
-  // This intentionally strips any non-alphabetic characters and everything
-  // after them, so only the leading alphabetic brand prefix is used.
-  return parts[0].split(/[^a-z]/i)[0].toLowerCase();
 }
 
 /**
