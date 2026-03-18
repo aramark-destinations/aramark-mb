@@ -10,6 +10,7 @@ import {
   decorateIcons,
 } from '../../scripts/aem.js';
 import { fetchPlaceholders } from '../../scripts/placeholders.js';
+import { readVariant } from '../../scripts/scripts.js';
 
 const searchParams = new URLSearchParams(window.location.search);
 
@@ -265,6 +266,7 @@ export async function decorate(block, options = {}) {
   block.dispatchEvent(new CustomEvent('search:before', { detail: ctx }));
 
   // === SEARCH BLOCK LOGIC ===
+  readVariant(block);
   const placeholders = await fetchPlaceholders();
   const source = block.querySelector('a[href]')?.href || `${window.hlx.codeBasePath}/query-index.json`;
   block.innerHTML = '';

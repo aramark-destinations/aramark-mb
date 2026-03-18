@@ -6,4 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <script nonce="aem" src="/scripts/aem.js" type="module"></script>
 <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
-<link rel="stylesheet" href="/styles/styles.css"/>
+<link rel="stylesheet" href="/dist/styles/styles.css"/>
+<!-- TODO: Narrow speculation rules scope
+  Current config prerenders ALL same-origin paths (href_matches: "/*"), which can cause
+  unnecessary bandwidth usage, backend load, and unintended JS side effects on low-value pages.
+  Future fix: restrict to known high-value navigation paths, e.g.:
+    {"href_matches": ["/menu/*", "/catering/*", "/locations/*"]}
+  Or switch lower-value paths from "prerender" to "prefetch" to reduce resource cost.
+  NOTE: eagerness "moderate" (hover/focus only) is intentional — do not change to "eager".
+  PSI is 100 on mobile + desktop; verify CWV before narrowing.
+-->
+<script nonce="aem" type="speculationrules">
+{"prerender":[{"source":"document","where":{"href_matches":"/*"},"eagerness":"moderate"}]}
+</script>

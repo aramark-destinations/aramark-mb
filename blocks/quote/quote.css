@@ -1,7 +1,7 @@
+@charset "UTF-8";
 /* 
  * Quote Block - Base Styles
  */
-
 .quote blockquote {
   margin: 0 auto;
   padding: 0 var(--spacing-024);
@@ -13,7 +13,6 @@
     padding: 0 var(--spacing-032);
   }
 }
-
 .quote blockquote .quote-quotation {
   font-size: 120%;
 }
@@ -40,6 +39,6 @@
 }
 
 .quote blockquote .quote-attribution p:first-child::before {
-  content: '—';
+  content: "—";
   padding-right: 0.5ch;
 }

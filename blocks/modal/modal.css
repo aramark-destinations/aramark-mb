@@ -11,7 +11,7 @@ body.modal-open {
   overflow-y: hidden;
   width: calc(100vw - var(--spacing-048));
   max-width: var(--layout-max-width-narrow);
-  max-height: calc(100dvh - (2 * var(--header-height)));
+  max-height: calc(100dvh - 2 * var(--header-height));
   padding: 0;
   border: var(--weight-s) solid var(--dark-color);
 }
@@ -21,7 +21,7 @@ body.modal-open {
   overflow-y: auto;
   overscroll-behavior: none;
   width: 100%;
-  max-height: calc(100dvh - (2 * var(--header-height)) - var(--spacing-048));
+  max-height: calc(100dvh - 2 * var(--header-height) - var(--spacing-048));
   padding: var(--spacing-024);
   padding-top: 0;
   margin-top: var(--spacing-048);
@@ -31,14 +31,12 @@ body.modal-open {
   .modal dialog {
     width: calc(100vw - var(--spacing-064));
   }
-  
   .modal dialog .modal-content {
-    max-height: calc(100dvh - (2 * var(--header-height)) - var(--spacing-064));
+    max-height: calc(100dvh - 2 * var(--header-height) - var(--spacing-064));
     padding: var(--spacing-032);
     padding-top: 0;
   }
 }
-
 .modal .close-button {
   position: absolute;
   top: 0;
@@ -55,14 +53,14 @@ body.modal-open {
 }
 
 .modal .close-button .icon.icon-close {
-  content: '';
+  content: "";
   width: var(--sizing-024);
   height: var(--sizing-024);
 }
 
 .modal .close-button .icon.icon-close::before,
 .modal .close-button .icon.icon-close::after {
-  content: '';
+  content: "";
   box-sizing: border-box;
   display: block;
   position: absolute;
@@ -76,7 +74,7 @@ body.modal-open {
 }
 
 .modal .close-button .icon.icon-close::after {
-  transform: translate(-50%, -50%) rotate(-45deg)
+  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .modal dialog .section {

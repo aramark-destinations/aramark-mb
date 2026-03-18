@@ -8,7 +8,8 @@ This project enables multiple vacation property sites to share a common library 
 
 ### Current Brands
 
-- **Lake Powell** - `/brands/lake-powell/` - Premier houseboat and watercraft rental destination
+- **Lake Powell** - Repoless EDS site (`lake-powell`) - Premier houseboat and watercraft rental destination
+- **Unbranded** - Repoless EDS site (`unbranded`) - Default/shared brand
 
 ### Architecture Benefits
 
@@ -33,11 +34,11 @@ This project enables multiple vacation property sites to share a common library 
 # Install dependencies
 pnpm install
 
-# Run local development server
-pnpm start
+# Run local development server for a specific brand
+pnpm start:brand lake-powell
 
-# Access site locally
-open http://localhost:3000/brands/lake-powell/
+# Or for unbranded
+pnpm start:brand unbranded
 ```
 
 ## Project Structure
@@ -128,7 +129,7 @@ head.html → styles.css → fixed-tokens.css → root-tokens.css   (static @imp
 scripts.js → site-resolver.js → loadCSS(brand/tokens.css)      (runtime JS injection)
 ```
 
-Brand detection: AEM page metadata `brand` field (production) or URL path `/brands/{brand}/` (local dev).
+Brand detection: AEM page metadata `brand` field (production) or URL path `/brands/{brand}/` (local dev fallback).
 
 ## Development Workflow
 
@@ -169,6 +170,7 @@ See: `docs/BRAND-SETUP-GUIDE.md` for the complete process.
 ## Available Blocks
 
 - **Accordion** - Collapsible content sections
+- **Banner** - Dismissible announcement bar with rotating slides
 - **Cards** - Grid of content cards with images
 - **Carousel** - Image/content carousel
 - **Columns** - Multi-column layouts
@@ -234,7 +236,7 @@ pnpm lint:css      # CSS linting
 
 EDS deploys automatically on merge to `main`. No manual deployment commands needed.
 
-- **Branch Preview**: Every branch gets a preview at `https://{branch}--aramark-mb--{org}.aem.page/`
+- **Branch Preview**: Each brand site gets its own preview at `https://{branch}--{brand}--{org}.aem.page/`
 - **Production**: Merge to `main` → automatic deployment to edge network
 - **Rollback**: `git revert` + merge to `main`
 
@@ -257,7 +259,7 @@ EDS deploys automatically on merge to `main`. No manual deployment commands need
 
 ### Adding a New Brand
 
-Follow the [Brand Setup Guide](docs/BRAND-SETUP-GUIDE.md).
+Follow the [Brand Setup Guide](docs/BRAND-SETUP-GUIDE.md). Each brand is registered as a repoless EDS site via the `admin.hlx.page` config API — no `fstab.yaml` changes needed.
 
 ## Support
 

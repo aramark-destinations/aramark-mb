@@ -1,0 +1,44 @@
+@layer base {
+  :root,
+  .dropin-design {
+    --nav-ue-max-width: 1240px;
+  }
+}
+main[data-aue-type=container] nav.navigation {
+  width: 100%;
+  max-width: var(--nav-ue-max-width);
+  margin: 80px auto 0;
+}
+main[data-aue-type=container] .navigation-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+main[data-aue-type=container] .navigation-section {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 40px;
+}
+main[data-aue-type=container] .navigation-section-submenu {
+  display: grid;
+  min-height: fit-content;
+  position: unset;
+}
+main[data-aue-type=container] .navigation-group-list {
+  max-height: 100%;
+  min-height: auto;
+}
+
+@media (max-width: 767px) {
+  main[data-aue-type=container] nav.navigation {
+    margin: 40px auto 0;
+  }
+  main[data-aue-type=container] .navigation-section {
+    display: initial;
+    margin-bottom: 40px;
+  }
+  main[data-aue-type=container] .navigation-section-submenu {
+    max-height: unset;
+  }
+}

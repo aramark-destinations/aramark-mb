@@ -12,16 +12,33 @@
       "image",
       "button",
       "title",
-      "hero",
+      "accordion",
+      "banner",
       "cards",
+      "carousel",
       "columns",
-      "fragment"
+      "embed",
+      "form",
+      "fragment",
+      "hero",
+      "modal",
+      "quote",
+      "search",
+      "table",
+      "tabs",
+      "video"
     ]
   },
   {
     "id": "accordion",
     "components": [
       "accordion-item"
+    ]
+  },
+  {
+    "id": "banner",
+    "components": [
+      "banner-item"
     ]
   },
   {
@@ -52,6 +69,23 @@
     ]
   },
   {
+    "id": "navigation-section",
+    "components": [
+      "navigation-group",
+      "navigation-item"
+    ]
+  },
+  {
+    "id": "navigation-group",
+    "components": [
+      "navigation-group-item"
+    ]
+  },
+  {
+    "id": "search",
+    "components": []
+  },
+  {
     "id": "table",
     "components": [
       "table-row"
@@ -73,6 +107,12 @@
     "id": "table-4-columns",
     "components": [
       "table-col-4"
+    ]
+  },
+  {
+    "id": "table-5-columns",
+    "components": [
+      "table-col-5"
     ]
   },
   {

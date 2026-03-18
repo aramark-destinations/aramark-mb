@@ -5,7 +5,8 @@ How to add a new brand site to the multi-brand EDS platform.
 ## Prerequisites
 
 - AEM Cloud author access (`author-p179307-e1885056.adobeaemcloud.com`)
-- GitHub repo write access (`BlueAcornInc/aramark-mb`)
+- GitHub repo write access (current temporary repo: `BlueAcornInc/aramark-mb`)
+- Auth token from `admin.hlx.page/login` (GitHub identity linked to the org)
 - EDS/Helix Admin access for custom domain configuration
 
 ## Architecture Overview
@@ -67,48 +68,120 @@ Create the brand token file at `brands/{brand-name}/tokens.css`:
 
 **Convention:** Only include tokens that differ from `styles/root-tokens.css` defaults. All tokens in `root-tokens.css` are overridable.
 
-### 4. Add fstab.yaml Mountpoint
+### 4. Register Repoless EDS Site
 
-Add a mountpoint entry for the brand's content:
+Each brand gets its own EDS site registration via the admin.hlx.page config API. This replaces the old `fstab.yaml` mountpoint approach.
 
-```yaml
-mountpoints:
-  # ... existing mountpoints ...
+**Step 4a: Create the site (PUT)**
 
-  /brands/{brand-name}:
-    url: "https://author-p179307-e1885056.adobeaemcloud.com/content/{brand-name}"
-    type: "markup"
-    suffix: ".html"
+```bash
+curl -s -X PUT \
+  "https://admin.hlx.page/config/{org}/sites/{brand-name}.json" \
+  -H "x-auth-token: <your-github-auth-token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "version": 1,
+    "code": { "owner": "{org}", "repo": "{repo}" },
+    "content": {
+        "source": {
+            "url": "https://author-p179307-e1885056.adobeaemcloud.com",
+            "type": "markup",
+            "suffix": ".html"
+        }
+    }
+}'
 ```
 
-The path `/brands/{brand-name}` must match:
-- The `brand` metadata value (step 2)
-- The repo directory name (step 3)
+Expected: HTTP 201 Created. If 409, the site already exists.
+
+**Step 4b: Apply access config (POST)**
+
+```bash
+curl -s -X POST \
+  "https://admin.hlx.page/config/{org}/sites/{brand-name}/access.json" \
+  -H "x-auth-token: <your-github-auth-token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "admin": {
+        "role": {
+            "admin": ["<admin-emails>"],
+            "config_admin": ["<tech-account>@techacct.adobe.com"]
+        },
+        "requireAuth": "auto"
+    }
+}'
+```
+
+**Step 4c: Apply path mappings (POST)**
+
+```bash
+curl -s -X POST \
+  "https://admin.hlx.page/config/{org}/sites/{brand-name}/public.json" \
+  -H "x-auth-token: <your-github-auth-token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "paths": {
+        "mappings": ["/content/{brand-name}/:/"],
+        "includes": ["/content/{brand-name}/"]
+    }
+}'
+```
+
+**Step 4d: Verify**
+
+```bash
+curl -s "https://admin.hlx.page/config/{org}/sites/{brand-name}.json" \
+  -H "x-auth-token: <your-github-auth-token>"
+```
+
+Confirm all sections (code, content, access, public) are present.
+
+> **API notes:**
+> - Org ID must be **lowercase** in URL paths
+> - `"version": 1` is required in the initial PUT payload
+> - Auth token must come from the **GitHub identity** linked to the org (not Adobe identity)
+> - Use `-v` flag to see `x-error` header when debugging 400s (no response body)
 
 ### 5. Configure Custom Domain (Production)
 
-In EDS/Helix Admin, map the custom domain to the brand's content path:
+In EDS/Helix Admin, map the custom domain to the brand site:
 
-1. Go to Helix Admin for the `aramark-mb` project
-2. Add custom domain (e.g., `brandsite.com`)
-3. Map it to the `/brands/{brand-name}` path prefix
-4. EDS will serve content from the `/brands/{brand-name}` mountpoint on this domain
+1. The brand's repoless site is already registered (step 4)
+2. Add custom domain (e.g., `brandsite.com`) for the site
+3. The `paths.mappings` config (`/content/{brand-name}/:/`) maps AEM content to root
 
 When a user visits `brandsite.com/about`:
-- EDS internally resolves to `/brands/{brand-name}/about`
+- EDS routes to the `{brand-name}` site
+- Path mappings resolve `/about` to `/content/{brand-name}/about` in AEM
 - The page's metadata includes `brand: {brand-name}` (from the metadata sheet)
 - `scripts.js` reads the metadata, loads `/brands/{brand-name}/tokens.css`
 - Brand tokens override root tokens via CSS cascade
 
-### 6. Local Development
+### 6. Update Local Dev Config
 
-Access the brand site locally via path prefix:
+Add the brand's site-specific preview URL. The preferred method is a local `.dev-brands.json` file (gitignored) so the committed file stays clean:
 
+```json
+{
+  "{brand-name}": "https://main--{brand-name}--{org}.aem.page"
+}
 ```
-http://localhost:3000/brands/{brand-name}/
+
+Alternatively, add it directly to the committed `BRAND_URLS` map in `scripts/dev-brand.js`:
+
+```javascript
+const BRAND_URLS = {
+  // ... existing brands ...
+  '{brand-name}': 'https://main--{brand-name}--{org}.aem.page',
+};
 ```
 
-`site-resolver.js` detects the brand from the URL path and loads the brand token file. This works identically to production behavior.
+
+Then run local dev:
+
+```bash
+pnpm start:brand {brand-name}
+```
 
 ## Overridable Tokens
 

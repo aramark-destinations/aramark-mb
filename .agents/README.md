@@ -32,7 +32,7 @@ Rapidly scaffolds a new brand site in the aramark-mb 2-tier multi-site framework
 **What it does:**
 1. Creates `brands/{brand-name}/` directory structure
 2. Generates `tokens.css` with brand color and typography variables
-3. Adds the `fstab.yaml` mountpoint for AEM content delivery
+3. Registers the brand as a repoless EDS site via the `admin.hlx.page` config API
 4. Creates brand `README.md` from the reference template
 5. Optionally sets up block overrides and `config.json` for integrations
 

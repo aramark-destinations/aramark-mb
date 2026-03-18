@@ -4,14 +4,20 @@ A multi-brand Adobe Edge Delivery Services (EDS) website platform for Aramark MB
 
 ## Environments
 
-- **Preview:** https://staging--aramark-mb--blueacorninc.aem.page/
-- **Live:** https://main--aramark-mb--blueacorninc.aem.live/
+Each brand is a separate repoless EDS site with its own preview/live URLs:
+
+- **Preview:** `https://main--{brand}--blueacorninc.aem.page/`
+- **Live:** `https://main--{brand}--blueacorninc.aem.live/`
+
+Example (Lake Powell):
+- **Preview:** https://main--lake-powell--blueacorninc.aem.page/
+- **Live:** https://main--lake-powell--blueacorninc.aem.live/
 
 ## Project Structure
 
 ```
 eds/
-├── blocks/            # Shared block library (16 blocks)
+├── blocks/            # Shared block library (20 blocks)
 ├── brands/            # Per-brand token overrides
 │   └── lake-powell/   # Lake Powell brand tokens
 ├── docs/              # Developer documentation
@@ -45,13 +51,12 @@ pnpm install
 | `pnpm test` | Run Jest unit tests |
 | `pnpm test:coverage` | Run tests with coverage report |
 | `pnpm test:watch` | Run tests in watch mode |
-| `pnpm build:json` | Build Universal Editor JSON configs from model partials |
 
 ## Local Development
 
 1. Install the [AEM CLI](https://github.com/adobe/helix-cli): `npm install -g @adobe/aem-cli`
 2. Install dependencies: `pnpm install`
-3. Start the dev server: `pnpm start` (opens `http://localhost:3000`)
+3. Start the dev server for a brand: `pnpm start:brand {brand}` (opens `http://localhost:3000` proxying that brand's EDS site)
 
 ## Architecture
 
@@ -75,11 +80,11 @@ The platform supports multiple brand sites sharing a common block library with b
 
 ### Universal Editor Models
 
-Block schemas live as JSON partials (`models/_*.json`) and are merged into root-level config files via `pnpm build:json`. A pre-commit hook automatically rebuilds these when partials change.
+Block schemas live as `_blockname.json` co-located inside each block directory (`blocks/{block}/_*.json`). Shared non-block schemas (page, section, image, title, text, button) live in `models/`. The root `component-*.json` files reference all schemas directly via AEM's native include syntax — no build step required.
 
 ## Blocks
 
-accordion, cards, carousel, columns, embed, footer, form, fragment, header, hero, modal, quote, search, table, tabs, video
+accordion, cards, carousel, columns, embed, footer, form, fragment, header, hero, modal, navigation, navigation-group, navigation-item, quote, search, table, tabs, ugc-gallery, video
 
 Each block supports lifecycle hooks (`onBefore`/`onAfter`) and dispatches custom DOM events for extensibility. See individual block `README.md` files for details.
 

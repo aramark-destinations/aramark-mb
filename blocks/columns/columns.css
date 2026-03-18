@@ -25,9 +25,9 @@
     flex-direction: unset;
     gap: var(--spacing-024);
   }
-
   .columns > div > div {
     flex: 1;
     order: unset;
   }
 }
+

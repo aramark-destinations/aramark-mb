@@ -1,126 +1,123 @@
 # Multi-Brand Local Development & EDS Configuration
 
-## Problem
+## Architecture: Repoless Multi-Brand
 
-Local development for brand-specific sites (e.g., `http://localhost:3000/brands/lake-powell/`) returns 404. The root cause is that the Edge Delivery cloud configuration in AEM is scoped to `/conf/lake-powell`, meaning the `franklin.delivery` endpoint only serves content for `/content/lake-powell`. Adding a `/brands/lake-powell` mountpoint in `fstab.yaml` fails because it double-nests the content path.
+Each brand is registered as its own **repoless EDS site** via the `admin.hlx.page` config API. All sites share one code repository but have independent content path mappings, access controls, and preview URLs.
 
-## Current State
+This replaces the previous `fstab.yaml` mountpoint approach.
 
 ### AEM Content Structure
 
 ```
 /content/
-├── lake-powell/        ← current brand
-└── {future-brand}/     ← sibling brands
+├── lake-powell/        ← registered EDS site
+├── unbranded/          ← registered EDS site
+└── {future-brand}/     ← register via admin API
 ```
 
-### EDS Cloud Configuration
+### AEM Cloud Configuration
 
-- **Location**: `/conf/lake-powell`
-- **Scope**: Only `/content/lake-powell`
-- **Repo**: `blueacorninc/aramark-mb`
+- **Location**: `/conf/mb-root`
+- **Scope**: Shared across all brands (all content trees reference this config)
+- **Project Type**: `aem.live with repoless config setup`
+- **Organization**: `BlueAcornInc` (temporary — will move to Aramark-owned org)
+- **Site Name**: `aramark-mb` (temporary repo name)
+- **Branch**: `main`
 
-Because the config is scoped to Lake Powell, the `franklin.delivery` endpoint at `/bin/franklin.delivery/BlueAcornInc/aramark-mb/main` resolves directly to `/content/lake-powell`. This means:
+> **Important**: The org and repo names are temporary. The repo will be copied to an Aramark-owned organization once provisioned. The AEM content structure (`/content/{brand}/`) is the permanent layer.
 
-- `localhost:3000/` (root mountpoint) serves Lake Powell content — works
-- `localhost:3000/brands/lake-powell/` appends `/content/lake-powell` to an endpoint already scoped to lake-powell — 404
+### EDS Site Registration (per brand)
 
-### fstab.yaml
+Each brand has a site config at `admin.hlx.page/config/{org}/sites/{brand}.json` containing:
 
-```yaml
-mountpoints:
-  /:
-    url: https://author-p179307-e1885056.adobeaemcloud.com/bin/franklin.delivery/BlueAcornInc/aramark-mb/main
-    type: markup
-    suffix: ".html"
+| Section | Purpose |
+|---------|---------|
+| `code` | Points to the shared code repo (owner + repo) |
+| `content` | AEM author URL as content source |
+| `access` | Admin emails + tech account for authorization |
+| `public.paths` | Maps `/content/{brand}/` to `/` (root) |
 
-  /brands/lake-powell:
-    url: https://author-p179307-e1885056.adobeaemcloud.com/bin/franklin.delivery/BlueAcornInc/aramark-mb/main/content/lake-powell
-    type: markup
-    suffix: ".html"
-```
-
-The `/brands/lake-powell` mountpoint will not resolve until the AEM EDS config is changed (see fix below).
+See [BRAND-SETUP-GUIDE.md](BRAND-SETUP-GUIDE.md) step 4 for the full registration process.
 
 ---
 
-## Fix: Shared EDS Configuration
+## Local Development
 
-### Step 1: Create Shared Config in AEM (Manual)
+### Brand-Aware Dev Server
 
-1. Go to **AEM Author → Tools → Cloud Services → Edge Delivery Services Configuration**
-2. Create a new configuration at `/conf/aramark-mb` (shared across all brands)
-3. Set the GitHub repo to `blueacorninc/aramark-mb`
-4. Associate all brand content trees with this shared config:
-   - `/content/lake-powell`
-   - `/content/{future-brand}`
-5. Deactivate the old `/conf/lake-powell` config once the shared one is verified
-
-After this, the `franklin.delivery` endpoint will serve content from any site under `/content/`, and the path `/content/lake-powell` in the mountpoint URL will resolve correctly.
-
-### Step 2: Verify fstab.yaml Mountpoints
-
-The current `fstab.yaml` mountpoints should work once the shared config is active:
-
-```yaml
-mountpoints:
-  /brands/lake-powell:
-    url: https://author-p179307-e1885056.adobeaemcloud.com/bin/franklin.delivery/BlueAcornInc/aramark-mb/main/content/lake-powell
-    type: markup
-    suffix: ".html"
-
-  # Add future brands:
-  # /brands/{brand-name}:
-  #   url: https://author-p179307-e1885056.adobeaemcloud.com/bin/franklin.delivery/BlueAcornInc/aramark-mb/main/content/{brand-name}
-  #   type: markup
-  #   suffix: ".html"
-```
-
-Whether to keep the root `/` mountpoint depends on whether you need non-brand pages at the root level.
-
-### Step 3: Trigger EDS Code Bus Update
-
-After pushing `fstab.yaml` changes:
+The local dev server uses `scripts/dev-brand.js` to launch a brand-specific EDS preview:
 
 ```bash
-# Re-read fstab.yaml
-curl -X POST https://admin.hlx.page/code/BlueAcornInc/aramark-mb/main
-
-# Preview lake-powell content
-curl -X POST https://admin.hlx.page/preview/BlueAcornInc/aramark-mb/main/brands/lake-powell/
+pnpm start:brand lake-powell
 ```
 
-### Step 4: Verify
+This maps to the brand's site-specific EDS preview URL (e.g., `https://main--lake-powell--{org}.aem.page`).
 
-Check the admin status endpoint — `sourceLocation` should be populated and `edit` should no longer be empty:
+### Brand URL Configuration
 
-```bash
-curl -s https://admin.hlx.page/status/blueacorninc/aramark-mb/main/brands/lake-powell/ | python3 -m json.tool
+Brand preview URLs are configured in `scripts/dev-brand.js`:
+
+```javascript
+const BRAND_URLS = {
+  'lake-powell': 'https://main--lake-powell--blueacorninc.aem.page',
+  'unbranded': 'https://main--unbranded--blueacorninc.aem.page',
+};
 ```
 
-Expected: `sourceLocation` shows `markup:https://author-p179307-e1885056.adobeaemcloud.com/content/lake-powell/index.html`
+Additional brands can be added locally via `.dev-brands.json` (gitignored) without modifying the committed file.
 
----
+### How Local Dev Works
 
-## How Local Dev Works After Fix
-
-| URL | Brand Detection | Tokens Loaded |
-|-----|----------------|---------------|
-| `localhost:3000/brands/lake-powell/` | URL path match → `lake-powell` | `/brands/lake-powell/tokens.css` |
-| `localhost:3000/brands/{future-brand}/` | URL path match → `{future-brand}` | `/brands/{future-brand}/tokens.css` |
+| Command | Preview URL | Content Source |
+|---------|-------------|---------------|
+| `pnpm start:brand lake-powell` | `main--lake-powell--{org}.aem.page` | `/content/lake-powell/` via path mappings |
+| `pnpm start:brand unbranded` | `main--unbranded--{org}.aem.page` | `/content/unbranded/` via path mappings |
 
 Brand detection in `site-resolver.js` uses two methods:
-1. **AEM metadata** (`brand` field in metadata sheet) — production on custom domains
-2. **URL path** (`/brands/{brand}/`) — local development fallback
+1. **AEM metadata** (`brand` field in metadata sheet) — primary mechanism for all environments
+2. **URL path** (`/brands/{brand}/`) — local development fallback only (when metadata is unavailable)
 
-## How Production Works After Fix
+---
 
-Each brand gets a custom domain mapped in EDS/Helix Admin:
-- `lakepowellresort.com` → `/brands/lake-powell`
-- `{futuresite}.com` → `/brands/{future-brand}`
+## How Production Works
+
+Each brand gets a custom domain mapped to its EDS site:
+- `lakepowellresort.com` → `lake-powell` site
+- `{futuresite}.com` → `{future-brand}` site
 
 When a user visits `lakepowellresort.com/about`:
-1. EDS resolves to `/brands/lake-powell/about`
-2. AEM metadata sheet provides `brand: lake-powell`
-3. `site-resolver.js` loads `/brands/lake-powell/tokens.css`
-4. Brand tokens override root tokens via CSS cascade
+1. EDS routes to the `lake-powell` site
+2. Path mappings resolve `/about` to `/content/lake-powell/about` in AEM
+3. AEM metadata sheet provides `brand: lake-powell`
+4. `site-resolver.js` loads `/brands/lake-powell/tokens.css`
+5. Brand tokens override root tokens via CSS cascade
+
+---
+
+## Troubleshooting
+
+### Preview returns 404 after site registration
+
+Trigger a preview to initialize the content bus:
+
+```bash
+curl -X POST "https://admin.hlx.page/preview/{org}/{brand}/main/" \
+  -H "x-auth-token: <token>"
+```
+
+Check the `x-error` header (use `-v` flag) for details.
+
+### "not authorized to access resource" error
+
+- Verify the AEM cloud config (`mb-root`) is set to **"aem.live with repoless config setup"** project type
+- Verify the `config_admin` role in the site's access config includes the correct tech account
+- Verify the auth token comes from the **GitHub identity** (not Adobe identity)
+
+### Verifying site config
+
+```bash
+curl -s "https://admin.hlx.page/config/{org}/sites/{brand}.json" \
+  -H "x-auth-token: <token>"
+```
+
+Confirm all sections (code, content, access, public.paths) are present and correct.
