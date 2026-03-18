@@ -45,11 +45,5 @@
         }
       ]
     }
-  ],
-  "filters": [
-    {
-      "id": "banner",
-      "components": ["banner-item"]
-    }
   ]
 }

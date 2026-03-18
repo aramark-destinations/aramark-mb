@@ -87,13 +87,5 @@
         }
       ]
     }
-  ],
-  "filters": [
-    {
-      "id": "accordion",
-      "components": [
-        "accordion-item"
-      ]
-    }
   ]
 }

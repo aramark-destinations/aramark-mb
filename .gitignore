@@ -18,6 +18,7 @@ package-lock.json
 # Ignore .map files in scripts/__dropins__/ directory and all its subdirectories
 scripts/__dropins__/**/*.map
 .env
+scripts/dev-brand-config.js
 server.crt
 server.key
 test-results

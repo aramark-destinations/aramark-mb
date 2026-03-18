@@ -92,13 +92,5 @@
         }
       ]
     }
-  ],
-  "filters": [
-    {
-      "id": "tabs",
-      "components": [
-        "tabs-item"
-      ]
-    }
   ]
 }
