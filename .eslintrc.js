@@ -51,6 +51,12 @@ module.exports = {
       },
     },
     {
+      files: ['component-definition.json'],
+      rules: {
+        'xwalk/no-custom-resource-types': 'off',
+      },
+    },
+    {
       files: ['**/*.test.js', 'jest.setup.js', 'jest.config.js', 'babel.config.js'],
       env: {
         jest: true,

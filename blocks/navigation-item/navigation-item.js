@@ -1,7 +1,6 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { debounce } from '../../scripts/baici/utils/utils.js';
-import { getStore } from '../../scripts/commerce.js';
 import { updateSubMenuHeight } from '../navigation/navigation.js';
 
 function decorateMenuItem(parent) {
@@ -57,7 +56,6 @@ export default async function decorate(block) {
         level: 'item',
         label: linkEl.textContent.trim(),
         url: linkEl.href,
-        store: getStore() || null,
       },
     });
   });

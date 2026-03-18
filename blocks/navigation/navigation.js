@@ -1,6 +1,5 @@
 import { loadCSS, toCamelCase, readBlockConfig } from '../../scripts/aem.js';
 import { fetchSvg } from '../../scripts/baici/utils/utils.js';
-import { getStore } from '../../scripts/commerce.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 const isDesktop = window.matchMedia('(min-width: 768px)');
@@ -395,7 +394,6 @@ export async function autoBlockNavigationFragment(contain) {
               level: 'section',
               label: link.textContent.trim(),
               url: link.href,
-              store: getStore() || null,
             },
           });
         });

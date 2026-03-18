@@ -2,7 +2,6 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 import { readConfig, readKeyValueConfig, readUeConfig } from '../../scripts/baici/utils/config.js';
 import { fetchSvg, debounce } from '../../scripts/baici/utils/utils.js';
 import { extractAueConfig } from '../../scripts/aem.js';
-import { getStore } from '../../scripts/commerce.js';
 import { updateSubMenuHeight } from '../navigation/navigation.js';
 
 const MOBILE_MAX_BREAKPOINT = '767px';
@@ -121,7 +120,6 @@ function decorateGroupItem(item, anchorList, idx = null) {
         level: 'group-item',
         label: groupLiAnchor.textContent.trim(),
         url: groupLiAnchor.href,
-        store: getStore() || null,
       },
     });
   });
