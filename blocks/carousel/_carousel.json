@@ -58,5 +58,8 @@
         }
       ]
     }
+  ],
+  "filters": [
+    { "id": "carousel", "components": ["carousel-item"] }
   ]
 }

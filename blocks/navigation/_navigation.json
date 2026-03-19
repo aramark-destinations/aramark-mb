@@ -274,5 +274,9 @@
         }
       ]
     }
+  ],
+  "filters": [
+    { "id": "navigation-section", "components": ["navigation-group", "navigation-item"] },
+    { "id": "navigation-group",   "components": ["navigation-group-item"] }
   ]
 }
