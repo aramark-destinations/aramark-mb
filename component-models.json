@@ -75,6 +75,12 @@
         "component": "text",
         "name": "imageAlt",
         "label": "Alt Text"
+      },
+      {
+        "component": "checkbox",
+        "name": "imageAltFromDam",
+        "label": "Get Alternative Text from DAM",
+        "value": true
       }
     ]
   },
