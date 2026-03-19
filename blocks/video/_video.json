@@ -61,5 +61,8 @@
         }
       ]
     }
+  ],
+  "filters": [
+    { "id": "video", "components": [] }
   ]
 }

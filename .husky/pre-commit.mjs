@@ -30,7 +30,10 @@ if (stagedScss.length > 0) {
 // check if component config files were modified alongside model files and stage them
 const modifledPartials = modifiedFiles.filter((file) => file.match(/(^|\/)_.*.json/));
 if (modifledPartials.length > 0) {
+  console.log('JSON fragments changed, rebuilding component config...');
+  await run('pnpm build:json');
   await run('git add component-models.json component-definition.json component-filters.json');
+  console.log('Component config rebuilt and staged.');
 }
 
 // check if package.json is staged and generate package-lock.json

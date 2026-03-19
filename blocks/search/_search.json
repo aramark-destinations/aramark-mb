@@ -47,5 +47,8 @@
         }
       ]
     }
+  ],
+  "filters": [
+    { "id": "search", "components": [] }
   ]
 }

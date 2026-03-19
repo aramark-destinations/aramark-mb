@@ -101,5 +101,8 @@
         }
       ]
     }
+  ],
+  "filters": [
+    { "id": "cards", "components": ["card"] }
   ]
 }
