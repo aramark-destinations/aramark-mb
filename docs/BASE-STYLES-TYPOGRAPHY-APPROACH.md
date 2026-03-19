@@ -142,60 +142,7 @@ Should we audit all blocks before removing legacy tokens? Or can we map old → 
 
 ---
 
-## 5. Button styles exist in both files with conflicting values
 
-**Current situation:**
-
-`styles/styles.scss`:
-```scss
-a.button:any-link, button {
-  background-color: var(--link-color);       /* token-based */
-  border-radius: var(--button-border-radius);
-  padding: var(--button-padding-vertical) var(--button-padding-horizontal);
-}
-```
-
-`styles/typography.scss`:
-```scss
-a.button:any-link {
-  background-color: var(--c-color-blue-green-2);  /* ← old c-color variable, not a real token */
-  padding: 1.3rem 3.2rem;                         /* ← hardcoded, not a token */
-  text-transform: uppercase;                       /* ← not in Figma */
-}
-```
-
-**The problem:** If both load, the old `c-color-*` variables are undefined in the new token system — they resolve to `initial`, breaking button colours.
-
-**Question for lead:**
-Should all `c-color-*` variable references in `typography.scss` be replaced with the proper design tokens from `styles.scss`? This is required regardless of which file owns button styles.
-
----
-
-## 6. `body` font and size — Figma says Inter/18px, current code uses Roboto/22px
-
-**Current situation (`styles/styles.scss`):**
-```css
---body-font-family: roboto, roboto-fallback, sans-serif;
---body-font-size-m: 22px;
-```
-
-**Figma spec (Body 1 Light):**
-```
-Font: Inter
-Size: 18px
-Line-height: 1.556em
-Letter-spacing: -2%
-```
-
-**Question for lead:**
-Should we update the default `--body-font-family` to `inter` globally, or only for the Lake Powell brand via `brands/lake-powell/tokens.css`?
-
-- **Option A — Global change:** All brands use Inter by default; brands that need a different font override in their `tokens.css`
-- **Option B — Brand-scoped:** Keep Roboto as the default; Lake Powell overrides to Inter in `brands/lake-powell/tokens.css`
-
-Option B is safer for multi-brand — it avoids accidentally changing typography for brands that have not been designed with Inter.
-
----
 
 ## Summary of Decisions Needed
 
@@ -205,5 +152,3 @@ Option B is safer for multi-brand — it avoids accidentally changing typography
 | 2 | `typography.scss` as single source of truth for element styles? | Yes / Keep split |
 | 3 | Rename `--heading-line-height-heading` → `--heading-line-height`? | Yes / Keep both |
 | 4 | Legacy token cleanup strategy | Alias bridge now, migrate blocks in follow-up / Full cleanup now |
-| 5 | Replace `c-color-*` refs in `typography.scss` with design tokens? | Yes (required) |
-| 6 | Inter as global body font or Lake Powell brand-only? | Global / Brand-scoped |
