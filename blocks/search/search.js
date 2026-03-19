@@ -18,10 +18,10 @@ function findNextHeading(el) {
   let preceedingEl = el.parentElement.previousElement || el.parentElement.parentElement;
   let h = 'H2';
   while (preceedingEl) {
-    const lastHeading = [...preceedingEl.querySelectorAll('h1, h2, h3, h4, h5, h6')].pop();
+    const lastHeading = [...preceedingEl.querySelectorAll('h1, h2, h3, h4')].pop();
     if (lastHeading) {
       const level = parseInt(lastHeading.nodeName[1], 10);
-      h = level < 6 ? `H${level + 1}` : 'H6';
+      h = level < 4 ? `H${level + 1}` : 'H4';
       preceedingEl = false;
     } else {
       preceedingEl = preceedingEl.previousElement || preceedingEl.parentElement;

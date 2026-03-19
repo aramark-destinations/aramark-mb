@@ -13,7 +13,7 @@ export function decorate(block, options = {}) {
   block.dispatchEvent(new CustomEvent('title:before', { detail: ctx }));
 
   // === TITLE BLOCK LOGIC ===
-  // titleType is applied by AEM as the heading tag (h1–h6)
+  // titleType is applied by AEM as the heading tag (h1–h4)
   // No additional DOM manipulation needed for base implementation
 
   // lifecycle hook + event (after)

@@ -7,22 +7,22 @@ main {
 
 h1 {
     font-size: var(--heading-font-size-h1);
-    line-height: var(--heading-line-height-heading);
+    line-height: var(--heading-line-height);
 }
 
 h2 {
     font-size: var(--heading-font-size-h2);
-    line-height: var(--heading-line-height-heading);
+    line-height: var(--heading-line-height);
 }
 
 h3 {
     font-size: var(--heading-font-size-h3);
-    line-height: var(--heading-line-height-heading);
+    line-height: var(--heading-line-height);
 }
 
 h4 {
     font-size: var(--heading-font-size-h4);
-    line-height: var(--heading-line-height-heading);
+    line-height: var(--heading-line-height);
 }
 
 h1,
@@ -35,6 +35,7 @@ h4 {
     overflow-wrap: anywhere;
     font-weight: var(--heading-font-weight);
     font-family: var(--heading-font-family);
+    scroll-margin: var(--spacing-040);
 
     &:first-child {
         margin-top: 0;
@@ -51,9 +52,7 @@ h4 {
     }
 }
 
-h4,
-h5,
-h6 {
+h4 {
     & + h1,
     & + h2,
     & + h3 {

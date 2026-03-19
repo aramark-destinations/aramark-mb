@@ -122,9 +122,7 @@
 .accordion details .accordion-item-body h1,
 .accordion details .accordion-item-body h2,
 .accordion details .accordion-item-body h3,
-.accordion details .accordion-item-body h4,
-.accordion details .accordion-item-body h5,
-.accordion details .accordion-item-body h6 {
+.accordion details .accordion-item-body h4 {
   color: var(--accordion-body-heading-color, var(--accordion-body-color));
 }
 .accordion details .accordion-item-body p {

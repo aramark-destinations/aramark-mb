@@ -108,7 +108,7 @@ function createSlide(row, slideIndex, carouselId) {
     slide.append(column);
   });
 
-  const labeledBy = slide.querySelector('h1, h2, h3, h4, h5, h6');
+  const labeledBy = slide.querySelector('h1, h2, h3, h4');
   if (labeledBy) {
     slide.setAttribute('aria-labelledby', labeledBy.getAttribute('id'));
   }

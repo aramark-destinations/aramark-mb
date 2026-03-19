@@ -7,8 +7,8 @@ Please provide the ADO Ticket Number for the Ticket you are working on. If you a
 
 **REQUIRED:** Include before/after URLs to demonstrate your changes
 
-- **Before:** https://main--{{BRAND}}--blueacorninc.aem.live/
-- **After:** https://{{BRANCH}}--{{BRAND}}--blueacorninc.aem.live/
+- **Before:** https://main--unbranded--blueacorninc.aem.live/
+- **After:** https://{{BRANCH}}--unbranded--blueacorninc.aem.live/
 
 ---
 

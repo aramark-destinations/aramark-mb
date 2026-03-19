@@ -35,6 +35,9 @@ Should `typography.css` be explicitly imported inside `styles.scss`? And should 
 
 `fonts.scss` would remain separate since AEM loads it via a different mechanism (lazy font loading after LCP).
 
+**Resolution:**
+Implemented as proposed. Added `@import url('typography.css');` to `styles/styles.scss` immediately after the existing `@import url('fixed-tokens.css');`. The browser now loads `typography.css` as a CSS import when it loads `styles.css`. `fonts.css` remains separate, loaded by `scripts.js` via `loadFonts()`.
+
 ---
 
 ## 2. Typography styles exist in both `styles.scss` and `typography.scss` — which file should own them?
@@ -44,7 +47,7 @@ Should `typography.css` be explicitly imported inside `styles.scss`? And should 
 `styles/styles.scss` defines heading and body rules:
 ```scss
 /* styles/styles.scss */
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4 {
   font-family: var(--heading-font-family);
   line-height: var(--line-height-snug);  /* ← different value */
 }
@@ -71,7 +74,12 @@ Should `typography.scss` be the **single source of truth** for all element-level
 | File | Owns |
 |---|---|
 | `styles.scss` | `:root` token definitions, `@font-face` fallbacks, `body`, `header`, `.section` layout |
-| `typography.scss` | All element rules: `h1–h6`, `p`, `ul/ol`, `a`, `button`, `code`, forms, tables |
+| `typography.scss` | All element rules: `h1–h4`, `p`, `ul/ol`, `a`, `button`, `code`, forms, tables |
+
+**Resolution:**
+Implemented as proposed. Removed the h1–h4 combined block and individual font-size rules from `styles/styles.scss`. `typography.scss` is now the single source of truth for all element-level heading rules. `styles.scss` retains only `:root` token definitions, `@font-face` fallbacks, `body`, `header`, and `.section` layout.
+
+Additionally, `scroll-margin: var(--spacing-040)` was moved from the removed block in `styles.scss` into the combined heading rule in `typography.scss` so the property was not lost.
 
 ---
 
@@ -104,6 +112,9 @@ h1, h2, h3, h4 {
   line-height: var(--heading-line-height);  /* consistent reference */
 }
 ```
+
+**Resolution:**
+Implemented as proposed. `--heading-line-height-heading` was renamed to `--heading-line-height` in `styles/styles.scss`. All four references in `styles/typography.scss` (h1–h4) were updated to match.
 
 ---
 
@@ -140,15 +151,36 @@ Should we audit all blocks before removing legacy tokens? Or can we map old → 
 /* Remove once all blocks are migrated */
 ```
 
+**Resolution:**
+The bridge approach was not used. Instead, a full immediate cleanup was performed: all six legacy tokens (`--heading-font-size-xxl/xl/l/m/s/xs`) were removed from `styles.scss`, and every block reference was migrated directly to the new Figma-aligned tokens. The three affected blocks were:
+
+- `blocks/ugc-gallery/ugc-gallery.scss` — `--heading-font-size-xxl` → `--heading-font-size-h2`
+- `blocks/header/header.scss` — `--heading-font-size-s` → `--heading-font-size-h4`
+- `blocks/banner/banner.scss` — `--heading-font-size-s` → `--heading-font-size-h4`
+
+The ugc-gallery block also had a reference to `--heading-line-height-xxxl` which was never defined anywhere (an existing bug). This was replaced with `--heading-line-height`.
+
 ---
 
+## 5. Items not covered in this document
 
+The following decisions were made during implementation that this document did not anticipate:
+
+**h5 and h6 elements removed from scope**
+Initially, `--heading-font-size-h5` and `--heading-font-size-h6` tokens were created and h5/h6 element rules were added to `typography.scss` to complete the heading scale. This was subsequently reversed: h5 and h6 are not elements used in this project. All h5/h6 element rules were removed from `typography.scss`, the tokens were removed from `styles.scss`, and any remaining h5/h6 element references in blocks and JS files are being cleaned up.
+
+Where blocks previously used `--heading-font-size-s` (which mapped conceptually to h5), the replacement token is `--heading-font-size-h4` as a temporary placeholder, to be revisited during block development.
+
+**`banner` block converted from CSS to SCSS**
+`blocks/banner/banner.css` had no `.scss` source file — it was the only block in the project in this state. It was converted to `blocks/banner/banner.scss` so the build pipeline compiles it consistently with every other block. The compiled `banner.css` is now generated output, not a hand-edited source file.
+
+---
 
 ## Summary of Decisions Needed
 
-| # | Question | Options |
-|---|---|---|
-| 1 | Import `typography.css` inside `styles.scss`? | Yes (recommended) / No (keep separate) |
-| 2 | `typography.scss` as single source of truth for element styles? | Yes / Keep split |
-| 3 | Rename `--heading-line-height-heading` → `--heading-line-height`? | Yes / Keep both |
-| 4 | Legacy token cleanup strategy | Alias bridge now, migrate blocks in follow-up / Full cleanup now |
+| # | Question | Options | Decision |
+|---|---|---|---|
+| 1 | Import `typography.css` inside `styles.scss`? | Yes (recommended) / No (keep separate) | ✅ Yes |
+| 2 | `typography.scss` as single source of truth for element styles? | Yes / Keep split | ✅ Yes |
+| 3 | Rename `--heading-line-height-heading` → `--heading-line-height`? | Yes / Keep both | ✅ Yes |
+| 4 | Legacy token cleanup strategy | Alias bridge now, migrate blocks in follow-up / Full cleanup now | ✅ Full cleanup now |
