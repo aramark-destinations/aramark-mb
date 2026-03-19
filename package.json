@@ -6,6 +6,10 @@
   "scripts": {
     "build:css": "sass --style=expanded --no-source-map styles/:dist/styles/ blocks/:blocks/",
     "build:css:watch": "sass --style=expanded --no-source-map --watch styles/:dist/styles/ blocks/:blocks/",
+    "build:json": "npm-run-all -p build:json:models build:json:definitions build:json:filters",
+    "build:json:models": "merge-json-cli -i \"models/_component-models.json\" -o \"component-models.json\"",
+    "build:json:definitions": "merge-json-cli -i \"models/_component-definition.json\" -o \"component-definition.json\"",
+    "build:json:filters": "merge-json-cli -i \"models/_component-filters.json\" -o \"component-filters.json\"",
     "lint": "pnpm lint:js && pnpm lint:css",
     "lint:css": "stylelint \"blocks/**/*.css\" \"dist/styles/*.css\"",
     "lint:fix": "eslint . --ext .json,.js,.mjs --fix && stylelint \"blocks/**/*.css\" \"dist/styles/*.css\" --fix",
@@ -46,6 +50,7 @@
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
     "jest-junit": "^16.0.0",
+    "merge-json-cli": "^1.0.4",
     "npm-run-all": "4.1.5",
     "sass": "^1.98.0",
     "stylelint": "17.1.1",

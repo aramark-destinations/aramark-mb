@@ -72,6 +72,9 @@ importers:
       jest-junit:
         specifier: ^16.0.0
         version: 16.0.0
+      merge-json-cli:
+        specifier: ^1.0.4
+        version: 1.0.4
       npm-run-all:
         specifier: 4.1.5
         version: 4.1.5
@@ -3020,6 +3023,11 @@ packages:
   merge-descriptors@2.0.0:
     resolution: {integrity: sha512-Snk314V5ayFLhp3fkUREub6WtjBfPdCPY1Ln8/8munuLuiYhsABgBVWsozAG+MWMbVEvcdcpbi9R7ww22l9Q3g==}
     engines: {node: '>=18'}
+
+  merge-json-cli@1.0.4:
+    resolution: {integrity: sha512-LUHbIFh/aPh0MebiVEAcWRaqR6a5e+HjTp2LyDxwSAaNnPruAq+AWZukeieSi3HKHdrX1Wy6tUEZdSLS0KjwJA==}
+    engines: {node: '>=18.3.0'}
+    hasBin: true
 
   merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
@@ -7799,6 +7807,11 @@ snapshots:
   meow@14.0.0: {}
 
   merge-descriptors@2.0.0: {}
+
+  merge-json-cli@1.0.4:
+    dependencies:
+      fast-glob: 3.3.3
+      yargs-parser: 21.1.1
 
   merge-stream@2.0.0: {}
 
