@@ -15,7 +15,7 @@ Base implementation of the title/heading block with extensibility support.
 | Field | Type | Description |
 |-------|------|-------------|
 | Title | text | Heading text content |
-| Title Type | select | Heading level: h1, h2, h3, h4, h5, h6 (UE model updated to include h5/h6) |
+| Title Type | select | Heading level: h1, h2, h3, h4 |
 
 ## Usage
 
@@ -38,7 +38,7 @@ export default function decorate(block) {
   decorateBase(block, {
     onBefore: (ctx) => {
       // Add anchor ID from heading text
-      const heading = ctx.block.querySelector('h1, h2, h3, h4, h5, h6');
+      const heading = ctx.block.querySelector('h1, h2, h3, h4');
       if (heading) heading.id = heading.textContent.toLowerCase().replace(/\s+/g, '-');
     }
   });
