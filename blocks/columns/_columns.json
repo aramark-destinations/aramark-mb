@@ -39,6 +39,6 @@
   ],
   "filters": [
     { "id": "columns", "components": ["column"] },
-    { "id": "column",  "components": ["text", "image", "button", "title"] }
+    { "id": "column",  "components": ["text", "image", "button", "title", "table", "video"] }
   ]
 }
