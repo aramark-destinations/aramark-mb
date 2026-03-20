@@ -6,7 +6,7 @@
  * NOTE: Autoplay is disabled
  */
 
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 
 const _loadScript = (url) => {
   const head = document.querySelector('head');
@@ -739,6 +739,8 @@ export async function decorate(block, options = {}) {
   block.dispatchEvent(new CustomEvent('video:before', { detail: ctx, bubbles: true }));
 
   // === VIDEO BLOCK LOGIC ===
+  readVariant(block);
+
   // Check for required video link
   const linkElement = block.querySelector('a');
   if (!linkElement) {

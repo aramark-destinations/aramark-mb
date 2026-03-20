@@ -76,6 +76,29 @@ Create `/brands/{property}/blocks/button/button.js` to:
 - Implement custom analytics events
 - Add loading/disabled states
 
+## Variants
+
+- **primary** — Branded primary button style
+- **secondary** — Outlined/secondary button style
+
+## Accessibility
+
+- Renders as native `<a>` elements for built-in keyboard and screen reader support
+- Inherits link focus styles from global CSS
+- Button text provides accessible label; `title` attribute adds tooltip
+
+## Token Dependencies
+
+| Token | Purpose |
+|-------|---------|
+| `--spacing-002` | Vertical padding |
+| `--spacing-008` | Horizontal padding |
+| `--border-radius` | Button border radius |
+| `--link-color` | Default background and secondary border color |
+| `--link-hover-color` | Hover background |
+| `--background-color` | Default text color |
+| `--color-brand-primary` | Primary variant background |
+
 ## See Also
 
 - [Hero Block](../hero/README.md) - Hero with CTA button

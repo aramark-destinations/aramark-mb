@@ -20,7 +20,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('columns:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('columns:before', { detail: ctx, bubbles: true }));
 
   // === COLUMNS BLOCK LOGIC ===
   readVariant(block);
@@ -44,7 +44,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('columns:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('columns:after', { detail: ctx, bubbles: true }));
 }
 
 /**
