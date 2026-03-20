@@ -49,7 +49,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('${name}:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('${name}:before', { detail: ctx, bubbles: true }));
 
   // === ${name.toUpperCase()} BLOCK LOGIC ===
   readVariant(block);
@@ -57,7 +57,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('${name}:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('${name}:after', { detail: ctx, bubbles: true }));
 }
 
 export default (block) => decorate(block, window.${pascal}?.hooks);

@@ -16,7 +16,7 @@ export function decorate(block, options = {}) {
 
   // === TITLE BLOCK LOGIC ===
   readVariant(block);
-  // titleType is applied by AEM as the heading tag (h1–h6)
+  // titleType is applied by AEM as the heading tag (h1–h4), per the Universal Editor model
   // No additional DOM manipulation needed for base implementation
 
   // lifecycle hook + event (after)

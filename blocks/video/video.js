@@ -736,7 +736,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('video:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('video:before', { detail: ctx, bubbles: true }));
 
   // === VIDEO BLOCK LOGIC ===
   // Check for required video link
@@ -744,7 +744,7 @@ export async function decorate(block, options = {}) {
   if (!linkElement) {
     block.innerHTML = '<div class="video-error">Video source is required</div>';
     options.onAfter?.(ctx);
-    block.dispatchEvent(new CustomEvent('video:after', { detail: ctx }));
+    block.dispatchEvent(new CustomEvent('video:after', { detail: ctx, bubbles: true }));
     return;
   }
 
@@ -825,7 +825,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('video:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('video:after', { detail: ctx, bubbles: true }));
 }
 
 /**

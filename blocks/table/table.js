@@ -239,7 +239,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('table:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('table:before', { detail: ctx, bubbles: true }));
 
   // === TABLE BLOCK LOGIC ===
   const config = readBlockConfig(block) || {};
@@ -259,7 +259,7 @@ export async function decorate(block, options = {}) {
   });
   if (!structure) {
     options.onAfter?.(ctx);
-    block.dispatchEvent(new CustomEvent('table:after', { detail: ctx }));
+    block.dispatchEvent(new CustomEvent('table:after', { detail: ctx, bubbles: true }));
     return;
   }
 
@@ -273,7 +273,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('table:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('table:after', { detail: ctx, bubbles: true }));
 }
 
 /**

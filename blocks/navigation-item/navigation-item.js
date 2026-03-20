@@ -23,7 +23,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('navigation-item:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('navigation-item:before', { detail: ctx, bubbles: true }));
   const {
     title = 'Menu Item',
     link = '#',
@@ -76,9 +76,10 @@ export async function decorate(block, options = {}) {
   moveInstrumentation(block, li);
   block.replaceWith(li);
 
-  // lifecycle hook + event (after) — fires on detached block (block.replaceWith(li) above)
+  // lifecycle hook + event (after) — now operate on the final li element
+  ctx.block = li;
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('navigation-item:after', { detail: ctx }));
+  li.dispatchEvent(new CustomEvent('navigation-item:after', { detail: ctx, bubbles: true }));
 }
 
 /**

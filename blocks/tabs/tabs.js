@@ -196,7 +196,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('tabs:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('tabs:before', { detail: ctx, bubbles: true }));
 
   // === TABS BLOCK LOGIC ===
   tabBlockCnt += 1;
@@ -470,7 +470,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('tabs:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('tabs:after', { detail: ctx, bubbles: true }));
 }
 
 /**

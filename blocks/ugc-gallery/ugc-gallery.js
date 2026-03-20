@@ -14,7 +14,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('ugc-gallery:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('ugc-gallery:before', { detail: ctx, bubbles: true }));
 
   // === UGC-GALLERY BLOCK LOGIC ===
   const config = readBlockConfig(block);
@@ -22,7 +22,7 @@ export function decorate(block, options = {}) {
 
   if (!widgetId) {
     options.onAfter?.(ctx);
-    block.dispatchEvent(new CustomEvent('ugc-gallery:after', { detail: ctx }));
+    block.dispatchEvent(new CustomEvent('ugc-gallery:after', { detail: ctx, bubbles: true }));
     return;
   }
 
@@ -35,7 +35,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('ugc-gallery:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('ugc-gallery:after', { detail: ctx, bubbles: true }));
 }
 
 /**

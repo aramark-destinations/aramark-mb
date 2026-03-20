@@ -11,5 +11,5 @@ Dark = color: Text/Light/1
 Light = color: Text/Dark/1
 Light2 = color: Text/Dark/1
 Brand = color: Text/Light/1
-Tertiary = colore: Text/Light/1
+Tertiary = color: Text/Light/1
 Property-Defined Theme variables: n/a

@@ -138,7 +138,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('navigation-group:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('navigation-group:before', { detail: ctx, bubbles: true }));
   const groupItems = [];
   const configOptions = [
     {
@@ -239,9 +239,10 @@ export async function decorate(block, options = {}) {
     }, 100));
   });
 
-  // lifecycle hook + event (after) — fires on detached block (block.replaceWith(li) above)
+  // lifecycle hook + event (after) — fire on the final li element so listeners see the decorated DOM
+  ctx.block = li;
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('navigation-group:after', { detail: ctx }));
+  li.dispatchEvent(new CustomEvent('navigation-group:after', { detail: ctx, bubbles: true }));
 }
 
 /**
