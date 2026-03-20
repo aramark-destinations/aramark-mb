@@ -337,14 +337,6 @@ Requires admin login.
 
 ---
 
-## Configuration Endpoints Reference
-
-The Config Service manages all site configuration through `admin.hlx.page`. After migrating to the config service, the following files should be removed from GitHub and content sources as they are replaced by API-managed configuration: ([source](https://www.aem.live/docs/config-service-setup))
-
-**Remove from GitHub:** `fstab.yaml`, `robots.txt`, `tools/sidekick/config.json`, `helix-query.yaml`, `helix-sitemap.yaml`
-
-**Remove from content source:** `.helix/config.xlsx`, `.helix/headers.xlsx`
-
 ### Per-site configuration endpoints ([source](https://www.aem.live/docs/config-service-setup))
 
 | Configuration | Endpoint | Purpose |
