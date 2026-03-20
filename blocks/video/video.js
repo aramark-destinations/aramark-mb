@@ -726,12 +726,25 @@ const loadVideoEmbed = (block, link, poster = null, title = '') => {
  * Decorates video block
  * NO AUTOPLAY - autoplay is disabled
  * @param {HTMLElement} block - Block element to decorate
+ * @param {Object} options Configuration options
+ * @param {Function} options.onBefore Lifecycle hook called before decoration
+ * @param {Function} options.onAfter Lifecycle hook called after decoration
+ * @returns {Promise<void>}
  */
-export default async function decorate(block) {
+export async function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('video:before', { detail: ctx }));
+
+  // === VIDEO BLOCK LOGIC ===
   // Check for required video link
   const linkElement = block.querySelector('a');
   if (!linkElement) {
     block.innerHTML = '<div class="video-error">Video source is required</div>';
+    options.onAfter?.(ctx);
+    block.dispatchEvent(new CustomEvent('video:after', { detail: ctx }));
     return;
   }
 
@@ -809,4 +822,15 @@ export default async function decorate(block) {
     });
     observer.observe(block);
   }
+
+  // lifecycle hook + event (after)
+  options.onAfter?.(ctx);
+  block.dispatchEvent(new CustomEvent('video:after', { detail: ctx }));
 }
+
+/**
+ * Default export
+ * - Calls decorate()
+ * - Allows global hook injection via window.Video?.hooks
+ */
+export default (block) => decorate(block, window.Video?.hooks);
