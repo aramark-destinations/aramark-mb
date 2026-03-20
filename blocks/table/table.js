@@ -226,7 +226,22 @@ const createScrollWrapper = (table) => {
   return { wrapper, updateOverflowIndicators, cleanup };
 };
 
-export default async function decorate(block) {
+/**
+ * Decorates the table block
+ * @param {Element} block The table block element
+ * @param {Object} options Configuration options
+ * @param {Function} options.onBefore Lifecycle hook called before decoration
+ * @param {Function} options.onAfter Lifecycle hook called after decoration
+ * @returns {Promise<void>}
+ */
+export async function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('table:before', { detail: ctx, bubbles: true }));
+
+  // === TABLE BLOCK LOGIC ===
   const config = readBlockConfig(block) || {};
 
   if (config.classes) {
@@ -242,7 +257,11 @@ export default async function decorate(block) {
     captionOverride: captionFromConfig || captionFromDataset,
     hasHeaderRow: headerRowSetting,
   });
-  if (!structure) return;
+  if (!structure) {
+    options.onAfter?.(ctx);
+    block.dispatchEvent(new CustomEvent('table:after', { detail: ctx, bubbles: true }));
+    return;
+  }
 
   const { table, captionText } = structure;
   const { wrapper } = createScrollWrapper(table);
@@ -251,4 +270,15 @@ export default async function decorate(block) {
   else block.dataset.tableMissingCaption = 'true';
 
   block.replaceChildren(wrapper);
+
+  // lifecycle hook + event (after)
+  options.onAfter?.(ctx);
+  block.dispatchEvent(new CustomEvent('table:after', { detail: ctx, bubbles: true }));
 }
+
+/**
+ * Default export
+ * - Calls decorate()
+ * - Allows global hook injection via window.Table?.hooks
+ */
+export default (block) => decorate(block, window.Table?.hooks);

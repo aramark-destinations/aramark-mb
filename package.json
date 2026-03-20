@@ -19,7 +19,8 @@
     "start:brand": "node scripts/dev-brand.js",
     "test": "jest --workerThread=true --maxWorkers=2",
     "test:coverage": "jest --coverage --outputFile=./coverage.json --json --maxWorkers=2 --workerThreads=true",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "scaffold:block": "node tools/scaffold-block.js"
   },
   "repository": {
     "type": "git",
