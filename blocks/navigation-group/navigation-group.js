@@ -239,7 +239,7 @@ export async function decorate(block, options = {}) {
     }, 100));
   });
 
-  // lifecycle hook + event (after) — fire on the final li element so listeners see the decorated DOM
+  // lifecycle hook + event (after) — fire on the final li so listeners see the decorated DOM
   ctx.block = li;
   options.onAfter?.(ctx);
   li.dispatchEvent(new CustomEvent('navigation-group:after', { detail: ctx, bubbles: true }));
