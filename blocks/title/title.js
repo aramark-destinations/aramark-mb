@@ -5,20 +5,23 @@
  * - Implements core title block functionality
  */
 
+import { readVariant } from '../../scripts/scripts.js';
+
 export function decorate(block, options = {}) {
   const ctx = { block, options };
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('title:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('title:before', { detail: ctx, bubbles: true }));
 
   // === TITLE BLOCK LOGIC ===
+  readVariant(block);
   // titleType is applied by AEM as the heading tag (h1–h6)
   // No additional DOM manipulation needed for base implementation
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('title:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('title:after', { detail: ctx, bubbles: true }));
 }
 
 /**
