@@ -21,14 +21,16 @@ export function decorate(block, options = {}) {
     const img = picture.querySelector('img');
     const altText = block.dataset.imagealt || img?.alt || '';
 
-    const optimizedPicture = createOptimizedPicture(
-      img.src,
-      altText,
-      false,
-      [{ width: '375' }, { width: '768' }, { width: '1200' }],
-    );
-    moveInstrumentation(img, optimizedPicture.querySelector('img'));
-    picture.replaceWith(optimizedPicture);
+    if (img) {
+      const optimizedPicture = createOptimizedPicture(
+        img.src,
+        altText,
+        false,
+        [{ width: '375' }, { width: '768' }, { width: '1200' }],
+      );
+      moveInstrumentation(img, optimizedPicture.querySelector('img'));
+      picture.replaceWith(optimizedPicture);
+    }
   }
 
   // lifecycle hook + event (after)

@@ -5,7 +5,7 @@ Standalone image block with responsive picture output and Universal Editor autho
 ## Features
 
 - **Responsive image** output via `createOptimizedPicture` — generates `<source>` elements at 375, 768, and 1200px widths with WebP and fallback formats
-- **Alt text** applied from the authored `imageAlt` field, with optional auto-population from DAM asset metadata via the `imageAltFromDam` checkbox
+- **Alt text** applied from the authored `imageAlt` field; `imageAltFromDam` field is present in the model for future auto-population from DAM asset metadata (pending xwalk/UE support — see `docs/in-progress/BLOCK-TODOS.md`)
 - **UE instrumentation preserved** via `moveInstrumentation` when the picture element is replaced during decoration
 - **Lifecycle hooks** for site-level customization (onBefore/onAfter)
 - **Events** dispatched before and after decoration
@@ -16,7 +16,7 @@ Standalone image block with responsive picture output and Universal Editor autho
 |---|---|---|
 | Image | reference | DAM asset reference |
 | Alt Text | text | Accessible description of the image |
-| Get Alternative Text from DAM | checkbox | When checked, populates Alt Text from the DAM asset's metadata description and disables manual editing. Default: checked. |
+| Get Alternative Text from DAM | boolean | Intended to auto-populate Alt Text from the DAM asset's metadata description and disable manual editing. **Pending:** behavior depends on xwalk plugin support; not yet active. Default: checked. |
 
 ## Rendered Structure
 
@@ -57,11 +57,12 @@ import { decorate as decorateBase } from '../../blocks/image/image.js';
 export default function decorate(block) {
   decorateBase(block, {
     onBefore: (ctx) => {
-      // Example: force eager loading for above-the-fold images
-      ctx.block.querySelector('img')?.setAttribute('loading', 'eager');
+      // Example: inspect the original <img> before optimization
+      // e.g., read data attributes or log diagnostics
     },
     onAfter: (ctx) => {
-      // Example: attach lightbox behaviour
+      // Example: force eager loading for above-the-fold images
+      ctx.block.querySelector('img')?.setAttribute('loading', 'eager');
     },
   });
 }

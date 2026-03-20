@@ -31,9 +31,10 @@
           "label": "Alt Text"
         },
         {
-          "component": "checkbox",
+          "component": "boolean",
           "name": "imageAltFromDam",
           "label": "Get Alternative Text from DAM",
+          "valueType": "boolean",
           "value": true
         }
       ]
