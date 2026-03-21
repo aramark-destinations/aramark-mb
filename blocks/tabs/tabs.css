@@ -1,4 +1,10 @@
 @charset "UTF-8";
+:root {
+  --tabs-list-min-width: 200px;
+  --tabs-panel-padding: var(--spacing-024);
+  --tabs-accordion-icon-size: 1.5em;
+}
+
 .tabs {
   position: relative;
 }
@@ -24,7 +30,7 @@
 .tabs .tabs-list button {
   flex: 0 0 max-content;
   margin: 0;
-  border: 1px solid var(--color-border, #dadada);
+  border: 1px solid var(--color-border);
   border-radius: 0;
   padding: 0.5em;
   background-color: var(--color-neutral-200);
@@ -35,7 +41,7 @@
   text-overflow: unset;
   overflow: unset;
   white-space: unset;
-  transition: background-color 0.2s;
+  transition: background-color var(--transition-duration-fast);
   z-index: 1;
 }
 
@@ -62,8 +68,8 @@
 .tabs .tabs-panel {
   /* Negative margin overlaps with tab list border for seamless visual alignment */
   margin-top: -1px;
-  padding: 24px;
-  border: 1px solid var(--color-border, #dadada);
+  padding: var(--tabs-panel-padding);
+  border: 1px solid var(--color-border);
   overflow: auto;
 }
 
@@ -129,7 +135,7 @@
 .tabs-vertical .tabs-list {
   flex-direction: column;
   width: fit-content;
-  min-width: 200px;
+  min-width: var(--tabs-list-min-width);
   overflow: visible auto;
   z-index: 1;
 }
@@ -138,23 +144,23 @@
 .tabs-vertical .tabs-list button {
   width: 100%;
   text-align: left;
-  border: 1px solid var(--color-border, #dadada);
+  border: 1px solid var(--color-border);
   border-right: none;
 }
 
 /* stylelint-disable-next-line no-descending-specificity -- Modifier class intentionally overrides base hover styles */
 .tabs-vertical .tabs-list button:last-child {
-  border-bottom: 1px solid var(--color-border, #dadada);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .tabs-vertical .tabs-list button[aria-selected=true] {
   border-right: 1px solid var(--background-color);
-  border-bottom: 1px solid var(--color-border, #dadada);
+  border-bottom: 1px solid var(--color-border);
   background-color: var(--background-color);
 }
 
 .tabs-vertical .tabs-list button[aria-selected=true]:last-child {
-  border-bottom: 1px solid var(--color-border, #dadada);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .tabs-vertical .tabs-panel {
@@ -195,7 +201,7 @@
   justify-content: space-between;
   align-items: center;
   margin: 0;
-  border: 1px solid var(--color-border, #dadada);
+  border: 1px solid var(--color-border);
   border-bottom: none;
   padding: 1rem;
   background-color: var(--light-color);
@@ -203,16 +209,16 @@
   font-weight: bold;
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color var(--transition-duration-fast);
 }
 
 .tabs.mobile-accordion button[role=tab]:last-of-type {
-  border-bottom: 1px solid var(--color-border, #dadada);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .tabs.mobile-accordion button[role=tab]::after {
   content: "+";
-  font-size: 1.5em;
+  font-size: var(--tabs-accordion-icon-size);
   line-height: 1;
   transition: transform 0.2s;
 }
@@ -228,7 +234,7 @@
 
 .tabs.mobile-accordion .tabs-panel {
   margin: 0;
-  border: 1px solid var(--color-border, #dadada);
+  border: 1px solid var(--color-border);
   border-top: none;
   border-bottom: none;
 }

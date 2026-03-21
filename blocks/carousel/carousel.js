@@ -131,7 +131,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('carousel:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('carousel:before', { detail: ctx, bubbles: true }));
 
   // === CAROUSEL BLOCK LOGIC ===
   readVariant(block);
@@ -195,7 +195,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('carousel:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('carousel:after', { detail: ctx, bubbles: true }));
 }
 
 /**

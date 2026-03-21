@@ -21,7 +21,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('banner:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('banner:before', { detail: ctx, bubbles: true }));
 
   // === BANNER BLOCK LOGIC ===
   readVariant(block);
@@ -31,7 +31,7 @@ export async function decorate(block, options = {}) {
   if (sessionStorage.getItem(storageKey)) {
     block.closest('.section')?.remove();
     options.onAfter?.(ctx);
-    block.dispatchEvent(new CustomEvent('banner:after', { detail: ctx }));
+    block.dispatchEvent(new CustomEvent('banner:after', { detail: ctx, bubbles: true }));
     return;
   }
 
@@ -81,7 +81,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('banner:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('banner:after', { detail: ctx, bubbles: true }));
 }
 
 /**

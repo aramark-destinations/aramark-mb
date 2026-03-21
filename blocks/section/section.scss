@@ -40,11 +40,11 @@
 }
 
 .section.bg-light {
-  background-color: var(--color-neutral-50, #fff);
+  background-color: var(--color-neutral-50);
 }
 
 .section.bg-light-2 {
-  background-color: var(--color-neutral-100, #f5f5f5);
+  background-color: var(--color-neutral-100);
 }
 
 .section.bg-brand {
@@ -66,22 +66,22 @@
 
 /* Theme styles */
 .section.theme-dark {
-  --section-text-color: var(--color-neutral-50, #fff);
-  --section-heading-color: var(--color-neutral-50, #fff);
+  --section-text-color: var(--color-neutral-50);
+  --section-heading-color: var(--color-neutral-50);
 
   color: var(--section-text-color);
 }
 
 .section.theme-light {
-  --section-text-color: var(--color-neutral-900, #000);
-  --section-heading-color: var(--color-neutral-900, #000);
+  --section-text-color: var(--color-neutral-900);
+  --section-heading-color: var(--color-neutral-900);
 
   color: var(--section-text-color);
 }
 
 .section.theme-light-2 {
-  --section-text-color: var(--color-neutral-800, #333);
-  --section-heading-color: var(--color-neutral-800, #333);
+  --section-text-color: var(--color-neutral-800);
+  --section-heading-color: var(--color-neutral-800);
 
   color: var(--section-text-color);
 }

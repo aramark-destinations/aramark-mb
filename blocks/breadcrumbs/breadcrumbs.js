@@ -1,10 +1,11 @@
 import { getMetadata } from '../../scripts/aem.js';
+import { readVariant } from '../../scripts/scripts.js';
 import { getBrandCode } from '../../scripts/baici/utils/utils.js';
 
 /**
  * Local storage key for breadcrumb category context
  */
-const STORAGE_KEY = 'kaiBreadcrumbContext';
+const STORAGE_KEY = 'breadcrumb-context';
 
 /**
  * Time-to-live for stored category context (30 seconds)
@@ -312,8 +313,17 @@ function dispatchBreadcrumbContextRestored(context) {
 /**
  * Decorate the breadcrumbs block
  * @param {HTMLElement} block The breadcrumbs block element
+ * @param {object} options Optional lifecycle hooks
  */
-export default async function decorate(block) {
+export async function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('breadcrumbs:before', { detail: ctx, bubbles: true }));
+
+  readVariant(block);
+
   try {
     // Read page metadata
     let hierarchyData = getMetadata('breadcrumb');
@@ -427,4 +437,10 @@ export default async function decorate(block) {
     block.innerHTML = '';
     block.appendChild(nav);
   }
+
+  // lifecycle hook + event (after)
+  options.onAfter?.(ctx);
+  block.dispatchEvent(new CustomEvent('breadcrumbs:after', { detail: ctx, bubbles: true }));
 }
+
+export default (block) => decorate(block, window.Breadcrumbs?.hooks);

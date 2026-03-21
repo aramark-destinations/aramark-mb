@@ -22,7 +22,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('footer:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('footer:before', { detail: ctx, bubbles: true }));
 
   // === FOOTER BLOCK LOGIC ===
   // load footer as fragment
@@ -39,7 +39,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('footer:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('footer:after', { detail: ctx, bubbles: true }));
 }
 
 /**

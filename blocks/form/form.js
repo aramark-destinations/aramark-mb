@@ -90,7 +90,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('form:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('form:before', { detail: ctx, bubbles: true }));
 
   // === FORM BLOCK LOGIC ===
   readVariant(block);
@@ -118,7 +118,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('form:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('form:after', { detail: ctx, bubbles: true }));
 }
 
 export default (block) => decorate(block, window.Form?.hooks);

@@ -15,7 +15,7 @@
   /* reserve an approximate space to avoid extensive layout shifts */
   aspect-ratio: var(--aspect-ratio-video);
   min-height: 400px;
-  background: var(--color-neutral-900, #000);
+  background: var(--color-neutral-900);
 }
 
 .video > div {
@@ -91,7 +91,7 @@
   height: var(--spacing-024);
   border-top: 12px solid transparent;
   border-bottom: 12px solid transparent;
-  border-left: 18px solid var(--video-play-icon-color, #fff);
+  border-left: 18px solid var(--video-play-icon-color);
   top: 50%;
   left: calc(50% + 2px);
   transform: translate(-50%, -50%);
@@ -100,10 +100,10 @@
 /* Error message styling */
 .video .video-error {
   padding: var(--spacing-024);
-  background: var(--error-bg, #fee);
-  border: 1px solid var(--error-border, #fcc);
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
   border-radius: var(--radius-s);
-  color: var(--error-text, #c00);
+  color: var(--error-text);
   text-align: center;
 }
 

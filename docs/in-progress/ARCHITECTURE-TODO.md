@@ -405,7 +405,7 @@ base-uri 'self'; object-src 'none';
 
 ### 34. Figma Integration
 **Question**: Direct API connection or manual export/import for Root tokens?
-
+**Resolution** - manual import - close this out
 **Options to Consider**:
 - Figma API webhooks → automated sync
 - Manual export via Figma Tokens plugin

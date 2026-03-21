@@ -263,7 +263,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('search:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('search:before', { detail: ctx, bubbles: true }));
 
   // === SEARCH BLOCK LOGIC ===
   readVariant(block);
@@ -285,7 +285,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('search:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('search:after', { detail: ctx, bubbles: true }));
 }
 
 export default (block) => decorate(block, window.Search?.hooks);
