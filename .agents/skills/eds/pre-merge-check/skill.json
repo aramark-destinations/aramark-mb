@@ -1,0 +1,7 @@
+{
+  "name": "eds/pre-merge-check",
+  "description": "Orchestrator skill that runs all solution design compliance checks before a PR is merged: lint, tests, block validation, token audit, accessibility basics, and branch naming convention.",
+  "when_to_use": "before merging any PR, as a final quality gate",
+  "version": "1.0.0",
+  "aliases": ["pr-check", "merge-check", "pre-merge"]
+}
