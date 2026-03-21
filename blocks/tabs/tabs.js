@@ -35,7 +35,7 @@ function dispatchAnalyticsEvent(eventName, detail) {
  * @param {Array} existingSlugs - Already used slugs to avoid duplicates
  * @returns {string} - URL-friendly slug
  */
-function generateSlug(title, existingSlugs = []) {
+export function generateSlug(title, existingSlugs = []) {
   const slug = title
     .toLowerCase()
     .trim()

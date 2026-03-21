@@ -30,7 +30,7 @@ function findNextHeading(el) {
   return h;
 }
 
-function highlightTextElements(terms, elements) {
+export function highlightTextElements(terms, elements) {
   elements.forEach((element) => {
     if (!element || !element.textContent) return;
 
@@ -160,7 +160,7 @@ function compareFound(hit1, hit2) {
   return hit1.minIdx - hit2.minIdx;
 }
 
-function filterData(searchTerms, data) {
+export function filterData(searchTerms, data) {
   const foundInHeader = [];
   const foundInMeta = [];
 

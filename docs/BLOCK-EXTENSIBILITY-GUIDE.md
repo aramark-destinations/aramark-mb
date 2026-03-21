@@ -266,9 +266,16 @@ onAfter: ({ block }) => {
 
 ### AI Skills (in `.agents/skills/eds/`)
 
-- **site-spinup** - Create new brand site with override structure
-
-> **Note:** `block-creation` and `block-extension` skills are archived (in `.agents/_archive/`). Only `site-spinup` is currently active.
+| Skill | Purpose |
+|-------|---------|
+| `site-spinup` | Create new brand site with override structure |
+| `block-development` | Scaffold and develop blocks to spec |
+| `block-audit` | Audit a block against solution design requirements |
+| `block-testing` | Generate unit tests for blocks |
+| `block-readme` | Generate/update block README documentation |
+| `scaffold-cf-model` | Scaffold a Content Fragment model |
+| `pre-merge-check` | Comprehensive pre-merge compliance checks |
+| `create-brand-tokens` | Create brand token overrides for a new property |
 
 ## Troubleshooting
 
@@ -318,5 +325,5 @@ For questions or issues:
 
 ## Unknowns & TODOs
 
-- Zero test files exist — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #15
-- `buildAutoBlocks()` is a stub — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #7
+- Zero test files exist — see [TODOS.md](project/TODOS.md) #15
+- `buildAutoBlocks()` is a stub — see [TODOS.md](project/TODOS.md) #7

@@ -14,7 +14,7 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 import { pushAnalyticsEvent } from '../../scripts/analytics.js';
 
-function sanitizeCSSClass(className) {
+export function sanitizeCSSClass(className) {
   if (!className) return '';
   return className
     .split(' ')
@@ -23,7 +23,7 @@ function sanitizeCSSClass(className) {
     .join(' ');
 }
 
-function isLikelyURL(text) {
+export function isLikelyURL(text) {
   if (!text || typeof text !== 'string') return false;
   const trimmed = text.trim();
   if (trimmed.length < 2) return false;

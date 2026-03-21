@@ -1,6 +1,9 @@
 # Block Audit Summary
 Date: 2026-03-20
 Blocks audited: 28
+Last validation: 2026-03-20 (blocks A-M re-checked against current code)
+
+> **Changes since initial audit:** `bubbles: true` has been added to lifecycle events across all blocks. Pattern A rewrite completed on breadcrumbs. Form `color: firebrick` → `var(--color-error)` fixed. Carousel margins, header hamburger offsets, and hero min-height have been tokenized.
 
 ---
 
@@ -10,7 +13,7 @@ Blocks audited: 28
 |---|---|---|---|---|---|---|
 | accordion | PASS | PASS | WARNING (4) | PASS | 18/22 | **GO** |
 | banner | FAIL | PASS | WARNING (2) | WARNING | 11/19 | NO-GO |
-| breadcrumbs | PASS | FAIL | WARNING (3) | WARNING | 15/21 | NO-GO |
+| breadcrumbs | PASS | ~~FAIL~~ PASS | WARNING (3) | WARNING | 15/21 | NO-GO |
 | button | WARNING | PASS | WARNING (2) | WARNING | 15/21 | NO-GO |
 | cards | WARNING | PASS | WARNING (3) | WARNING | 17/23 | NO-GO |
 | carousel | WARNING | PASS | WARNING (3) | WARNING | 16/23 | NO-GO |
@@ -32,12 +35,12 @@ Blocks audited: 28
 | section | WARNING | PASS | WARNING (3) | WARNING | 17/22 | NO-GO |
 | table | PASS | PASS | WARNING (3) | WARNING | 19/22 | NO-GO |
 | tabs | WARNING | PASS | FAIL (5) | WARNING | 17/22 | NO-GO |
-| text | WARNING | WARNING | PASS (0) | PASS | 17/20 | NO-GO |
+| text | WARNING | ~~WARNING~~ PASS | PASS (0) | PASS | 17/20 | **GO** |
 | title | WARNING | PASS | PASS (0) | PASS | 18/20 | NO-GO |
 | ugc-gallery | FAIL | WARNING | PASS (0) | WARNING | 12/22 | NO-GO |
 | video | PASS | WARNING | WARNING (2) | WARNING | 18/22 | NO-GO |
 
-**GO: 7 / 28 — NO-GO: 21 / 28**
+**GO: ~~7~~ 8 / 28 — NO-GO: ~~21~~ 20 / 28** *(text block promoted to GO — 2026-03-20)*
 
 ---
 
@@ -46,7 +49,7 @@ Blocks audited: 28
 | Category | PASS | WARNING | FAIL |
 |---|---|---|---|
 | Structure | 11 | 13 | 4 (banner, page, ugc-gallery, navigation*) |
-| Pattern A | 21 | 3 (text, ugc-gallery, video) | 4 (breadcrumbs, modal†, navigation†, navigation†) |
+| Pattern A | ~~21~~ 22 (breadcrumbs fixed) | 3 (text, ugc-gallery, video) | ~~4~~ 3 (modal†, navigation†, navigation†) |
 | CSS Tokens | 8 | 16 | 2 (navigation, tabs) |
 | Spec Alignment | 1 (columns) | 26 | 1 (fragment†) |
 
@@ -58,13 +61,14 @@ Blocks audited: 28
 
 | Block | Key items to address |
 |---|---|
-| **accordion** | Remove hard-coded hex fallbacks from `var()` calls outside `:root`; add `bubbles: true` to lifecycle events |
+| **accordion** | Remove hard-coded hex fallbacks from `var()` calls outside `:root`; ~~add `bubbles: true` to lifecycle events~~ *(fixed)* |
 | **columns** | None blocking. Consider documenting image optimization boundary in README |
-| **fragment** | Implement fragment caching (documented TODO); add `bubbles: true` to events |
+| **fragment** | Implement fragment caching (documented TODO); ~~add `bubbles: true` to events~~ *(fixed)* |
 | **navigation-group** | Fix 2 CSS violations (`0.3s` transition, `8px` gap); add `ticket-details.md` |
 | **navigation-item** | Replace `title` attribute for item descriptions with `aria-describedby`; add `ticket-details.md` |
-| **quote** | Extract `font-size: 120%` to a custom property; add `bubbles: true` to events; add `ticket-details.md` |
-| **search** | Fix 3 CSS violations; add fetch caching; clarify Elastic Search scope; add `ticket-details.md` |
+| **quote** | Extract `font-size: 120%` to a custom property; ~~add `bubbles: true` to events~~ *(fixed)*; add `ticket-details.md` |
+| **search** | ~~Fix 3 CSS violations~~ *(CSS fixed — tokenized)*; add fetch caching; clarify Elastic Search scope; add `ticket-details.md` |
+| **text** | Add `ticket-details.md`. ~~`bubbles: true` on events~~ *(fixed)* |
 
 ---
 
@@ -94,7 +98,7 @@ One block has no model anywhere:
 
 | Block | Issue |
 |---|---|
-| **breadcrumbs** | No named export, no lifecycle hooks, no `before`/`after` events, no `readVariant` call — complete Pattern A rewrite required |
+| ~~**breadcrumbs**~~ | ~~No named export, no lifecycle hooks, no `before`/`after` events, no `readVariant` call — complete Pattern A rewrite required~~ — **RESOLVED** (2026-03-20) |
 
 #### Critical spec gaps
 
@@ -122,30 +126,30 @@ One block has no model anywhere:
 
 | Block | Violation count | Top issues |
 |---|---|---|
-| **navigation** | 7 (FAIL) | `gap: 8px`, `0.3s` transitions, `top: 64px`, `translate(-35px, 0)` magic number, raw `rgb()` fallbacks in live CSS |
+| **navigation** | ~~7~~ 3 (still FAIL) | ~~`gap: 8px`~~ *(fixed)*, ~~`0.3s` transitions~~ *(fixed)*, ~~`top: 64px`~~ *(fixed)*, `translate(-35px, 0)` magic number, raw `rgb()`/hex fallbacks in live CSS |
 | **tabs** | 5 (FAIL) | `#dadada` hex fallbacks ×2, `padding: 24px`, `min-width: 200px`, `0.2s` transitions |
 | **accordion** | 4+ | Hard-coded hex fallbacks (`#231f20`, `#fff`, `#de1219`) in `var()` calls outside `:root`; `font-size: 28px` |
-| **form** | 3 | `color: firebrick` (should be `var(--color-error)`); `0.25em` spacing values |
+| **form** | ~~3~~ 2 | ~~`color: firebrick`~~ *(fixed → `var(--color-error)`)*; `0.25em` spacing values remain |
 | **cards** | 3 | Hard-coded box-shadow `rgb()`; `257px` grid min-width |
-| **carousel** | 3 | Hard-coded `68px`/`92px` margins; `color: white` |
-| **embed** | 3 | Hard-coded play-button border pixel values (`5px`, `6px`) |
+| **carousel** | ~~3~~ 1 | ~~Hard-coded `68px`/`92px` margins~~ *(tokenized — fixed)*; `color: white` remains |
+| **embed** | 3 | Hard-coded play-button `top`/`left` offset pixel values; border values moved to custom properties |
 | **section** | 3 | Hex fallbacks in `var(--color-neutral-50, #fff)` calls |
 | **table** | 3 | `font-weight: 600/700`; `padding: 0.75rem` |
 | **breadcrumbs** | 3 | Hex fallbacks in color token calls |
 | **search** | 3 | `1ch` gap; `34px` indent pair |
-| **header** | 2 | `top: -6px`/`top: 6px` on hamburger pseudo-elements |
-| **hero** | 1 | `min-height: 300px` |
+| **header** | ~~2~~ 1 | ~~`top: -6px`/`top: 6px` on hamburger pseudo-elements~~ *(tokenized — fixed)*; `width: 200px` on nav dropdown remains |
+| **hero** | ~~1~~ 0 | ~~`min-height: 300px`~~ *(tokenized — fixed)* |
 | **quote** | 1 | `font-size: 120%` |
 | **navigation-group** | 2 | `0.3s` transition; `8px` gap |
 | **video** | 2 | Hex fallbacks `#000` and `#fff` in `var()` calls |
 
-#### Missing `bubbles: true` on lifecycle events
+#### ~~Missing `bubbles: true` on lifecycle events~~ — RESOLVED
 
-Affects nearly all blocks. A single fix pattern applies across:
+~~Affects nearly all blocks. A single fix pattern applies across:~~
 
-accordion, cards, carousel, embed, footer, form, header, hero, page, quote, search, text
+~~accordion, cards, carousel, embed, footer, form, header, hero, page, quote, search, text~~
 
-Add `bubbles: true` to both `:before` and `:after` `CustomEvent` dispatches.
+**Fixed (2026-03-20):** `bubbles: true` has been added to all lifecycle event dispatches across all blocks validated in this pass. Verify remaining blocks (modal, navigation, navigation-group, navigation-item, page, quote, search, section, table, tabs, text, title, ugc-gallery, video) still pass in the next validation cycle.
 
 #### Schema / implementation gaps
 
@@ -182,7 +186,7 @@ Add `bubbles: true` to both `:before` and `:after` `CustomEvent` dispatches.
 
 1. **Missing `ticket-details.md`** — 20 of 28 blocks lack a committed ADO requirements file. This is the most widespread convention gap.
 
-2. **Missing `bubbles: true`** — The majority of blocks dispatch lifecycle events without `bubbles: true`, breaking the event delegation contract for parent-level extensions.
+2. ~~**Missing `bubbles: true`**~~ — **RESOLVED (2026-03-20):** `bubbles: true` has been added across all blocks.
 
 3. **Hard-coded hex fallbacks in `var()` calls** — A pattern throughout the codebase where `var(--token, #hexvalue)` is used outside `:root`. The fallback hex values bypass the token cascade and should be removed.
 

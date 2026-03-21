@@ -62,6 +62,7 @@ jest.mock('../../scripts/scripts.js', () => ({
       }
     });
   }),
+  readVariant: jest.fn(),
 }));
 
 // Mock Adobe Client Data Layer
@@ -364,12 +365,12 @@ describe('Breadcrumbs Block', () => {
         brandCode: 'kershaw',
         timestamp: Date.now(),
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       const { default: decorate } = await import('./breadcrumbs.js');
       await decorate(block);
 
-      expect(localStorageMock.getItem).toHaveBeenCalledWith('kaiBreadcrumbContext');
+      expect(localStorageMock.getItem).toHaveBeenCalledWith('breadcrumb-context');
     });
 
     it('should inject category crumb between Home and Current', async () => {
@@ -379,7 +380,7 @@ describe('Breadcrumbs Block', () => {
         brandCode: 'kershaw',
         timestamp: Date.now(),
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       const { getMetadata } = require('../../scripts/aem.js');
       getMetadata.mockImplementation((name) => {
@@ -405,12 +406,12 @@ describe('Breadcrumbs Block', () => {
         brandCode: 'kershaw',
         timestamp: Date.now(),
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       const { default: decorate } = await import('./breadcrumbs.js');
       await decorate(block);
 
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith('kaiBreadcrumbContext');
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith('breadcrumb-context');
     });
 
     it('should validate brand code matches current site', async () => {
@@ -420,7 +421,7 @@ describe('Breadcrumbs Block', () => {
         brandCode: 'zt', // Wrong brand
         timestamp: Date.now(),
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       // getBrandCode() returns 'kershaw' (mocked), context has 'zt' - mismatch detected
       const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
@@ -445,7 +446,7 @@ describe('Breadcrumbs Block', () => {
         brandCode: 'kershaw',
         timestamp: oldTimestamp,
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
 
@@ -469,7 +470,7 @@ describe('Breadcrumbs Block', () => {
         brandCode: 'kershaw',
         timestamp: freshTimestamp,
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       const { default: decorate } = await import('./breadcrumbs.js');
       await decorate(block);
@@ -515,7 +516,7 @@ describe('Breadcrumbs Block', () => {
     });
 
     it('should handle malformed JSON in localStorage', async () => {
-      localStorageMock.setItem('kaiBreadcrumbContext', '{invalid json}');
+      localStorageMock.setItem('breadcrumb-context', '{invalid json}');
 
       const errorSpy = jest.spyOn(console, 'error').mockImplementation();
 
@@ -602,7 +603,7 @@ describe('Breadcrumbs Block', () => {
         brandCode: 'kershaw',
         timestamp: Date.now(),
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       const { default: decorate } = await import('./breadcrumbs.js');
       await decorate(block);
@@ -714,7 +715,7 @@ describe('Breadcrumbs Block', () => {
         brandCode: 'kershaw',
         timestamp: Date.now(),
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       const { default: decorate } = await import('./breadcrumbs.js');
       await decorate(block);
@@ -1053,7 +1054,7 @@ describe('Breadcrumbs Block', () => {
         brandCode: 'kershaw',
         timestamp: new Date().toISOString(),
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       const { getMetadata } = require('../../scripts/aem.js');
       getMetadata.mockImplementation((name) => {
@@ -1077,7 +1078,7 @@ describe('Breadcrumbs Block', () => {
         brandCode: 'kershaw',
         timestamp: new Date().toISOString(),
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       const { getMetadata } = require('../../scripts/aem.js');
       getMetadata.mockImplementation((name) => {
@@ -1103,7 +1104,7 @@ describe('Breadcrumbs Block', () => {
         brandCode: 'kershaw',
         timestamp: new Date(Date.now() - 35000).toISOString(),
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
       const { default: decorate } = await import('./breadcrumbs.js');
@@ -1123,7 +1124,7 @@ describe('Breadcrumbs Block', () => {
         brandCode: 'zt',
         timestamp: new Date().toISOString(),
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
       const { default: decorate } = await import('./breadcrumbs.js');
@@ -1141,7 +1142,7 @@ describe('Breadcrumbs Block', () => {
         categoryName: 'Partial Category',
         // missing categoryUrl, brandCode, timestamp
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
       const { default: decorate } = await import('./breadcrumbs.js');
@@ -1161,7 +1162,7 @@ describe('Breadcrumbs Block', () => {
         brandCode: 'kershaw',
         timestamp: new Date().toISOString(),
       };
-      localStorageMock.setItem('kaiBreadcrumbContext', JSON.stringify(context));
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
 
       const { getMetadata } = require('../../scripts/aem.js');
       getMetadata.mockImplementation((name) => {

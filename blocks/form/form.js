@@ -34,7 +34,7 @@ async function createForm(formHref, submitHref) {
   return form;
 }
 
-function generatePayload(form) {
+export function generatePayload(form) {
   const payload = {};
 
   [...form.elements].forEach((field) => {
