@@ -28,7 +28,7 @@ Step-by-step guides for common developer tasks.
 | [MULTI-BRAND-LOCAL-DEV.md](MULTI-BRAND-LOCAL-DEV.md) | Local development setup — brand-aware dev server, brand URL configuration, troubleshooting |
 | [REPO-MIGRATION.md](REPO-MIGRATION.md) | Admin API authentication, org setup, repoless site registration, and long-term API key access model |
 | [in-progress/AEM-EDS-REPOLESS-UE-SETUP.md](in-progress/AEM-EDS-REPOLESS-UE-SETUP.md) | AEM repoless + Universal Editor setup guide — GitHub repo migration, Code Sync app, site registration |
-| [in-progress/superpowers-get-started-guide.md](in-progress/superpowers-get-started-guide.md) | AI-assisted development workflow guide using structured skills (brainstorm, plan, debug, verify, review) |
+| [in-progress/superpowers-get-started-guide.md](in-progress/superpowers-get-started-guide.md) | **Start here for AI-assisted development** — Claude Code setup, project skills reference, standard workflows, and team conventions |
 
 ---
 
