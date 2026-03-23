@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import {
+  describe, it, expect, beforeEach, jest,
+} from '@jest/globals';
 
 describe('decorate — lifecycle events', () => {
   let decorate;

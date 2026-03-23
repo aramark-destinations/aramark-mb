@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import {
+  describe, it, expect, beforeEach, jest,
+} from '@jest/globals';
 
 jest.mock('../../scripts/scripts.js', () => ({
   moveInstrumentation: jest.fn(),
@@ -19,7 +21,9 @@ global.window.adobeDataLayer = { push: mockDLPush };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function makeRow({ title = 'Title', subtitle = '', content = 'Content', col4 = '', aueResource = false } = {}) {
+function makeRow({
+  title = 'Title', subtitle = '', content = 'Content', col4 = '', aueResource = false,
+} = {}) {
   const row = document.createElement('div');
   if (aueResource) row.setAttribute('data-aue-resource', 'urn:aem:something');
   row.innerHTML = `

@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import {
+  describe, it, expect, beforeEach, jest,
+} from '@jest/globals';
 
 jest.mock('../../scripts/aem.js', () => ({
   getMetadata: jest.fn(() => ''),

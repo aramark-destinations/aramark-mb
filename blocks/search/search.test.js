@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import {
+  describe, it, expect, beforeEach, jest,
+} from '@jest/globals';
 
 // Must be set before module import because search.js reads window.location.search at module level
 global.window.hlx = { codeBasePath: '' };
@@ -71,9 +73,15 @@ describe('filterData', () => {
   let filterData;
 
   const data = [
-    { title: 'Apple Recipes', header: 'Apple Recipes', description: 'Tasty fruit', path: '/apple' },
-    { title: 'Banana Guide', header: 'Banana Guide', description: 'Yellow fruit about apples', path: '/banana' },
-    { title: 'Cherry Tips', header: 'Cherry Tips', description: 'Red fruit', path: '/cherry' },
+    {
+      title: 'Apple Recipes', header: 'Apple Recipes', description: 'Tasty fruit', path: '/apple',
+    },
+    {
+      title: 'Banana Guide', header: 'Banana Guide', description: 'Yellow fruit about apples', path: '/banana',
+    },
+    {
+      title: 'Cherry Tips', header: 'Cherry Tips', description: 'Red fruit', path: '/cherry',
+    },
   ];
 
   beforeEach(async () => {

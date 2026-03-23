@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import {
+  describe, it, expect, beforeEach, jest,
+} from '@jest/globals';
 
 jest.mock('../../scripts/aem.js', () => ({
   readBlockConfig: jest.fn(() => ({})),
@@ -253,7 +255,7 @@ describe('decorate — keyboard navigation', () => {
     await decorate(block);
   });
 
-  function fireKeydown(target, key) {
+  function _fireKeydown(target, key) {
     const event = new KeyboardEvent('keydown', { key, bubbles: true });
     Object.defineProperty(event, 'preventDefault', { value: jest.fn() });
     target.dispatchEvent(event);

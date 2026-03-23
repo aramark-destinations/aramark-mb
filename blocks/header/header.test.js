@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import {
+  describe, it, expect, beforeEach, jest,
+} from '@jest/globals';
 
 // header.js captures window.matchMedia at module level — mock it first
 Object.defineProperty(window, 'matchMedia', {

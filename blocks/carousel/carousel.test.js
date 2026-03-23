@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import {
+  describe, it, expect, beforeEach, jest,
+} from '@jest/globals';
 
 jest.mock('../../scripts/scripts.js', () => ({
   moveInstrumentation: jest.fn(),
@@ -38,7 +40,7 @@ describe('createSlide', () => {
 
   function makeRow(numCols = 2) {
     const row = document.createElement('div');
-    for (let i = 0; i < numCols; i++) {
+    for (let i = 0; i < numCols; i += 1) {
       const col = document.createElement('div');
       col.textContent = `col ${i}`;
       row.appendChild(col);
@@ -85,7 +87,7 @@ describe('showSlide — index normalization', () => {
     block.className = 'carousel';
     const slidesWrapper = document.createElement('ul');
     slidesWrapper.className = 'carousel-slides';
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < count; i += 1) {
       const slide = document.createElement('li');
       slide.className = 'carousel-slide';
       slide.dataset.slideIndex = i;
@@ -127,7 +129,7 @@ describe('decorate — lifecycle events', () => {
   function makeCarouselBlock(numRows) {
     const b = document.createElement('div');
     b.className = 'carousel';
-    for (let i = 0; i < numRows; i++) {
+    for (let i = 0; i < numRows; i += 1) {
       const row = document.createElement('div');
       row.innerHTML = '<div>Img</div><div>Content</div>';
       b.appendChild(row);
@@ -176,7 +178,7 @@ describe('decorate — single vs multiple slides', () => {
   function makeCarouselBlock(numRows) {
     const b = document.createElement('div');
     b.className = 'carousel';
-    for (let i = 0; i < numRows; i++) {
+    for (let i = 0; i < numRows; i += 1) {
       const row = document.createElement('div');
       row.innerHTML = '<div>Img</div><div>Content</div>';
       b.appendChild(row);

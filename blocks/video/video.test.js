@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import {
+  describe, it, expect, beforeEach, jest,
+} from '@jest/globals';
 
 jest.mock('../../scripts/scripts.js', () => ({
   moveInstrumentation: jest.fn(),
@@ -6,7 +8,7 @@ jest.mock('../../scripts/scripts.js', () => ({
 }));
 
 // IntersectionObserver is used when there is no placeholder; stub it
-global.IntersectionObserver = jest.fn().mockImplementation((callback) => ({
+global.IntersectionObserver = jest.fn().mockImplementation((_callback) => ({
   observe: jest.fn(),
   disconnect: jest.fn(),
   unobserve: jest.fn(),
