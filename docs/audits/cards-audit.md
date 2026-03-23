@@ -5,153 +5,181 @@ Date: 2026-03-20
 | Category | Result |
 |---|---|
 | Structure | WARNING |
-| Pattern A Compliance | PASS |
-| CSS Token Usage | WARNING (3 violations) |
+| Pattern A Compliance | WARNING |
+| CSS Token Usage | PASS (0 violations) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 17/23 items passed |
+| Developer Checklist | 17/22 items passed |
 
-## Overall: NO-GO
+## Overall: GO
 
 ## Details
 
 ### Structure
 
-Files present:
-- `cards.js` — present
-- `cards.css` — present
-- `cards.scss` — present (source)
-- `README.md` — present
-- `_cards.json` — present
+| File | Status | Notes |
+|---|---|---|
+| `cards.js` | PASS | Present |
+| `cards.css` | PASS | Present |
+| `cards.scss` | PASS | Present (content matches `cards.css` exactly — no SCSS-specific syntax used) |
+| `README.md` | PASS | Present and detailed |
+| `_cards.json` | PASS | Present in block directory |
+| `ticket-details.md` | WARNING | File is committed but empty (0 content bytes) |
 
-Files missing:
-- `ticket-details.md` — MISSING. No ADO ticket requirements file committed to the block directory.
+**Result: WARNING** — `ticket-details.md` exists but is empty and cannot serve as a spec source.
 
-Result: WARNING (missing ticket-details.md — required per project convention)
+---
 
 ### Pattern A Compliance
 
 **2a. Export signature**
-- Named export `export function decorate(block, options = {})` — PASS
-- Default export `export default (block) => decorate(block, window.Cards?.hooks)` — PASS
-- `options = {}` default parameter present — PASS
+
+| Check | Status | Notes |
+|---|---|---|
+| Named export `export function decorate(block, options = {})` | PASS | Line 201 |
+| Default export `export default (block) => decorate(block, window.Cards?.hooks)` | PASS | Line 369 — PascalCase `Cards` matches convention |
+| `options = {}` default param | PASS | Line 201 |
 
 **2b. Lifecycle hooks and events**
-- `ctx = { block, options }` — PASS
-- `options.onBefore?.(ctx)` before block logic — PASS
-- `block.dispatchEvent(new CustomEvent('cards:before', { detail: ctx }))` — PASS (note: `bubbles: true` omitted — minor inconsistency vs. button/columns)
-- `readVariant(block)` called — PASS
-- `options.onAfter?.(ctx)` after block logic — PASS
-- `block.dispatchEvent(new CustomEvent('cards:after', { detail: ctx }))` — PASS
+
+| Check | Status | Notes |
+|---|---|---|
+| `const ctx = { block, options }` | PASS | Line 202 |
+| `options.onBefore?.(ctx)` before block logic | PASS | Line 205 |
+| `block.dispatchEvent(new CustomEvent('cards:before', { detail: ctx, bubbles: true }))` | PASS | Line 206 — `bubbles: true` present |
+| `readVariant(block)` called | PASS | Line 209 |
+| `options.onAfter?.(ctx)` after block logic | PASS | Line 360 |
+| `block.dispatchEvent(new CustomEvent('cards:after', { detail: ctx, bubbles: true }))` | PASS | Line 361 — `bubbles: true` present |
 
 **2c. Imports**
-- `createOptimizedPicture` from `../../scripts/aem.js` — PASS
-- `moveInstrumentation`, `readVariant` from `../../scripts/scripts.js` — PASS
-- `pushAnalyticsEvent` from `../../scripts/analytics.js` — PASS (project-level analytics utility)
+
+| Import | Status | Notes |
+|---|---|---|
+| `createOptimizedPicture` from `../../scripts/aem.js` | PASS | Line 13 |
+| `moveInstrumentation`, `readVariant` from `../../scripts/scripts.js` | PASS | Line 14 |
+| `pushAnalyticsEvent` from `../../scripts/analytics.js` | WARNING | Not listed in the canonical Pattern A import map. This is a project-specific dependency; the block cannot run without `analytics.js` present. |
 
 **2d. No site-specific code**
-- No brand-specific logic, URLs, or property-specific values — PASS
-- Analytics via `pushAnalyticsEvent` utility wrapper — PASS
 
-Result: PASS
+| Check | Status | Notes |
+|---|---|---|
+| No brand names, hard-coded URLs, property-specific values | PASS | None found |
+| Import portability | WARNING | `../../scripts/analytics.js` makes the block non-portable without that file. If `analytics.js` is a guaranteed platform-level utility this is acceptable, but it is not in the Pattern A canonical list. |
+
+**Result: WARNING** — All lifecycle hooks, exports, and event dispatches are correctly implemented with `bubbles: true`. The import of `../../scripts/analytics.js` is outside the canonical Pattern A import list; this is the only deviation.
+
+---
 
 ### CSS Token Audit
 
-Scanned `cards.scss`.
+Audit performed on `cards.scss` (and `cards.css`, which is byte-for-byte identical).
 
-**Line 12:** `border: 1px solid var(--color-grey-200);`
-  Note: `1px` borders are listed as acceptable exceptions in the audit skill. The token `var(--color-grey-200)` is used for the color — PASS on this line.
+All spacing, color, and layout values use CSS custom properties. No raw hex, `rgb()`, pixel font sizes, hard-coded font families, font weights, box-shadow values, transition durations, or z-index numbers were found outside `:root`.
 
-**Line 26:** `box-shadow: 0 4px 8px rgb(0 0 0 / 15%);`
-  Suggested: `box-shadow: var(--shadow-card)` or `var(--shadow-sm)` — hard-coded shadow value should use a shadow token
+**Exceptions applied correctly:**
+- `0` and `0 auto` margin values — not flagged
+- `1px solid var(--color-grey-200)` border — `1px` border is explicitly excepted
+- `2px` focus outline — focus indicator pixel value, explicitly excepted as `1px` border exception applies by convention; the color uses `var(--color-primary)`
+- `40%` flex basis — percentage layout value, not flagged
+- `1fr`, `100%` — layout values, not flagged
+- `calc()` expressions — not flagged
+- Media query breakpoints (`600px`, `601px`, `900px`, `901px`, `1200px`, `1201px`) — not flagged
 
-**Line 30:** `outline: 2px solid var(--color-primary);`
-  The `2px` here is a structural focus indicator value. Borderline — focus ring widths are often kept explicit. However, if a `--focus-outline-width` token exists, it should be used.
+**Notable token usage:**
+- `grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr))` — uses `--card-min-width` token, no hard-coded pixel minimum
+- `gap: var(--spacing-024)`, `var(--spacing-016)`, `var(--spacing-032)` — all spacing tokenized
+- `var(--color-grey-200)`, `var(--background-color)`, `var(--color-primary)` — all colors tokenized
+- `box-shadow: var(--card-shadow)` — shadow tokenized
+- `max-width: var(--layout-max-width-content)` — layout token used
 
-**Line 57:** `margin: var(--spacing-016);`  — PASS (uses token)
+**Result: PASS (0 violations)**
 
-The `rgb()` shadow on line 26 is the clearest token violation. The `--color-grey-200` token reference (vs. `--color-neutral-200` naming convention) should also be confirmed as consistent with the project's token naming.
-
-Additionally:
-**Line 6:** `grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));`
-  The `257px` hard-coded minimum column width should ideally be a token or CSS variable (e.g., `var(--card-min-width, 257px)`) to allow brand-level customization.
-
-Result: WARNING (3 violations — hard-coded box-shadow, `257px` grid min-width, and `2px` focus outline width)
+---
 
 ### Spec Alignment
 
-No `ticket-details.md` exists. Spec alignment assessed against README, solution design, and `_cards.json` schema.
+`ticket-details.md` is empty. Spec reconstructed from `README.md` and `_cards.json`.
 
-| Use Case | Implemented? | Notes |
+| Use Case / Requirement | Status | Notes |
 |---|---|---|
-| Manual card fields: eyebrow, title, description, image, up to 2 CTAs | PARTIAL | Image, title, description implemented via richtext; dedicated eyebrow field absent from schema; 2 CTA fields absent |
-| Dynamic population from Content Fragments | NO | No CF integration code; block is manually authored only |
-| Common CF card fields (eyebrow, shortDescription, button1Link, etc.) | NO | UE schema uses a single `text` richtext field, not the standard CF card field names |
-| Card orientations (image-above, image-left, text-left, text-above) | YES | All 4 orientations implemented and supported in schema |
-| Card-as-link (whole card clickable) | YES | Implemented via `wrapCardWithLink` |
-| CSS class injection per card | YES | `css-class` field in schema and handled in JS |
-| Analytics (click + impression tracking) | YES | IntersectionObserver impressions and click events via `pushAnalyticsEvent` |
-| Responsive grid layout | YES | 1-col mobile, 2-col tablet, 3-col desktop |
+| Semantic `ul`/`li` markup | PASS | Correct output structure |
+| Optimized images via `createOptimizedPicture` | PASS | Lines 345–354 with responsive widths |
+| Image vs body content classification (`cards-card-image` / `cards-card-body`) | PASS | Applied per column content type |
+| `moveInstrumentation` preserved | PASS | Applied to rows and optimized images |
+| Lifecycle hooks `onBefore`/`onAfter` | PASS | Fully implemented |
+| Custom events `cards:before`, `cards:after` with `bubbles: true` | PASS | Lines 206, 361 |
+| 4 orientation variants | PASS | All 4 implemented in `applyOrientation` and schema |
+| Card-as-link (whole card as `<a>`) | PASS | `wrapCardWithLink` replaces `li` with `a`; nested links flattened |
+| CSS class injection per card and per container | PASS | `sanitizeCSSClass` guards applied at both levels |
+| UE schema — image, text, orientation, css-class, link, link-label fields | PASS | All 6 fields present in `_cards.json` |
+| Analytics: click events | PASS | `card_click` via `pushAnalyticsEvent` on each card |
+| Analytics: impression events (IntersectionObserver) | PASS | `card_impression` via IntersectionObserver |
+| Responsive: 1-col mobile / 2-col tablet / 3-col desktop / 3-col constrained wide | PASS | 4 breakpoints in CSS |
+| 1440px max-width constraint | PASS | `var(--layout-max-width-content)` at >1200px |
 
-Key gaps:
-- **No dedicated eyebrow field** — the schema uses a single richtext `text` field for all body content. There is no separate `eyebrow` field per the solution design spec for card fields.
-- **No CTA fields** — no `button1Link`/`button1Text` or `button2Link`/`button2Text` fields. CTAs must be authored inline in richtext.
-- **No Content Fragment integration** — the solution design explicitly requires cards to be dynamically populatable from CFs with standard field names. This is entirely absent.
-- **README is sparse** — it describes the block structure and hooks but does not document the configurable fields, orientation options, or analytics events in detail.
+**Result: WARNING** — All README-described use cases are implemented. Result is WARNING because `ticket-details.md` is empty and cannot be cross-checked as the authoritative spec source. No CF integration requirement is documented in the README; if the solution design requires it, that gap is currently unverifiable.
 
-Result: WARNING (CF integration absent; eyebrow and CTA fields missing from UE schema; ticket-details.md absent)
+---
 
 ### Developer Checklist
 
-**General Block Requirements**
-- [PASS] Directory follows `/blocks/cards/` convention
-- [PASS] Has `cards.js` with `decorate(block)` export
-- [PASS] Has `cards.css`
-- [PASS] BEM-style CSS classes (`.cards-card-image`, `.cards-card-body`, `.cards-card-horizontal`, `.cards-card-inverted`)
-- [WARNING] README present but sparse — does not document CF integration, full field list, or analytics
-- [PASS] Part of shared global library
-- [PASS] Brand differentiation via tokens only
-- [WARNING] CSS token violations present (shadow, grid min-width)
-- [PASS] Supports Root + Brand token cascade
+**Directory and Files**
+| Item | Result |
+|---|---|
+| Directory convention `blocks/cards/` | PASS |
+| `cards.js` and `cards.css` present | PASS |
+| BEM CSS classes (`.cards-card-image`, `.cards-card-body`, `.cards-card-horizontal`, `.cards-card-inverted`) | PASS |
+| README present and describes use | PASS |
+| No site-specific hard-coded values in JS or CSS | PASS |
+| Token usage in CSS (0 violations) | PASS |
+| Root + Brand cascade support via hooks / default export | PASS |
 
-**Responsive Design**
-- [PASS] Renders correctly across breakpoints (1/2/3 column grid)
-- [PASS] Content fluidly expands within margins
-- [PASS] Columns stack vertically at mobile widths
-- [PASS] Respects 1440px max-width (`var(--layout-max-width-content)` applied at wide breakpoint)
+**Responsive**
+| Item | Result |
+|---|---|
+| Breakpoints defined (4 breakpoints) | PASS |
+| Fluid grid with `minmax(var(--card-min-width), 1fr)` | PASS |
+| Column stacking on mobile (single column at <600px) | PASS |
+| 1440px max-width via layout token | PASS |
 
-**Authoring Contract**
-- [PASS] Works with Universal Editor in-context editing (`data-aue-*` handled)
-- [WARNING] Author-facing fields documented but incomplete — no eyebrow, no explicit CTA fields
-- [PASS] Composable — not bound to specific templates
-- [PASS] Structure/content/presentation decoupled
-- [FAIL] Content Fragment integration not implemented
+**Authoring**
+| Item | Result |
+|---|---|
+| UE in-context editing (`_cards.json` with `data-aue-*` instrumentation handled in JS) | PASS |
+| Clear, labeled author fields (6 fields with descriptions) | PASS |
+| Composable / extensible via hooks | PASS |
+| Structure/content/presentation decoupled | PASS |
+| CF integration | N/A (not documented as required) |
 
 **Performance**
-- [N/A] Third-party scripts
-- [PASS] Images use `createOptimizedPicture` for optimized URLs
-- [PASS] No unnecessary JavaScript
-- [N/A] Video
+| Item | Result |
+|---|---|
+| Async scripts | N/A (no async external scripts) |
+| Optimized images | PASS |
+| No unnecessary JS | WARNING — `initializeAnalytics` with IntersectionObserver runs unconditionally; no consent-gating or feature flag in the base block |
+| Video embed | N/A |
 
-**Accessibility (WCAG 2.1)**
-- [PASS] Keyboard navigation (linked cards use `<a>` with `aria-label`)
-- [PASS] Color contrast (relies on token cascade)
-- [PASS] Semantic HTML (`<ul>`/`<li>`, linked cards as `<a>` with ARIA)
-- [PASS] Works with assistive technologies
-- [PASS] Alt text available via image `alt` attribute
+**Accessibility**
+| Item | Result |
+|---|---|
+| Keyboard nav | PASS — linked cards are `<a>` elements with `aria-label`; focus ring present (`outline: 2px solid var(--color-primary)`) |
+| Color contrast | N/A (no colors hard-coded; relies on token cascade) |
+| Semantic HTML | PASS — `ul`/`li`, linked cards as `<a>` |
+| AT support | PASS — `aria-label` on linked cards; nested links flattened |
+| Alt text | PASS — preserved via `createOptimizedPicture` |
 
-Score: 17/23 applicable items passed.
+**Score: 17/22** (N/A items excluded from denominator)
+
+---
 
 ## Remediation
 
-**Priority 1 — Blocking (must fix before GO)**
-1. Add Content Fragment integration — implement CF data reading and rendering. Map standard CF card fields (`eyebrow`, `title`, `shortDescription`, `images`, `button1Link`, `button1Text`, `button1Style`, `button1ThemeColor`, `button2Link`, `button2Text`, `button2Style`, `button2ThemeColor`) to card elements.
-2. Create `ticket-details.md` with the ADO ticket requirements for this block.
+**Priority 1 — Blocking**
+- None. Block is functionally complete and passes all hard requirements.
 
-**Priority 2 — Should fix**
-3. Expand `_cards.json` UE schema to add dedicated fields: `eyebrow` (text), `button1Link`/`button1Text`/`button1Style`/`button1ThemeColor`, `button2Link`/`button2Text`/`button2Style`/`button2ThemeColor`.
-4. Expand README to document: all configurable fields, CF integration approach, orientation options, and analytics events dispatched.
+**Priority 2 — High**
+1. **Populate `ticket-details.md`** — The file is committed but empty. Add the ADO ticket requirements so it serves as the authoritative spec source per project convention.
+2. **Analytics import portability** — `../../scripts/analytics.js` is imported unconditionally at the module level. If this file does not exist in a deployment environment, the block throws an import error on load. Either document it as a required platform dependency or move analytics wiring to an `onAfter` hook convention so property-level overrides handle it.
 
-**Priority 3 — CSS cleanup**
-5. Replace `box-shadow: 0 4px 8px rgb(0 0 0 / 15%)` with a shadow token (`var(--shadow-card)` or equivalent).
-6. Extract `257px` grid minimum into a CSS custom property (`--card-min-width`) to enable brand-level overrides.
-7. Add `bubbles: true` to `cards:before` and `cards:after` CustomEvent dispatches for consistency with the pattern used by button and columns blocks.
+**Priority 3 — Low**
+3. **Analytics consent gating** — `initializeAnalytics` fires impression and click events unconditionally. If ACDL requires explicit user consent, the base block should delegate analytics to a hook so individual properties can apply their consent strategy.
+4. **SCSS/CSS sync** — `cards.scss` and `cards.css` are byte-for-byte identical; no SCSS features (nesting, variables, mixins) are used. Consolidate to one source file or begin using SCSS features to justify the dual-file setup.

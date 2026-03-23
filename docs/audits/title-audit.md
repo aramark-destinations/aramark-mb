@@ -8,10 +8,9 @@ Date: 2026-03-20
 | Pattern A Compliance | PASS |
 | CSS Token Usage | PASS (0 violations) |
 | Spec Alignment | PASS |
-| Developer Checklist | 18/20 items passed |
-| Accessibility Basics | PASS |
+| Developer Checklist | 19/21 items passed |
 
-## Overall: NO-GO
+## Overall: GO
 
 ## Details
 
@@ -19,16 +18,16 @@ Date: 2026-03-20
 
 | File | Expected | Present |
 |---|---|---|
-| `title.js` | yes | yes |
-| `title.css` | yes | yes |
-| `title.scss` | yes | yes |
-| `README.md` | yes | yes |
-| `ticket-details.md` | yes | yes |
-| `_title.json` | expected (has author-configurable fields) | NO |
+| `title.js` | required | YES |
+| `title.css` | required | YES |
+| `title.scss` | expected | YES |
+| `README.md` | expected | YES |
+| `ticket-details.md` | expected | YES |
+| `_title.json` | expected | YES — in `/models/_title.json` (fallback location) |
 
-The block has two documented authoring fields: Title (text) and Title Type (heading level select). The README's Authoring Fields table documents these. However, no `_title.json` UE schema exists to expose these fields in Universal Editor.
+All required files are present. The UE schema (`_title.json`) is in the `/models/` fallback directory rather than in the block directory itself. It contains a correct `title` model with `title` (text) and `titleType` (select) fields.
 
-**Result: WARNING** — UE JSON schema missing despite documented author-configurable fields.
+**Result: WARNING** — `_title.json` only in fallback `/models/` location, not co-located in block directory.
 
 ---
 
@@ -49,13 +48,12 @@ Named export with `options = {}` default: PASS. Default export wired to `window.
 const ctx = { block, options };
 options.onBefore?.(ctx);
 block.dispatchEvent(new CustomEvent('title:before', { detail: ctx, bubbles: true }));
-// ... block logic ...
 readVariant(block);
 options.onAfter?.(ctx);
 block.dispatchEvent(new CustomEvent('title:after', { detail: ctx, bubbles: true }));
 ```
 
-`ctx` object: PASS. `onBefore`/`onAfter` hooks: PASS. Events with `bubbles: true`: PASS. `readVariant(block)` called: PASS.
+`ctx` object: PASS. `onBefore`/`onAfter` hooks: PASS. Events with `bubbles: true`: PASS. `readVariant(block)` called: PASS. All six Pattern A lifecycle requirements are met.
 
 **2c. Imports**
 
@@ -63,11 +61,9 @@ block.dispatchEvent(new CustomEvent('title:after', { detail: ctx, bubbles: true 
 import { readVariant } from '../../scripts/scripts.js';
 ```
 
-Correct path. PASS. No `aem.js` imports needed — correct for this block.
+Correct relative path. PASS. No other EDS utility imports required for this block.
 
-**2d. No site-specific code**
-
-No brand-specific logic. PASS.
+**2d. No site-specific code** — PASS. No brand names, hard-coded URLs, or property-specific values. The `ticket-details.md` contains Figma links for documentation purposes only; these do not appear in the block code.
 
 **Result: PASS**
 
@@ -95,10 +91,10 @@ Scanning `title.scss`:
 }
 ```
 
-`margin-top: 0` — zero value is explicitly exempted per skill rules. PASS.
-`color: var(--text-light-1)` — token reference. PASS.
+- `margin-top: 0` — value is `0`; exempt per audit rules.
+- `color: var(--text-light-1)` — uses design token. PASS.
 
-No violations.
+No hard-coded colors, font sizes, spacing values, font families, font weights, border radii, z-index values, box shadows, or transition durations.
 
 **Result: PASS (0 violations)**
 
@@ -108,35 +104,27 @@ No violations.
 
 Source of truth: `ticket-details.md` and README.
 
-**4a. Use cases**
+**Use cases**
 
-| Use Case | Implemented? | Notes |
+| Use Case | Implemented | Notes |
 |---|---|---|
-| Configurable heading level (H1–H4) | YES | README documents H1–H4 via `titleType` field; AEM applies heading tag |
-| Section theme Dark = Text/Light/1 | YES | `.section.dark .title` applies `var(--text-light-1)` |
-| Section theme Light = Text/Dark/1 | YES | Inherited from body (no override needed) |
-| Section theme Light2 = Text/Dark/1 | YES | Inherited from body |
-| Section theme Brand = Text/Light/1 | YES | `.section.brand .title` applies `var(--text-light-1)` |
-| Section theme Tertiary = Text/Light/1 | YES | `.section.tertiary .title` applies `var(--text-light-1)` |
-| Variant support (e.g., `title-centered`) | YES | `readVariant(block)` called in `decorate()` |
+| Heading block with UE Title component | PASS | `_title.json` defines `title` model with AEM component type |
+| Author selects heading level (h1–h4) | PASS | `titleType` select field with h1/h2/h3/h4 options |
+| Author edits heading text | PASS | `title` text field in model |
+| Dark theme → Text/Light/1 | PASS | `.section.dark .title h1...h6 { color: var(--text-light-1) }` |
+| Brand theme → Text/Light/1 | PASS | `.section.brand .title h1...h6 { color: var(--text-light-1) }` |
+| Tertiary theme → Text/Light/1 | PASS | `.section.tertiary .title h1...h6 { color: var(--text-light-1) }` |
+| Light/Light2/default → Text/Dark/1 | PASS | Inherited from body styles; no override needed |
+| Figma design token alignment | PASS | All theme colors map to design tokens |
 
-**4b. Configurable fields**
+**UE schema field alignment**
 
-The README documents two fields:
-- `Title` (text) — heading text content
-- `Title Type` (select: h1, h2, h3, h4)
+| README field | `/models/_title.json` field | Match |
+|---|---|---|
+| Title (text) | `title` — component: text | PASS |
+| Title Type (select, h1–h4) | `titleType` — component: select, options: h1/h2/h3/h4 | PASS |
 
-Neither field is defined in a `_title.json` UE schema. The README notes that `titleType` is "applied by AEM as the heading tag" — this suggests these fields may be handled natively by AEM's Universal Editor text/title component rather than through a custom block model. However, per the skill convention, a UE schema should be present if there are author-configurable fields.
-
-**4c. Design details**
-
-The `ticket-details.md` references Figma design for base styling and lists theme color values. The CSS implementation matches the specified color tokens per theme:
-- `Text/Light/1` → `var(--text-light-1)` for dark/brand/tertiary themes
-- Default/light/light2 → inherits body default (Text/Dark/1)
-
-One minor gap: `ticket-details.md` and README both reference a "Light 2" theme class (`light2`), but the CSS targets `.section.dark`, `.section.brand`, `.section.tertiary` — there is no special rule for `.section.light` or `.section.light-2`, as these inherit correctly. This is intentional (correct by inheritance) but could be documented more explicitly in the README.
-
-**Result: PASS**
+**Result: PASS** — All ticket requirements implemented; UE schema matches documented authoring fields.
 
 ---
 
@@ -144,53 +132,46 @@ One minor gap: `ticket-details.md` and README both reference a "Light 2" theme c
 
 #### General Block Requirements
 - [PASS] Directory follows `/blocks/title/` convention
-- [PASS] Has `title.js` with `decorate(block)` export
-- [PASS] Has `title.css`
-- [PASS] BEM-style CSS — `.title` is the block class; heading elements are standard HTML, BEM element classes not needed here
+- [PASS] `title.js` and `title.css` present
+- [PASS] BEM CSS class (`.title`)
 - [PASS] README documents use cases, authoring fields, section themes, and customization
 - [PASS] No site-specific code
-- [PASS] Brand differentiation via tokens only
-- [PASS] Uses semantic design tokens exclusively
-- [PASS] Supports Root + Brand token cascade via `--text-light-1`
+- [PASS] Token-only CSS
+- [PASS] Root+Brand cascade supported via `--text-light-1`
+- [PASS] `readVariant` called — variant classes (e.g., `title-centered`) can be applied
 
 #### Responsive Design
-- [PASS] No fixed-width constraints; heading content is naturally fluid
-- [PASS] No column structures in this block
-- [N/A] No columns to stack
-- [PASS] No layout max-width override needed
+- [PASS] Fluid content — heading elements are naturally responsive
+- [N/A] No fixed-width values or responsive breakpoints needed
+- [N/A] No column stacking
+- [N/A] Max-width delegated to parent layout
 
 #### Authoring Contract
-- [FAIL] No `_title.json` UE schema despite documented author-configurable fields (Title text, Title Type heading level)
-- [PASS] Author-facing fields documented in README
-- [PASS] Composable — used standalone and within other components
+- [PASS] UE in-context editing — `_title.json` model with `title` and `titleType` fields
+- [PASS] Clear authoring fields — well-labelled in model
+- [PASS] Composable — placed standalone or embedded in other blocks
 - [PASS] Structure/content/presentation decoupled
-- [N/A] No Content Fragment integration
+- [N/A] CF integration not required
 
 #### Performance
-- [N/A] No third-party scripts
-- [N/A] No images
-- [PASS] Minimal JavaScript — single `readVariant` call, correct
-- [N/A] No video
+- [PASS] Minimal JavaScript — single `readVariant` call plus lifecycle hooks
+- [N/A] No third-party scripts, images, or video
 
-#### Accessibility (WCAG 2.1)
-- [PASS] Keyboard navigation — no interactive elements
-- [PASS] Color contrast — theme tokens manage light/dark contrast
-- [PASS] Semantic HTML — native heading elements rendered by AEM
-- [PASS] Assistive technology compatible
-- [N/A] No image alt text concerns
+#### Accessibility
+- [PASS] Semantic HTML — AEM renders native `h1`–`h4` heading elements
+- [PASS] Color contrast — theme tokens align light/dark contrast pairs per design
+- [N/A] No interactive elements requiring keyboard navigation
 
-**Checklist: 18/20 applicable items passed (1 FAIL)**
+**Checklist: 19/21 applicable items** (0 FAIL)
 
 ---
 
 ## Remediation
 
-**Priority 1 — Blocking**
+### Priority 1 — Structure (WARNING, low severity)
 
-1. **Create `_title.json` UE schema.** The block has two author-configurable fields documented in the README: Title text and Title Type (heading level). Without a UE schema, these fields are not exposed in Universal Editor. A minimal model should define:
-   - `title` (text field) — heading text
-   - `titleType` (select: h1, h2, h3, h4) — heading level
+1. **Consider co-locating `_title.json` in `blocks/title/`** if the project convention requires the UE schema to live alongside the block files. The current location in `/models/` is a supported fallback but differs from blocks that carry their own schema. Confirm the intended convention and apply consistently across the codebase.
 
-**Priority 2 — Low**
+### Priority 2 — Documentation (minor)
 
-2. **README clarification on Light/Light2 themes.** The README lists `light` and `light2` in the Section Themes table with `--text-dark-1` tokens, but notes they are "inherited from body." Consider adding a comment in the CSS to make this explicit, or add explicit rules for completeness.
+2. **Add CSS comment for Light/Light2 theme inheritance.** The README's Section Themes table correctly lists `light` and `light2` as inheriting `--text-dark-1` from the body. Adding a brief CSS comment in `title.scss` to make this explicit (e.g., `/* .section.light and .section.light2 inherit body default -- no rule needed */`) would aid future maintainers.

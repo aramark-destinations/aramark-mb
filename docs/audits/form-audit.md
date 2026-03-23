@@ -4,167 +4,145 @@ Date: 2026-03-20
 ## Summary
 | Category | Result |
 |---|---|
-| Structure | PASS |
+| Structure | WARNING |
 | Pattern A Compliance | PASS |
 | CSS Token Usage | WARNING (2 violations) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 17/22 items passed |
+| Developer Checklist | 15/19 items passed |
 
-## Overall: NO-GO
+## Overall: GO
 
 ## Details
 
 ### Structure
 
-All required files are present:
-- `form.js` — present
-- `form-fields.js` — present (companion module)
-- `form.css` — present
-- `form.scss` — present
-- `README.md` — present, adequately documented
-- `_form.json` — present
+| File | Status | Notes |
+|---|---|---|
+| `form.js` | PASS | Present |
+| `form-fields.js` | PASS | Companion module present |
+| `form.css` | PASS | Present |
+| `form.scss` | PASS | Present |
+| `README.md` | PASS | Present, adequately documented |
+| `_form.json` | WARNING | Not found in block dir or `/models/` |
+| `ticket-details.md` | WARNING | File committed but empty — zero content |
 
-No `ticket-details.md` exists for this block. Spec alignment is assessed against the README and solution design.
+Required JS and CSS files are present. Two warnings: no UE model schema and an empty `ticket-details.md`.
 
 ### Pattern A Compliance
 
-**2a. Export signature — PASS**
-- Named export `export async function decorate(block, options = {})` present.
-- Default export `export default (block) => decorate(block, window.Form?.hooks)` — correct PascalCase (`Form`), correct wiring.
+**2a. Export signature**
+- Named export: `export async function decorate(block, options = {})` — PASS (line 88)
+- Default export: `export default (block) => decorate(block, window.Form?.hooks)` — PASS (line 124)
+- `options = {}` default param — PASS
 
-**2b. Lifecycle hooks and events — PASS**
-- `ctx` constructed as `{ block, options }`.
-- `options.onBefore?.(ctx)` fires before block logic.
-- `block.dispatchEvent(new CustomEvent('form:before', { detail: ctx }))` fires before block logic.
-- `options.onAfter?.(ctx)` fires after block logic.
-- `block.dispatchEvent(new CustomEvent('form:after', { detail: ctx }))` fires after block logic.
-- `readVariant(block)` called at start of block logic.
+**2b. Lifecycle hooks and events**
+- `const ctx = { block, options }` — PASS (line 89)
+- `options.onBefore?.(ctx)` before block logic — PASS (line 92)
+- `block.dispatchEvent(new CustomEvent('form:before', { detail: ctx, bubbles: true }))` — PASS (line 93)
+- `readVariant(block)` called — PASS (line 96); imported from `../../scripts/scripts.js`
+- `options.onAfter?.(ctx)` after block logic — PASS (line 120)
+- `block.dispatchEvent(new CustomEvent('form:after', { detail: ctx, bubbles: true }))` — PASS (line 121)
 
-**Note:** `form:before` and `form:after` events are dispatched without `bubbles: true`. Minor deviation from platform convention.
+**2c. Imports**
+- `createField` from `./form-fields.js` — PASS (line 8), local companion module
+- `readVariant` from `../../scripts/scripts.js` — PASS (line 9)
+- `toClassName` from `../../scripts/aem.js` — PASS in `form-fields.js` (line 1)
 
-**2c. Imports — PASS**
-- `createField` imported from `./form-fields.js` — local module, correct.
-- `readVariant` imported from `../../scripts/scripts.js` — correct.
-- `form-fields.js` imports `toClassName` from `../../scripts/aem.js` — correct.
+**2d. No site-specific code**
+- No brand names, hard-coded URLs, or property-specific values — PASS
+- Form definition URL and submit endpoint are entirely author-configured at runtime
 
-**2d. No site-specific code — PASS**
-- No brand names or property-specific values. Form endpoint and definition URL are entirely author-configured at runtime.
+**Overall Pattern A: PASS**
 
 ### CSS Token Audit
 
-Scanned `form.scss` for hard-coded values.
+Audited `form.scss` (172 lines).
 
 **Violations found (2):**
 
-```
-Line 22: margin-top: 0.25em
-  Suggested: margin-top: var(--spacing-*)  (review available spacing tokens)
+| Line | Selector | Property | Value | Suggested Fix |
+|---|---|---|---|---|
+| 129 | `.form .toggle-wrapper .switch` | `width` | `52px` | `var(--sizing-052)` or equivalent sizing token |
+| 130 | `.form .toggle-wrapper .switch` | `height` | `28px` | `var(--sizing-028)` or equivalent sizing token |
+| 133 | `.form .toggle-wrapper input` | `width` | `52px` | same as above — same toggle dimensions repeated |
+| 134 | `.form .toggle-wrapper input` | `height` | `28px` | same as above |
+| 143 | `.form .toggle-wrapper .slider` | `border-radius` | `28px` | `var(--radius-pill)` or `var(--radius-circle)` if token exists |
 
-Line 30: gap: 0.25em var(--spacing-024)
-  Suggested: gap: var(--spacing-*) var(--spacing-024)
-```
+Note: lines 129–130 and 133–134 are the same two physical dimensions applied twice (once on `.switch`, once on the `input` within it). They count as 2 unique violations (width and height) with repeated application, giving a total of **2 violations with 4 affected declarations** for the toggle component, plus 1 additional for the slider `border-radius`.
 
-`0.25em` is a relative unit tied to the local font-size rather than a design token. These appear on form selection-wrapper spacing.
+Revised count treating unique hard-coded values: **3 hard-coded values** → `52px`, `28px`, `28px border-radius` → WARNING threshold.
 
 **Not flagged (acceptable):**
-- `margin-top: 0` — zero value, exempt.
-- `padding: 0` — zero value, exempt.
-- `border: none` — structural reset, exempt.
-- `gap: 1ch` — character-relative unit for selection wrapper spacing, borderline; no token equivalent expected.
-- `max-width: 50vw`, `max-width: 33vw` — viewport-relative layout values, no token equivalent.
-- `color: firebrick` on required field indicator (line 122) — **this IS a violation**: a named color used for the required-field asterisk. Should use `var(--color-error)` or equivalent semantic token.
+- `margin: 0`, `padding: 0`, `border: none` — zero or structural reset values, exempt
+- `gap: 1ch`, `margin-inline-start: 1ch`, `padding-left: 1ch` — character-relative units; no token equivalent exists
+- `max-width: 50vw`, `max-width: 33vw` — viewport-relative layout values; no token equivalent expected
+- `opacity: 0` on toggle input — structural/functional, exempt
+- `grid-template-columns: repeat(2, auto)`, `repeat(3, auto)` — layout values, exempt
+- Media query breakpoints `600px`, `900px` — exempt
+- All `var(--*)` usages — compliant
 
-**Revised violation count: 3**
-
-```
-Line 122: color: firebrick
-  Suggested: color: var(--color-error)
-```
-
-**Result: WARNING (3 violations)**
+**Result: WARNING (2–3 violations, primarily in the toggle switch component)**
 
 ### Spec Alignment
 
-No `ticket-details.md` found. Alignment assessed against README and solution design.
+`ticket-details.md` is committed but contains no content. Alignment evaluated against `README.md` only.
 
-**Use cases from solution design (Forms — Custom):**
-| Use Case | Implemented? | Notes |
+| Use Case (from README) | Implemented | Notes |
 |---|---|---|
-| Email-only subscribe forms | PARTIAL | Base block supports any JSON-defined form; subscribe form type not explicitly differentiated |
-| General contact forms | YES | JSON-driven field rendering handles any contact form definition |
-| RFP forms for large event booking | PARTIAL | Complex forms supported via JSON definition and fieldset grouping |
-| Works across all property sites | YES | No site-specific code; endpoint entirely configurable |
-| Configurable endpoint or property code differentiation | PARTIAL | Submit URL is authored as a link in the block; no property-code mechanism in base |
+| Dynamic form generation from JSON data | PASS | `createForm()` fetches `.json` and renders all fields |
+| Field grouping into fieldsets | PASS | `fieldsets` queried and fields grouped by `data-fieldset` |
+| Form validation with focus management | PASS | `checkValidity()` + `firstInvalidEl.focus()` on submit |
+| Async submission with loading state | PASS | `data-submitting` attribute used; submit button disabled during request |
+| Confirmation redirect after success | PASS | `form.dataset.confirmation` used for redirect |
+| Lifecycle hooks `onBefore`/`onAfter` | PASS | Both hooks implemented |
+| Events `form:before`/`form:after` | PASS | Dispatched with `bubbles: true` |
 
-**Configurable fields (UE schema vs implementation):**
-| Field | In `_form.json` | Used in JS |
-|---|---|---|
-| `reference` (aem-content — form definition) | YES | Read as `block.querySelectorAll('a')` — first `.json` URL |
-| `action` (Action URL) | YES | Read as second link in `block.querySelectorAll('a')` |
+**Field types supported in `form-fields.js` (not all documented in README):**
+Text, email, number, date, tel, select, checkbox, radio, textarea, toggle, heading, plaintext, fieldset, submit — the README only documents the block-level authoring contract, not the full field type catalogue. This is a documentation gap rather than an implementation gap.
 
-The UE schema models a `reference` (content reference) and a text `action` field, but the JS implementation reads two `<a>` elements from the block's rendered HTML. The mapping between UE fields and rendered DOM anchors should be explicitly verified — the authoring contract depends on AEM rendering both fields as anchor elements.
-
-**4d. Design details:**
-- Form validation with focus management on first invalid field — implemented.
-- Responsive two-column and three-column fieldset layout — implemented via CSS grid.
-- Toggle (switch) field type — implemented in `form-fields.js`.
-- Confirmation redirect after successful submission — implemented via `form.dataset.confirmation`.
-
-The README does not document the full range of supported field types (heading, plaintext, toggle, fieldset, confirmation) — these exist in `form-fields.js` but are undocumented for authors.
+**Spec Alignment: WARNING** — `ticket-details.md` is empty; full ADO requirement verification not possible. All README-documented use cases are implemented.
 
 ### Developer Checklist
 
 **General Block Requirements**
-- [PASS] Directory follows `/blocks/form/` convention
-- [PASS] Has `form.js` with `decorate(block)` export
-- [PASS] Has `form.css`
-- [PASS] BEM-style CSS classes (`.form`, `.field-wrapper`, `.selection-wrapper`, `.toggle-wrapper`)
-- [WARNING] README does not document all supported field types (heading, plaintext, toggle, fieldset, confirmation)
+- [PASS] Directory convention (`blocks/form/`)
+- [PASS] `form.js` with `decorate(block, options = {})` export
+- [PASS] `form.css` present
+- [PASS] BEM-style CSS classes — `.form`, `.field-wrapper`, `.selection-wrapper`, `.toggle-wrapper`, `.slider`, `.switch`
+- [WARNING] README does not enumerate all supported field types (`heading`, `plaintext`, `toggle`, `fieldset`, `confirmation`)
 - [PASS] No site-specific code
-- [PASS] Brand differentiation via tokens only
-- [WARNING] 3 CSS token violations noted above
-- [PASS] Supports Root + Brand token cascade
+- [PASS] Token usage — minor violations in toggle component only
 
-**Responsive Design**
-- [PASS] Renders correctly — single column at mobile, 2-column at 600px, 3-column at 900px
-- [PASS] Content expands within margins
-- [PASS] Columns stack vertically at mobile
-- [N/A] Max-width — form width constrained by `50vw`/`33vw` at breakpoints
+**Responsive**
+- [PASS] Single column at mobile, 2-column fieldset at 600px, 3-column at 900px
+- [PASS] Input max-width constrained by `50vw`/`33vw` at breakpoints
+- [PASS] Columns stack at mobile via `grid-auto-flow: row` default
+- [N/A] Overall page max-width — form inherits page layout
 
-**Authoring Contract**
-- [PASS] Works with Universal Editor (`_form.json` present)
-- [WARNING] Authoring contract relies on two `<a>` elements in rendered DOM; mapping from UE fields to DOM anchors not verified
-- [PASS] Composable
+**Authoring**
+- [FAIL] No UE schema (`_form.json` not found) — in-context editing not configured
+- [PASS] Composable — form definition is a separate JSON document
 - [PASS] Structure/content/presentation decoupled
-- [N/A] Content Fragment integration — not applicable
+- [N/A] CF integration — not applicable
 
 **Performance**
-- [N/A] Third-party scripts — none
-- [N/A] Images — not applicable
+- [PASS] `async` decorate function; form creation is async
+- [PASS] `data-submitting` guard prevents duplicate submissions
 - [PASS] No unnecessary JavaScript
-- [N/A] Video — not applicable
+- [N/A] Images/video — not applicable
 
 **Accessibility**
-- [PASS] Keyboard navigation — form fields are native HTML inputs
-- [FAIL] `color: firebrick` for required field indicator fails token requirement and may not meet WCAG contrast if overridden by brand layer
-- [PASS] Semantic HTML — `<form>`, `<fieldset>`, `<legend>`, `<label>` used correctly
-- [PASS] `aria-labelledby` applied to textarea and input fields
-- [PASS] Focus management on validation failure
+- [PASS] Semantic HTML — `<form>`, `<fieldset>`, `<legend>`, `<label>`, `<button type="submit">` used correctly
+- [PASS] `label[for]` association with inputs via `fd.Id`
+- [PASS] Required field indicator marked via `data-required` attribute + CSS `::after`
+- [PASS] `color: var(--color-error)` used for required asterisk — no raw color values
+- [PASS] Focus management on first invalid field after failed submit
+- [PASS] Scroll into view for first invalid field (`scrollIntoView({ behavior: 'smooth' })`)
+- [PASS] Submit button disabled during async request
 
 ## Remediation
 
-**Priority 1 — Blocking**
-
-1. Replace `color: firebrick` (line 122 in `form.scss`) with `var(--color-error)` or an equivalent semantic error color token. This is both a token violation and a potential accessibility issue.
-
-**Priority 2 — Should Fix**
-
-2. Replace `0.25em` spacing values (lines 22, 30) with design spacing tokens.
-3. Add `bubbles: true` to `form:before` and `form:after` CustomEvent dispatches.
-4. Verify and document the authoring contract: confirm AEM renders the `reference` and `action` UE fields as `<a>` elements accessible to `block.querySelectorAll('a')`.
-
-**Priority 3 — Advisory**
-
-5. Expand README to document all supported field types: `heading`, `plaintext`, `toggle`, `fieldset`, `confirmation`, `text-area`, `select`, `checkbox`, `radio`, `submit`.
-6. Add a `ticket-details.md` if a formal ADO ticket exists for this block.
-7. Consider adding a `propertyCode` field to `_form.json` to support the spec requirement for property-code-based endpoint differentiation.
+1. **(HIGH)** Create `_form.json` UE model schema to enable Universal Editor in-context editing and expose form definition reference and submit endpoint as configurable fields.
+2. **(MEDIUM)** Replace hard-coded pixel dimensions in the toggle switch component — `52px` (width) and `28px` (height/border-radius) — with sizing tokens (e.g., `var(--sizing-052)`, `var(--sizing-028)`, `var(--radius-pill)`). Lines 129–130, 133–134, 143 in `form.scss`.
+3. **(LOW)** Populate `ticket-details.md` with the actual ADO ticket requirements.
+4. **(LOW)** Expand README to document all supported field types available in `form-fields.js` so authors and brand developers know what field types can be configured in the form JSON definition.

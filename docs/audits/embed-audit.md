@@ -4,150 +4,193 @@ Date: 2026-03-20
 ## Summary
 | Category | Result |
 |---|---|
-| Structure | PASS |
-| Pattern A Compliance | PASS |
-| CSS Token Usage | WARNING (3 violations) |
+| Structure | WARNING |
+| Pattern A Compliance | WARNING |
+| CSS Token Usage | WARNING (2 violations) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 17/22 items passed |
+| Developer Checklist | 17/20 items passed |
 
-## Overall: NO-GO
+## Overall: GO
 
 ## Details
 
 ### Structure
 
-All required files are present:
-- `embed.js` — present
-- `embed.css` — present
-- `embed.scss` — present
-- `README.md` — present, well-documented
-- `_embed.json` — present
+| File | Status | Notes |
+|---|---|---|
+| `embed.js` | PASS | Present |
+| `embed.css` | PASS | Present |
+| `embed.scss` | PASS | Present (byte-for-byte identical to `embed.css` — no SCSS-specific syntax used) |
+| `README.md` | PASS | Present and well-documented |
+| `_embed.json` | PASS | Present in block directory |
+| `ticket-details.md` | WARNING | File is committed but empty (0 content bytes) |
 
-No `ticket-details.md` exists for this block. Spec alignment is assessed against the README and solution design.
+**Result: WARNING** — `ticket-details.md` is present but empty and cannot serve as a spec source.
+
+---
 
 ### Pattern A Compliance
 
-**2a. Export signature — PASS**
-- Named export `export function decorate(block, options = {})` present.
-- Default export `export default (block) => decorate(block, window.Embed?.hooks)` — correct PascalCase (`Embed`), correct wiring.
+**2a. Export signature**
 
-**2b. Lifecycle hooks and events — PASS**
-- `ctx` object constructed correctly with `{ block, options }`.
-- `options.onBefore?.(ctx)` fires before block logic.
-- `block.dispatchEvent(new CustomEvent('embed:before', { detail: ctx }))` fires before block logic.
-- `options.onAfter?.(ctx)` fires after block logic.
-- `block.dispatchEvent(new CustomEvent('embed:after', { detail: ctx }))` fires after block logic.
-- `readVariant(block)` called at start of block logic.
+| Check | Status | Notes |
+|---|---|---|
+| Named export `export function decorate(block, options = {})` | PASS | Line 93 |
+| Default export `export default (block) => decorate(block, window.Embed?.hooks)` | PASS | Line 150 — PascalCase `Embed` matches convention |
+| `options = {}` default param | PASS | Line 93 |
 
-**Note:** `embed:before` and `embed:after` events are dispatched without `bubbles: true`. The skill spec example uses `{ detail: ctx, bubbles: true }`. This is a minor deviation — events will not bubble to parent elements.
+**2b. Lifecycle hooks and events**
 
-**2c. Imports — PASS**
-- `readVariant` imported from `../../scripts/scripts.js` — correct.
-- No other utility imports needed. All embed logic is self-contained.
+| Check | Status | Notes |
+|---|---|---|
+| `const ctx = { block, options }` | PASS | Line 94 |
+| `options.onBefore?.(ctx)` before block logic | PASS | Line 97 |
+| `block.dispatchEvent(new CustomEvent('embed:before', { detail: ctx, bubbles: true }))` | PASS | Line 98 — `bubbles: true` present |
+| `readVariant(block)` called | PASS | Line 100 |
+| `options.onAfter?.(ctx)` after block logic | PASS | Line 141 |
+| `block.dispatchEvent(new CustomEvent('embed:after', { detail: ctx, bubbles: true }))` | PASS | Line 142 — `bubbles: true` present |
 
-**2d. No site-specific code — PASS**
-- No brand names, hard-coded URLs, or property-specific values. All embed providers are configurable via `options.embedsConfig`.
+**2c. Imports**
+
+| Import | Status | Notes |
+|---|---|---|
+| `readVariant` from `../../scripts/scripts.js` | PASS | Line 11 |
+
+No other imports required. All embed provider logic is self-contained.
+
+**2d. No site-specific code**
+
+| Check | Status | Notes |
+|---|---|---|
+| No brand names or property-specific values | PASS |
+| Hard-coded embed provider URLs | WARNING | `https://www.youtube.com`, `https://player.vimeo.com`, `https://platform.twitter.com/widgets.js` are hard-coded in provider functions. These are standard platform URLs, not brand-specific, but they are not configurable through the design token or options system. The Twitter widget script URL in particular (`loadScript('https://platform.twitter.com/widgets.js')`) is a third-party URL hard-coded at the base block level. |
+
+The provider URLs are industry-standard CDN paths for public embeds. This pattern is common across EDS implementations. However the hard-coded Twitter script URL warrants a note as it could break if Twitter changes their widget endpoint.
+
+**Result: WARNING** — All lifecycle hooks and exports are correctly implemented. `bubbles: true` is present on both events. The only deviation from Pattern A is the hard-coded third-party script URL for the Twitter widget, which is a minor portability concern.
+
+---
 
 ### CSS Token Audit
 
-Scanned `embed.scss` for hard-coded values.
+Audit performed on `embed.scss` and `embed.css` (identical content).
 
-**Violations found (3):**
+**`:root` block (lines 1–4):** Defines `--embed-play-icon-border-v: 5px` and `--embed-play-icon-border-h: 6px`. Values inside `:root` are **excepted** from token requirements — PASS.
 
-```
-Line 62: border-top: 5px solid transparent
-  Suggested: border-top: var(--spacing-005) solid transparent
+**Property violations outside `:root`:**
 
-Line 63: border-bottom: 5px solid transparent
-  Suggested: border-bottom: var(--spacing-005) solid transparent
+| Line | Value | Issue | Suggested Fix |
+|---|---|---|---|
+| Line 69 (`embed.scss`) | `top: 4px;` | Pixel position value for play button icon fine-grain positioning | Use `var(--spacing-004)` if that token exists, or document as intentional icon geometry |
+| Line 70 (`embed.scss`) | `left: 7px;` | Pixel position value for play button icon fine-grain positioning | No clean token maps to `7px`; acceptable to leave if documented as icon geometry. Flag as minor violation. |
 
-Line 64: border-left: 6px solid
-  Suggested: border-left: var(--spacing-006) solid
-```
+**Lines 65–68 (`border-top`, `border-bottom`, `border-left`)** reference `var(--embed-play-icon-border-v)` and `var(--embed-play-icon-border-h)` — these are the `:root` custom properties, not hard-coded values. PASS.
 
-Additionally, lines 65–66 use `top: 4px` and `left: 7px`. These are fine-grain pixel offsets for a CSS-drawn play button triangle and are likely structural/positional rather than brand values. However they may warrant token coverage if a sizing token exists for them.
+All other properties use tokens correctly:
+- `max-width: var(--layout-max-width-media)` — PASS
+- `margin: var(--spacing-032) auto` — PASS
+- `aspect-ratio: var(--aspect-ratio-video)` — PASS
+- `width: var(--sizing-024)`, `height: var(--sizing-024)` — PASS
+- `height: var(--sizing-010)` — PASS
+- `border: var(--weight-m) solid` — PASS
+- `border-radius: var(--radius-l)` — PASS
 
-All other properties use tokens: `var(--layout-max-width-media)`, `var(--spacing-032)`, `var(--aspect-ratio-video)`, `var(--sizing-024)`, `var(--sizing-010)`, `var(--weight-m)`, `var(--radius-l)`.
+**Inline styles in JS:** `getDefaultEmbed`, `embedYoutube`, and `embedVimeo` inject `style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;"` and `style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;"` as inline HTML strings. The `56.25%` value (16:9 aspect ratio) and `0` values are not CSS token violations per the audit rules (`0`, `100%`, and `50%` are excepted; `56.25%` is a percentage and therefore not flagged). However, `border: 0` and `top: 0 / left: 0` are `0` values, also excepted. This pattern bypasses the design token system for responsive iframe sizing but does not produce a token audit violation per the stated rules.
 
-**Result: WARNING (3 violations)** — border pixel values for the play-button indicator are hard-coded.
+**Result: WARNING (2 violations — `top: 4px` and `left: 7px` pixel position values for play button icon)**
+
+---
 
 ### Spec Alignment
 
-No `ticket-details.md` found. Alignment assessed against README and solution design.
+`ticket-details.md` is empty. Spec reconstructed from `README.md` and `_embed.json`.
 
-**Use cases from solution design:**
-| Use Case | Implemented? | Notes |
+| Use Case / Requirement | Status | Notes |
 |---|---|---|
-| Basic Google Map embed | PARTIAL | Generic iframe embed covers this; no Maps-specific handling |
-| Live video feed embeds | YES | YouTube and Vimeo supported; generic iframe fallback for others |
-| Configurable embed providers via options | YES | `options.embedsConfig` allows custom provider array |
-| Placeholder image with click-to-play | YES | `embed-placeholder` pattern implemented |
-| Lazy loading via IntersectionObserver | YES | Implemented for non-placeholder case |
-| Autoplay on interaction | YES | `autoplay` flag passed on placeholder click |
+| YouTube embed (youtube.com, youtu.be) | PASS | `embedYoutube` handles both URL patterns |
+| Vimeo embed | PASS | `embedVimeo` implemented |
+| Twitter/X embed | PASS | `embedTwitter` handles both `twitter.com` and `x.com` URLs |
+| Generic iframe fallback | PASS | `getDefaultEmbed` handles any unmatched URL |
+| Lazy loading via IntersectionObserver | PASS | Implemented for non-placeholder case |
+| Placeholder image with click-to-play | PASS | `embed-placeholder` pattern with play button overlay |
+| Autoplay on user interaction (click) | PASS | `autoplay=true` passed to provider functions on click |
+| Lifecycle hooks `onBefore`/`onAfter` | PASS | Fully implemented |
+| Custom events `embed:before`, `embed:after` | PASS | Both dispatched with `bubbles: true` |
+| Configurable embed providers via `options.embedsConfig` | PASS | Default config overridable via options |
+| Placeholder image field in UE | PASS | `embedPlaceholder` (reference) in `_embed.json` |
+| Placeholder alt text field in UE | PASS | `embedPlaceholderAlt` (text) in `_embed.json` |
+| URI field in UE | PASS | `embedUri` (text) in `_embed.json` |
 
-**Configurable fields (UE schema vs implementation):**
-| Field | In `_embed.json` | Used in JS |
-|---|---|---|
-| `embedPlaceholder` | YES | Indirect — rendered as `picture` element by AEM |
-| `embedPlaceholderAlt` | YES | Not explicitly read in JS (AEM populates alt on img) |
-| `embedUri` | YES | Read as `block.querySelector('a').href` |
+**UE schema vs JS implementation alignment:**
 
-The UE JSON schema defines `embedUri` as a text field, but the JS reads the value via `block.querySelector('a').href`. This assumes AEM renders the URI as an anchor element from the `aem-content` or `text` component — this authoring contract should be verified.
+The `_embed.json` schema defines `embedUri` as a plain text field, but `embed.js` reads the embed URL via `block.querySelector('a').href` (line 118). This assumes AEM renders the `embedUri` text field value as an anchor element. This authoring contract should be verified — if AEM renders the text field as a plain text node, the `querySelector('a')` call will return `null` and the block will throw a `TypeError`.
 
-**4d. Design details:**
-The solution design notes "responsive iframe embed" as a requirement. The embed uses inline `style` on the iframe container (padding-bottom 56.25% aspect ratio trick) rather than CSS classes with tokens. This is functional but means the aspect ratio cannot be overridden by brand tokens.
+**Result: WARNING** — All README-described use cases are implemented. Result is WARNING because `ticket-details.md` is empty, and the `embedUri` field's rendering contract between the UE schema and JS DOM query is unverified.
+
+---
 
 ### Developer Checklist
 
-**General Block Requirements**
-- [PASS] Directory follows `/blocks/embed/` convention
-- [PASS] Has `embed.js` with `decorate(block)` export
-- [PASS] Has `embed.css`
-- [PASS] BEM-style CSS classes (`.embed-placeholder`, `.embed-placeholder-play`)
-- [PASS] README documents use cases and configuration
-- [PASS] No site-specific code
-- [PASS] Brand differentiation via tokens only
-- [WARNING] Uses semantic design tokens — 3 CSS violations noted above
-- [PASS] Supports Root + Brand token cascade
+**Directory and Files**
+| Item | Result |
+|---|---|
+| Directory convention `blocks/embed/` | PASS |
+| `embed.js` and `embed.css` present | PASS |
+| BEM CSS classes (`.embed-placeholder`, `.embed-placeholder-play`) | PASS |
+| README present and documents all use cases | PASS |
+| No site-specific hard-coded values | PASS |
+| Token usage in CSS | WARNING — `top: 4px` and `left: 7px` pixel values for icon positioning |
+| Root + Brand cascade support | PASS |
 
-**Responsive Design**
-- [PASS] Renders correctly — fluid width, centered layout
-- [PASS] Content expands within margins
-- [N/A] Columns (not applicable)
-- [PASS] Respects max-width via `var(--layout-max-width-media)`
+**Responsive**
+| Item | Result |
+|---|---|
+| Breakpoints | N/A — embed is a fluid single element |
+| Fluid content (`width: 100%`, `aspect-ratio` token) | PASS |
+| Column stacking | N/A |
+| Max-width via `var(--layout-max-width-media)` | PASS |
 
-**Authoring Contract**
-- [PASS] Works with Universal Editor (`_embed.json` present)
-- [PASS] Author-facing fields clear and documented
-- [PASS] Composable, not bound to templates
-- [PASS] Structure/content/presentation decoupled
-- [N/A] Content Fragment integration (not applicable to embed)
+**Authoring**
+| Item | Result |
+|---|---|
+| UE in-context editing (`_embed.json` present) | PASS |
+| Clear, labeled author fields | PASS |
+| Composable / extensible via `options.embedsConfig` | PASS |
+| Structure/content/presentation decoupled | WARNING — iframe aspect ratio is hard-coded via inline `style` attributes in JS strings, bypassing token system |
+| CF integration | N/A |
 
 **Performance**
-- [PASS] Third-party scripts (Twitter) load asynchronously via `loadScript`
-- [WARNING] YouTube/Vimeo iframes use inline styles for responsive sizing instead of CSS token-driven layout
-- [PASS] No unnecessary JavaScript
-- [PASS] Lazy loading via IntersectionObserver
+| Item | Result |
+|---|---|
+| Third-party scripts (Twitter) load on-demand | PASS |
+| Optimized images | N/A (placeholder image is native `<picture>`) |
+| No unnecessary JS | PASS |
+| Lazy loading via IntersectionObserver | PASS |
 
 **Accessibility**
-- [PASS] Keyboard navigation — play button is a `<button type="button">`
-- [WARNING] Color contrast — play button uses `currentColor` for border/fill, which depends on parent context; no explicit color token applied
-- [PASS] Semantic HTML — iframe titles present
-- [PASS] Alt text fields available in UE schema
+| Item | Result |
+|---|---|
+| Keyboard nav | PASS — play button is `<button type="button">` |
+| Color contrast | N/A (button uses `currentColor`; no hard-coded colors) |
+| Semantic HTML | PASS — `<button>` for play, `title` attributes on iframes |
+| AT support | PASS — iframe titles: "Content from Youtube", "Content from Vimeo", `url.hostname` for generic |
+| Alt text | PASS — `embedPlaceholderAlt` field in schema |
+
+**Score: 17/20** (N/A items excluded)
+
+---
 
 ## Remediation
 
 **Priority 1 — Blocking**
+- None.
 
-1. Add `bubbles: true` to `embed:before` and `embed:after` CustomEvent dispatches to match the platform convention used by other blocks in this repo.
+**Priority 2 — High**
+1. **Populate `ticket-details.md`** — File is committed but empty. Add ADO ticket requirements.
+2. **Verify `embedUri` authoring contract** — Confirm whether AEM renders the `embedUri` text field as an `<a>` anchor element. If AEM renders it as a plain text node, `block.querySelector('a').href` will return `null` and throw a `TypeError`. Either update the JS to handle both cases or document the rendering contract explicitly.
+3. **Inline iframe styles** — The 16:9 aspect ratio (`padding-bottom: 56.25%`) is injected as inline HTML strings in `getDefaultEmbed`, `embedYoutube`, and `embedVimeo`. This bypasses the design token system and cannot be overridden by brand CSS. Consider extracting to a CSS class (`.embed-iframe-wrapper`) with `aspect-ratio: var(--aspect-ratio-video)` to match the `embed-placeholder` approach already used in the CSS.
 
-**Priority 2 — Should Fix**
-
-2. Replace hard-coded pixel values on the play button's `::before` pseudo-element (lines 62–64 in `embed.scss`) with spacing tokens: `5px` → `var(--spacing-005)`, `6px` → `var(--spacing-006)`.
-3. Replace inline `style` on iframe containers in `getDefaultEmbed`, `embedYoutube`, and `embedVimeo` with CSS classes so aspect ratio and layout can be controlled by tokens. The current `padding-bottom: 56.25%` approach circumvents the design token system.
-
-**Priority 3 — Advisory**
-
-4. Add a `ticket-details.md` if a formal ADO ticket exists for this block; this serves as the authoritative requirements source per project convention.
-5. Verify the authoring contract: confirm AEM renders the `embedUri` field as an `<a>` element that `block.querySelector('a').href` can find, or update the JS to read from `block.dataset.embeduri` instead.
-6. Consider adding explicit Google Maps iframe handling (beyond the generic iframe fallback) since Google Map embed is a documented use case.
+**Priority 3 — Low**
+4. **CSS pixel values** — Replace `top: 4px` and `left: 7px` on the play button `::before` pseudo-element with spacing tokens (`var(--spacing-004)`) if available, or document them as intentional icon geometry values exempt from token requirements.
+5. **Twitter widget script URL** — The `https://platform.twitter.com/widgets.js` URL is hard-coded. Consider making the Twitter widget script URL configurable via `options` so it can be updated if Twitter changes their CDN path.
+6. **SCSS/CSS sync** — `embed.scss` and `embed.css` are byte-for-byte identical; no SCSS-specific syntax is used. Consolidate to one file or begin using SCSS features to justify the dual-file setup.

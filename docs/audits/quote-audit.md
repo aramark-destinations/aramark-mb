@@ -5,12 +5,14 @@ Date: 2026-03-20
 | Category | Result |
 |---|---|
 | Structure | WARNING |
-| Pattern A Compliance | PASS |
-| CSS Token Usage | WARNING (1 violation) |
-| Spec Alignment | PASS |
-| Developer Checklist | 20/23 items passed |
+| Pattern A Compliance | WARNING |
+| CSS Token Usage | PASS (0 violations) |
+| Spec Alignment | WARNING |
+| Developer Checklist | 19/23 items passed |
 
 ## Overall: GO (with remediation items)
+
+---
 
 ## Details
 
@@ -25,7 +27,7 @@ Date: 2026-03-20
 | `_quote.json` | YES | YES |
 | `ticket-details.md` | YES | NO |
 
-Result: WARNING — All core required files are present. `ticket-details.md` is missing. README is comprehensive and documents authoring, HTML output, hooks, and accessibility.
+Result: WARNING — All core required files are present. `ticket-details.md` is the only missing file.
 
 ---
 
@@ -33,138 +35,142 @@ Result: WARNING — All core required files are present. `ticket-details.md` is 
 
 #### 2a. Export signature
 
-```js
-export async function decorate(block, options = {}) { ... }
-export default (block) => decorate(block, window.Quote?.hooks);
-```
-
-Both required forms are present — PASS.
-- `options = {}` default parameter — PASS
-- `window.Quote?.hooks` — PascalCase of `quote` — PASS
+| Check | Status |
+|---|---|
+| Named export `export async function decorate(block, options = {})` | PASS — line 16 |
+| Default export `export default (block) => decorate(block, window.Quote?.hooks)` | PASS — line 56 |
+| `options = {}` default parameter | PASS |
+| `window.Quote?.hooks` — PascalCase matches `quote` | PASS |
 
 #### 2b. Lifecycle hooks and events
 
-```js
-const ctx = { block, options };
-options.onBefore?.(ctx);
-block.dispatchEvent(new CustomEvent('quote:before', { detail: ctx }));
+| Check | Status |
+|---|---|
+| `const ctx = { block, options }` | PASS — line 17 |
+| `options.onBefore?.(ctx)` before block logic | PASS — line 20 |
+| `block.dispatchEvent(new CustomEvent('quote:before', { detail: ctx, bubbles: true }))` | WARNING — line 21, `bubbles: true` is **missing** from the event options |
+| `readVariant(block)` called | PASS — line 23, called between before and after hooks |
+| `options.onAfter?.(ctx)` after block logic | PASS — line 47 |
+| `block.dispatchEvent(new CustomEvent('quote:after', { detail: ctx, bubbles: true }))` | WARNING — line 48, `bubbles: true` is **missing** from the event options |
 
-readVariant(block);
-// ... block decoration logic ...
+`readVariant(block)` is present and correctly called after the before hook. Both `quote:before` and `quote:after` events are missing `bubbles: true`. This is a pattern inconsistency with the navigation family blocks.
 
-options.onAfter?.(ctx);
-block.dispatchEvent(new CustomEvent('quote:after', { detail: ctx }));
-```
-
-Both before and after hooks and events are present — PASS. Note: `bubbles: true` is NOT set on the events, unlike `navigation-group` and `navigation-item`. Minor inconsistency with those blocks.
-
-`readVariant(block)` is called correctly within the block logic, between the before and after hooks — PASS.
+Overall: WARNING (pattern is structurally sound; only `bubbles: true` is missing).
 
 #### 2c. Imports
 
-- `../../scripts/scripts.js` — `readVariant` — PASS
+| Symbol | Expected source | Actual source | Status |
+|---|---|---|---|
+| `readVariant` | `../../scripts/scripts.js` | `../../scripts/scripts.js` | PASS |
 
-No other imports required for this block's functionality.
+No other imports are required for this block's functionality. PASS.
 
 #### 2d. No site-specific code
 
-No brand-specific logic found — PASS.
+No brand names, hard-coded domain URLs, or property-specific values found. PASS.
 
 ---
 
 ### CSS Token Audit
 
-**Violation found in `quote.scss`:**
+Audited `quote.scss` (and compiled `quote.css`). Media query breakpoint (`900px`) is exempt.
 
-```
-Line 18: font-size: 120%;
-  — Percentage font size; this is a relative scaling value.
-  Suggested: consider var(--font-size-quote) or a named scale token if one exists;
-  if no token exists, a named custom property (e.g., --quote-font-scale: 120%) should be defined
-```
+The custom property `--quote-highlight-font-size: 120%` is defined **inside `:root`** (line 2 of `quote.scss`). Per audit rules, values inside `:root` are exempt regardless of type. This is **not a violation**.
 
-Note: `120%` as a relative `font-size` is a borderline case. It is not an absolute pixel or rem value, so it does not map cleanly to a font-size token. However, it is a hard-coded visual choice that should be expressed as a named custom property to allow brand-level overrides. Flagged as a WARNING rather than a FAIL.
-
-All other values in `quote.scss` use CSS custom properties correctly:
+All other values use CSS custom properties correctly:
 - `var(--spacing-024)`, `var(--spacing-032)` — spacing tokens
 - `var(--layout-max-width-narrow)` — layout token
 - `var(--line-height-none)` — typography token
-- Media query breakpoint (`900px`) — acceptable exception
+- `var(--quote-highlight-font-size)` — references the `:root`-defined custom property
+- `0` values, `0.5ch` text-indent/padding-right — `ch` is a relative unit tied to the current font, not a hard-coded pixel value; exempt
+- `right` text-align — layout keyword; exempt
 
-Total: 1 violation. Result: WARNING (1–3 violations).
+Result: PASS (0 violations).
 
 ---
 
 ### Spec Alignment
 
-`ticket-details.md` is absent. The README and solution design were used as reference.
+`ticket-details.md` is absent; assessment is based on `README.md` and `_quote.json`.
 
-The solution design specifies: "Outputs author-entered text with quote markup and styling."
-
-| Use Case | Implemented? | Notes |
+| Use Case | Implemented | Notes |
 |---|---|---|
-| Semantic `<blockquote>` markup | YES | `blockquote` element created |
-| Quotation text with automatic quote marks | YES | CSS `content: '"'` / `content: '"'` pseudo-elements via `p:first-child::before` / `p:last-child::after` |
-| Optional attribution with em-dash prefix | YES | CSS `content: '—'` via `p:first-child::before` on attribution |
-| `<cite>` conversion for italicized attribution text | YES | `<em>` elements in attribution replaced with `<cite>` |
-| Responsive layout | YES | Max-width and padding adjust at 900px breakpoint |
-| Variant support | YES | `readVariant(block)` called |
+| Semantic `<blockquote>` markup | PASS | Created at line 25 |
+| Quotation text with automatic opening/closing quote marks | PASS | CSS `content: '"'` / `content: '"'` via `p:first-child::before` / `p:last-child::after` |
+| Optional attribution | PASS | Second row of block becomes attribution element |
+| Attribution em-dash prefix | PASS | CSS `content: '—'` via `.quote-attribution p:first-child::before` |
+| `<cite>` conversion for italicized attribution text | PASS | `<em>` elements replaced with `<cite>` (lines 35–40) |
+| Responsive layout (padding adjusts at breakpoint) | PASS | `@media (width >= 900px)` with responsive spacing tokens |
+| Variant support | PASS | `readVariant(block)` called (line 23) |
+| Lifecycle hooks and custom events | PASS | `onBefore`/`onAfter`, `quote:before`/`quote:after` |
 
-UE JSON schema (`_quote.json`) defines `quotation` (richtext) and `attribution` (richtext) fields — both are read and used in `decorate()` via positional child selection (`block.children[0]` and `block.children[1]`). Alignment is implicit rather than via named field reading, but consistent with EDS document authoring patterns — PASS.
+UE schema (`_quote.json`) defines two fields: `quotation` (richtext) and `attribution` (richtext). The `decorate()` function reads these positionally as `block.children[0]` and `block.children[1]`, consistent with EDS document authoring. Field names align with implementation. PASS.
 
-Result: PASS
+Result: WARNING — all use cases are implemented; formal spec cannot be verified without `ticket-details.md`.
 
 ---
 
 ### Developer Checklist
 
-#### General Block Requirements
-- [PASS] Directory follows `/blocks/quote/` convention
-- [PASS] Has `decorate(block, options = {})` export with Pattern A default export
-- [PASS] Has `quote.css`
-- [PASS] BEM-style CSS classes (`.quote-quotation`, `.quote-attribution`)
-- [PASS] README comprehensively documents use cases, HTML output, hooks, and accessibility
-- [PASS] Part of shared global library — no site-specific code
-- [PASS] Brand differentiation via tokens (spacing, max-width use tokens)
-- [WARNING] `font-size: 120%` is not expressed as a token — 1 violation
-- [PASS] Supports Root + Brand token cascade
+#### Convention and Files
+| Item | Result |
+|---|---|
+| Directory follows `/blocks/quote/` convention | PASS |
+| JS and CSS files present | PASS |
+| BEM CSS class names | PASS — `.quote-quotation`, `.quote-attribution` |
+| README present and thorough | PASS — documents use cases, HTML output, hooks, events, and accessibility |
+| No site-specific code | PASS |
+| CSS token usage | PASS — 0 violations |
+| Root+Brand cascade | PASS — `:root` custom property defined for overridability |
 
 #### Responsive Design
-- [PASS] Padding adjusts at 900px breakpoint
-- [PASS] `max-width: var(--layout-max-width-narrow)` with `margin: 0 auto` — fluid and centered
-- [N/A] Column stacking — not applicable
-- [PASS] Respects max-width constraint
+| Item | Result |
+|---|---|
+| Breakpoints defined | PASS — `900px` breakpoint adjusts padding |
+| Fluid content | PASS — `max-width` with `margin: 0 auto` |
+| Column stacking | N/A — single-column block |
+| 1440px max-width | PASS — `var(--layout-max-width-narrow)` constrains width |
 
 #### Authoring Contract
-- [PASS] Works with Universal Editor — `_quote.json` defines authoring model
-- [PASS] Author-facing fields (`quotation`, `attribution`) are clear
-- [PASS] Composable — not bound to specific templates
-- [PASS] Structure/content/presentation decoupled
-- [N/A] Content Fragment integration — not specified for this block
+| Item | Result |
+|---|---|
+| UE in-context editing | PASS — `_quote.json` defines authoring model |
+| UE schema field labels clear | PASS — "Quotation" and "Attribution" are descriptive |
+| Composable | PASS |
+| Structure/content/presentation decoupled | PASS |
+| CF integration | N/A |
 
 #### Performance
-- [N/A] Third-party scripts — none
-- [N/A] Images — none
-- [PASS] No unnecessary JavaScript — minimal, focused implementation
-- [N/A] Video — none
+| Item | Result |
+|---|---|
+| Async decoration | PASS — `async function decorate` (no awaited calls, but async allows future extension) |
+| Optimized images | N/A |
+| No unnecessary JS | PASS — minimal, focused implementation |
+| Video embed | N/A |
 
 #### Accessibility (WCAG 2.1)
-- [N/A] Keyboard navigation — static content block
-- [PASS] `<blockquote>` and `<cite>` provide semantic structure
-- [PASS] Semantic HTML — proper use of `blockquote`, `cite`
-- [N/A] Screen reader assistive tech — no interactive elements
-- [N/A] Alt text — no images
+| Item | Result |
+|---|---|
+| Keyboard navigation | N/A — static content block |
+| Color contrast | PASS — inherits via CSS token chain |
+| Semantic HTML | PASS — `<blockquote>`, `<cite>` provide correct semantic structure |
+| AT support | N/A — no interactive elements |
+| Alt text | N/A — no images |
 
 ---
 
 ## Remediation
 
-**Priority 1 — Blocking**
-1. Add `ticket-details.md` documenting requirements for this block.
+**Priority 1 — Should fix**
 
-**Priority 2 — Should Fix**
-2. Replace the hard-coded `font-size: 120%` with a named CSS custom property (e.g., `--quote-font-scale: 120%` defined in the block's `:root` layer, or a system-level `var(--font-size-quote)` token) to allow brand-level overrides.
-3. Add `bubbles: true` to `quote:before` and `quote:after` events for consistency with other blocks in the library.
+1. **Add `bubbles: true` to both custom events** — `quote:before` (line 21) and `quote:after` (line 48) are dispatched without `bubbles: true`. Add `bubbles: true` to the event init objects to match the pattern used across the block library:
+   ```js
+   block.dispatchEvent(new CustomEvent('quote:before', { detail: ctx, bubbles: true }));
+   // ...
+   block.dispatchEvent(new CustomEvent('quote:after', { detail: ctx, bubbles: true }));
+   ```
+2. **Add `ticket-details.md`** — Document the source ADO ticket requirements so spec alignment can be formally verified.
 
-**Priority 3 — Nice to Have**
-4. The README includes inline CSS property suggestions (e.g., `--quote-max-width`, `--quote-font-size`) that reference non-existent tokens. Either implement these as CSS custom properties in the SCSS or remove the CSS custom property table from the README to avoid confusion.
+**Priority 2 — Consider**
+
+3. **Clean up README "CSS Custom Properties" section** — The README lists `--quote-max-width`, `--quote-font-size`, and `--quote-padding` as override targets in a code example, but none of these custom properties exist in the block's SCSS. The only defined custom property is `--quote-highlight-font-size`. Either implement the listed properties or remove the misleading example to avoid author confusion.

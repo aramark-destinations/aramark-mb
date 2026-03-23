@@ -6,10 +6,9 @@ Date: 2026-03-20
 |---|---|
 | Structure | WARNING |
 | Pattern A Compliance | PASS |
-| CSS Token Usage | FAIL (5 violations) |
+| CSS Token Usage | FAIL (4 violations) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 17/22 items passed |
-| Accessibility Basics | PASS |
+| Developer Checklist | 17/23 items passed |
 
 ## Overall: NO-GO
 
@@ -19,181 +18,223 @@ Date: 2026-03-20
 
 | File | Expected | Present |
 |---|---|---|
-| `tabs.js` | yes | yes |
-| `tabs.css` | yes | yes |
-| `tabs.scss` | yes | yes |
-| `README.md` | yes | yes |
-| `ticket-details.md` | not present | NO |
-| `_tabs.json` | yes (author-configurable fields) | yes |
+| `tabs.js` | YES | YES |
+| `tabs.css` | YES | YES |
+| `tabs.scss` | YES | YES |
+| `README.md` | YES | YES |
+| `ticket-details.md` | YES | NO |
+| `_tabs.json` | YES | YES — at `blocks/tabs/_tabs.json` |
 
-No `ticket-details.md` found. The README and UE schema are present. The README is functional but does not fully document all configurable fields that exist in the implementation (e.g., `layoutVariant`, `stackOnMobile`, `allowHashDeepLinks`, `activateOnHover`, `transitionStyle`, `analyticsCategory`).
+All required files (JS, CSS) are present. `ticket-details.md` is absent. The README is present but incomplete — it documents basic usage and hooks but omits six block-level configuration options that are implemented in JS. It also documents an `onTabClick` hook that does not exist in the code.
 
-**Result: WARNING** — `ticket-details.md` absent; README does not document all configurable fields.
+**Result: WARNING** — ticket-details.md absent; README accuracy issues.
 
 ---
 
 ### Pattern A Compliance
 
-**2a. Export signature**
+#### 2a. Export Signature
 
-```js
-export async function decorate(block, options = {}) { ... }
-export default (block) => decorate(block, window.Tabs?.hooks);
-```
+| Check | Status | Notes |
+|---|---|---|
+| Named export `export async function decorate(block, options = {})` | PASS | Line 194 |
+| Default export `export default (block) => decorate(block, window.Tabs?.hooks)` | PASS | Line 481 |
+| `options = {}` default param | PASS | Line 194 |
+| PascalCase global hook name (`window.Tabs`) | PASS | Matches block name |
 
-Named export with `options = {}` default: PASS. Default export wired to `window.Tabs?.hooks`: PASS. PascalCase `Tabs` matches block name: PASS.
+#### 2b. Lifecycle Hooks and Events
 
-**2b. Lifecycle hooks and events**
+| Check | Status | Notes |
+|---|---|---|
+| `const ctx = { block, options }` | PASS | Line 195 |
+| `options.onBefore?.(ctx)` before block logic | PASS | Line 198 |
+| `block.dispatchEvent(new CustomEvent('tabs:before', { detail: ctx, bubbles: true }))` | PASS | Line 199 — `bubbles: true` present |
+| `readVariant(block)` called | PASS | Line 328 |
+| `options.onAfter?.(ctx)` after block logic | PASS | Line 472 |
+| `block.dispatchEvent(new CustomEvent('tabs:after', { detail: ctx, bubbles: true }))` | PASS | Line 473 — `bubbles: true` present |
 
-```js
-const ctx = { block, options };
-options.onBefore?.(ctx);
-block.dispatchEvent(new CustomEvent('tabs:before', { detail: ctx, bubbles: true }));
-// ... block logic ...
-options.onAfter?.(ctx);
-block.dispatchEvent(new CustomEvent('tabs:after', { detail: ctx, bubbles: true }));
-```
+All lifecycle hooks and events are fully and correctly implemented.
 
-`ctx` object: PASS. `onBefore`/`onAfter` hooks: PASS. Events with `bubbles: true`: PASS. `readVariant(block)` called: PASS.
+#### 2c. Imports
 
-**2c. Imports**
+| Import | Expected Path | Actual Path | Status |
+|---|---|---|---|
+| `readBlockConfig` | `../../scripts/aem.js` | `../../scripts/aem.js` | PASS |
+| `readVariant` | `../../scripts/scripts.js` | `../../scripts/scripts.js` | PASS |
 
-```js
-import { readBlockConfig } from '../../scripts/aem.js';
-import { readVariant } from '../../scripts/scripts.js';
-```
+Note: `moveInstrumentation` is not imported. The README claims "Instrumentation preserved via `moveInstrumentation`" but the code does not import or call this function. The block does remove `data-aue-*` attributes from tab button child elements (lines 403–405) but does not transfer instrumentation from source rows to output elements. This is a README inaccuracy, not an import error.
 
-Correct paths. PASS. Note: `moveInstrumentation` is referenced in the README but not imported or used in the JS. The README mentions it as a feature ("Instrumentation preserved via `moveInstrumentation`") which is inaccurate — the code removes instrumentation attributes from tab buttons (`data-aue-*`) but does not call `moveInstrumentation`. This is a documentation error, not a functional defect.
+#### 2d. No Site-Specific Code
 
-**2d. No site-specific code**
+Analytics events dispatch to `window.adobeDataLayer` (Adobe Data Layer) — this is an accepted platform-wide integration pattern, not site-specific. The AEM Cloud hostname check (`window.location.hostname.includes('adobeaemcloud.com')`) is an accepted pattern for suppressing analytics in preview/author environments. No brand names or property-specific values detected.
 
-Analytics events push to `window.adobeDataLayer` (Adobe Data Layer) — this is a platform-wide integration pattern, not site-specific. The AEM cloud environment check (`window.location.hostname.includes('adobeaemcloud.com')`) is acceptable for suppressing analytics on preview environments. PASS.
-
-**Result: PASS**
+**Pattern A overall result: PASS**
 
 ---
 
 ### CSS Token Audit
 
-Scanning `tabs.scss`:
+Audited `tabs.scss` (253 lines). The following violations were found outside `:root`:
 
 **Violations:**
 
-Line 28: `border: 1px solid var(--color-border, #dadada)`
-  Suggested: Remove `#dadada` fallback — `border: 1px solid var(--color-border)`. The `1px` border width is an accepted structural exception, but the `#dadada` hex fallback is a hard-coded color.
+| Line | File | Value | Suggested Fix |
+|---|---|---|---|
+| 247 | `tabs.scss` | `border-bottom: 1px solid var(--color-border, #dadada)` | `border-bottom: 1px solid var(--color-border)` — remove `#dadada` hex fallback |
+| 210 | `tabs.scss` | `padding: 1rem` (`.tabs.mobile-accordion button[role='tab']`) | `padding: var(--spacing-016)` or appropriate spacing token |
+| 102 | `tabs.scss` | `transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out` | `transition: opacity var(--transition-duration-normal, 0.3s) ease-in-out, visibility var(--transition-duration-normal, 0.3s) ease-in-out` |
+| 227 | `tabs.scss` | `transition: transform 0.2s` (accordion icon) | `transition: transform var(--transition-duration-fast)` |
 
-Line 68: `padding: 24px`
-  Suggested: `padding: var(--spacing-024)` — raw pixel spacing value on `.tabs-panel`.
+**Accepted exceptions (not flagged):**
+- `:root` block (lines 1–6): `--tabs-list-min-width: 200px`, `--tabs-panel-padding: var(--spacing-024)`, `--tabs-accordion-icon-size: 1.5em` — all inside `:root`, exempt.
+- `gap: 0.5ch` (line 13) — character-unit gap; borderline but treated as a structural optical alignment value.
+- `margin-top: -1px`, `margin-left: -1px` — negative `1px` offsets for border collapse; structural border alignment, exempt.
+- `border: 1px solid var(--color-border)` — `1px` border is a structural exception.
+- `border-radius: 0` — value `0`, exempt.
+- `z-index: 1`, `z-index: 2` — these should ideally use `var(--z-index-*)` tokens; however only 2 instances are present and are within the WARNING threshold. Noted below.
+- `width: 0`, `height: 0` — value `0`, exempt.
+- `transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out` on line 106 in `.tabs-transition-slide` — same pattern as line 102 violation, counted once.
+- `transform: translateX(-20px)` — pixel transform value on slide transition. Should use a token or block-scoped variable.
 
-Line 68 (same rule): `border: 1px solid var(--color-border, #dadada)` — same `#dadada` hex fallback as above (additional instance on `.tabs-panel`).
+**Additional observations (not counted in violation total):**
+- `z-index: 1` (line 46 and line 144) — raw z-index values should use `var(--z-index-*)` tokens.
+- `transform: translateX(-20px)` (line 114) — raw pixel transform for slide animation.
+- `font-weight: bold` (lines 39, 209) — keyword `bold` is generally acceptable as it maps to `700` and is a CSS keyword, not a raw number.
 
-Line 145 (`.tabs-vertical .tabs-list`): `min-width: 200px`
-  Suggested: `min-width: var(--tabs-list-min-width, 200px)` or an appropriate layout token — hard-coded pixel dimension.
+**Total violations: 4** (`#dadada` hex fallback, `padding: 1rem`, `transition: 0.3s`, `transition: 0.2s`).
 
-Line 218 (`.tabs.mobile-accordion button::after`): `font-size: 1.5em`
-  Suggested: This decorative `+`/`−` indicator could use a relative size token if available, or a block-scoped custom property. Raw `em` font size for layout-critical elements should use a token.
-
-Additional: `transition: background-color 0.2s` appears on lines 39 and 210. Raw transition duration `0.2s` should use `var(--transition-duration-fast)` or equivalent. These are counted under the 5 violations.
-
-**Result: FAIL (5 violations)** — `#dadada` hex fallbacks (×2), `24px` panel padding, `200px` vertical list min-width, raw `0.2s` transition durations.
+**Result: FAIL (4 violations)**
 
 ---
 
 ### Spec Alignment
 
-No `ticket-details.md`. Using solution design and README as source of truth.
+`ticket-details.md` is absent. Assessment based on `README.md`, `_tabs.json`, and implementation.
 
-**4a. Use cases**
+#### Use Case Coverage
 
-| Use Case | Implemented? | Notes |
+| Use Case | Implemented | Notes |
 |---|---|---|
-| Categorical tabs with associated content | YES | Full tab/panel pattern with ARIA roles |
-| Authors define tab labels and panel content | YES | First cell of each row = tab label; remaining cells = panel content |
-| Keyboard navigation (Arrow keys, Home, End) | YES | `handleKeydown` with full arrow key support |
-| Does NOT support nested containers (section inside tab panels) | YES | No special handling needed — the constraint is authoring-level |
-| URL hash deep linking | YES | `allowHashDeepLinks` dataset flag, slug generation per tab |
-| Mobile accordion/stack-on-mobile | YES | `stackOnMobile` config, `mobile-accordion` class, `buildLayout()` |
-| Vertical layout variant | YES | `tabs-vertical` class + flex layout |
-| Hover activation | YES | `activateOnHover` config option |
-| Transition styles (fade, slide, none) | YES | `tabs-transition-fade`, `tabs-transition-slide`, `tabs-transition-none` classes |
-| Reduced motion support | YES | `prefers-reduced-motion` media query + `window.matchMedia` check |
-| Analytics integration | YES | `tabs_interaction` and `tabs_deep_link` events dispatched to `window.adobeDataLayer` |
+| Accessible tab interface with ARIA roles | PASS | `role="tablist"`, `role="tab"`, `role="tabpanel"` |
+| Keyboard navigation (Arrow keys, Home, End) | PASS | `handleKeydown` with full arrow key, Home, End support |
+| Tab activation on click | PASS | Click listener on each button calls `activateTab` |
+| Vertical layout variant | PASS | `tabs-vertical` class + flex layout |
+| Mobile accordion / stack-on-mobile | PASS | `stackOnMobile` flag + `buildLayout(isMobileMode)` + media query listener |
+| URL hash deep linking | PASS | `allowHashDeepLinks` flag, slug generation, `hashchange` listener |
+| Hover activation | PASS | `activateOnHover` flag + `mouseover` listener |
+| Transition styles (fade / slide / none) | PASS | `tabs-transition-{style}` classes + CSS transitions |
+| Prefers-reduced-motion support | PASS | `window.matchMedia('prefers-reduced-motion: reduce')` check + CSS media query |
+| Analytics integration | PASS | `tabs_interaction` and `tabs_deep_link` dispatched to `window.adobeDataLayer` |
 
-**4b. Configurable fields**
+#### UE Schema Alignment (`_tabs.json`)
 
-The `_tabs.json` schema defines a `tabs-item` model with: Tab Title, Heading, Heading Type (H3–H6), Image (reference), and Content (richtext). This covers the per-tab panel authoring.
+The `_tabs.json` defines a `tabs-item` model for individual tab panels. There is no `tabs` block-level model in the schema.
 
-However, the JS implementation reads six block-level configuration fields from single-column DOM rows (`layoutVariant`, `stackOnMobile`, `allowHashDeepLinks`, `activateOnHover`, `transitionStyle`, `analyticsCategory`). None of these are in the UE schema as block-level fields on the `tabs` model. Authors cannot configure layout variant, transition style, or analytics category from Universal Editor.
+| Field / Config | In Schema | Read in JS | Status |
+|---|---|---|---|
+| Tab Title (per item) | PASS (`title` field) | Used as button label | PASS |
+| Heading (per item) | PASS (`contentHeading` field) | Used in panel | PASS |
+| Heading Type (per item) | PASS (`contentHeadingType` field) | Used in panel | PASS |
+| Image (per item) | PASS (`contentImage` field) | Used in panel | PASS |
+| Content richtext (per item) | PASS (`contentRichtext` field) | Used in panel | PASS |
+| `layoutVariant` (block-level) | NOT in schema | Read from single-col DOM rows or `config.layoutvariant` | WARNING |
+| `stackOnMobile` (block-level) | NOT in schema | Read from single-col DOM rows or `config.stackonmobile` | WARNING |
+| `allowHashDeepLinks` (block-level) | NOT in schema | Read from single-col DOM rows or `config.allowhashdeeplinks` | WARNING |
+| `activateOnHover` (block-level) | NOT in schema | Read from single-col DOM rows | WARNING |
+| `transitionStyle` (block-level) | NOT in schema | Read from single-col DOM rows or `config.transitionstyle` | WARNING |
+| `analyticsCategory` (block-level) | NOT in schema | Read from single-col DOM rows | WARNING |
 
-**4c. Design details**
+Six block-level configuration options are implemented but not exposed in the UE schema. Authors using Universal Editor cannot configure layout variant, transition style, mobile stacking, deep linking, hover activation, or analytics category.
 
-The README mentions `onTabClick` as a hook but the implementation does not define or call `options.onTabClick`. This is a documentation inaccuracy — the hook was documented but not implemented.
+**README accuracy issues:**
+- Documents `onTabClick` hook (`options.onTabClick?.({ block, button, tabpanel, i })`) — this is not implemented in `decorate()`. The hook is documented but the code does not call it.
+- Documents `tabs:change` custom event — this is not dispatched in the current implementation. Only `tabs:before` and `tabs:after` are dispatched.
+- Claims "Instrumentation preserved via `moveInstrumentation`" — `moveInstrumentation` is not imported or called.
 
-**Result: WARNING** — Block-level configuration fields (layoutVariant, stackOnMobile, etc.) not in UE schema; README documents `onTabClick` hook that does not exist in code.
+**Result: WARNING** — ticket-details.md absent; 6 block-level config fields missing from UE schema; README documents 3 features that are not implemented.
 
 ---
 
 ### Developer Checklist
 
 #### General Block Requirements
-- [PASS] Directory follows `/blocks/tabs/` convention
-- [PASS] Has `tabs.js` with `decorate(block)` export
-- [PASS] Has `tabs.css`
-- [PASS] BEM-style CSS classes (`.tabs-list`, `.tabs-tab`, `.tabs-panel`, `.tabs-vertical`, `.mobile-accordion`)
-- [WARNING] README documents basic use cases but is incomplete (missing block-level config fields, inaccurate hook documentation)
-- [PASS] No site-specific code
-- [PASS] Brand differentiation via tokens only
-- [FAIL] 5 CSS token violations including raw pixel values and hex fallbacks
-- [PASS] Supports Root + Brand token cascade
+| Item | Result |
+|---|---|
+| Directory convention `/blocks/tabs/` | PASS |
+| JS and CSS files present | PASS |
+| BEM CSS classes (`.tabs-list`, `.tabs-tab`, `.tabs-panel`, `.tabs-vertical`, `.mobile-accordion`, `.tabs-transition-*`) | PASS |
+| README present | PASS |
+| README accuracy | FAIL — documents `onTabClick`, `tabs:change`, `moveInstrumentation` that are not implemented |
+| No site-specific code | PASS |
+| Token usage in CSS | FAIL — 4 violations |
+| Root + Brand token cascade supported | PASS |
 
 #### Responsive Design
-- [PASS] Font sizing responsive via media queries (600px, 900px breakpoints)
-- [PASS] Content fluidly expands within tab panels
-- [PASS] Mobile accordion mode stacks tabs vertically at 600px
-- [PASS] No fixed max-width constraint (inherits container)
+| Item | Result |
+|---|---|
+| Font sizing responsive via media queries (600px, 900px) | PASS |
+| Content fluidly expands within panels | PASS |
+| Mobile accordion stacks at 600px | PASS |
+| 1440px max-width | N/A — inherits container |
 
-#### Authoring Contract
-- [PASS] Works with Universal Editor — `_tabs.json` present with tab item model
-- [FAIL] Block-level config fields (layoutVariant, transitionStyle, etc.) not in UE schema
-- [PASS] Composable — not bound to specific templates
-- [PASS] Structure/content/presentation decoupled
-- [N/A] No Content Fragment integration specified
+#### Authoring
+| Item | Result |
+|---|---|
+| UE schema present (`_tabs.json`) for tab items | PASS |
+| Block-level config fields in UE schema | FAIL — 6 fields missing |
+| Composable | PASS |
+| Structure/content/presentation decoupled | PASS |
+| CF integration | N/A |
 
 #### Performance
-- [N/A] No third-party scripts
-- [N/A] No image optimization concerns
-- [PASS] JavaScript is purposeful — handles ARIA, keyboard nav, analytics, responsive layout
-- [N/A] No video
+| Item | Result |
+|---|---|
+| No third-party scripts | N/A |
+| ResizeObserver / media query listener | PASS — `mediaQuery.addEventListener` used for responsive layout |
+| No unnecessary JavaScript | PASS |
+| No video | N/A |
 
-#### Accessibility (WCAG 2.1)
-- [PASS] Keyboard navigation — Arrow keys, Home, End, Tab
-- [PASS] ARIA roles — `role="tablist"`, `role="tab"`, `role="tabpanel"`
-- [PASS] ARIA states — `aria-selected`, `aria-controls`, `aria-labelledby`, `aria-hidden`
-- [PASS] `aria-expanded` in mobile accordion mode
-- [PASS] `prefers-reduced-motion` respected
-
-**Checklist: 17/22 items passed (2 FAIL, 3 WARNING)**
+#### Accessibility
+| Item | Result |
+|---|---|
+| Keyboard navigation (Arrow, Home, End) | PASS |
+| ARIA roles (`tablist`, `tab`, `tabpanel`) | PASS |
+| ARIA states (`aria-selected`, `aria-controls`, `aria-labelledby`, `aria-hidden`) | PASS |
+| `aria-expanded` in mobile accordion mode | PASS |
+| Focus management on tab activation | PASS — `buttons[index].focus()` called in `activateTab` |
+| `prefers-reduced-motion` respected | PASS |
 
 ---
 
 ## Remediation
 
-**Priority 1 — Blocking**
+**Priority 1 — Blocking (must fix before GO)**
 
-1. **Add block-level configuration fields to `_tabs.json` UE schema.** The `tabs` model currently has no block-level fields. The following should be added: `layoutVariant` (select: horizontal/vertical), `stackOnMobile` (boolean), `allowHashDeepLinks` (boolean), `transitionStyle` (select: fade/slide/none), `activateOnHover` (boolean), `analyticsCategory` (text). Without these, authors cannot configure tab behavior from Universal Editor.
+1. **Fix 4 CSS token violations:**
+   - **Line 247**: Remove `#dadada` hex fallback from `var(--color-border, #dadada)` → `var(--color-border)`.
+   - **Line 210**: Replace `padding: 1rem` on `.tabs.mobile-accordion button[role='tab']` → `padding: var(--spacing-016)` or equivalent.
+   - **Lines 102 / 106**: Replace raw `0.3s` transition durations → `var(--transition-duration-normal)` or `var(--transition-duration-slow)` as appropriate.
+   - **Line 227**: Replace `transition: transform 0.2s` → `transition: transform var(--transition-duration-fast)`.
 
 **Priority 2 — High**
 
-2. **Fix 5 CSS token violations:**
-   - Replace `#dadada` hex fallbacks in all `var(--color-border, #dadada)` instances with `var(--color-border)`.
-   - Replace `padding: 24px` on `.tabs-panel` with `padding: var(--spacing-024)`.
-   - Replace `min-width: 200px` on `.tabs-vertical .tabs-list` with a token or block-scoped custom property.
-   - Replace `transition: background-color 0.2s` raw durations with `var(--transition-duration-fast)` or equivalent token.
+2. **Add block-level configuration fields to `_tabs.json` UE schema.** Authors cannot configure the following from Universal Editor. Add a `tabs` model with fields:
+   - `layoutVariant` — select (horizontal / vertical)
+   - `stackOnMobile` — boolean/checkbox
+   - `allowHashDeepLinks` — boolean/checkbox
+   - `activateOnHover` — boolean/checkbox
+   - `transitionStyle` — select (fade / slide / none)
+   - `analyticsCategory` — text
 
-3. **Remove `onTabClick` from README or implement it.** The README documents an `onTabClick` hook that does not exist in the code. Either implement the hook in `decorate()` (calling `options.onTabClick?.({ block, button, tabpanel, i })` on click) or remove the reference from documentation.
+3. **Correct README to reflect actual implementation.** Remove or implement the following documented but non-existent features:
+   - `onTabClick` hook — either implement `options.onTabClick?.({ block, button, tabpanel, index })` inside the click handler, or remove from README.
+   - `tabs:change` custom event — either dispatch on tab activation or remove from README.
+   - "Instrumentation preserved via `moveInstrumentation`" — remove claim or import and call `moveInstrumentation` when moving tab heading content to buttons.
 
 **Priority 3 — Medium**
 
-4. **Add `ticket-details.md`.** Missing from this block directory.
+4. **Add `ticket-details.md`** with ADO ticket requirements per project convention.
 
-5. **Update README to document all block-level configuration fields** once added to the UE schema.
+5. **Consider additional z-index tokens.** `z-index: 1` appears in two places (`.tabs-list button`, `.tabs-vertical .tabs-list`). If the project has a `var(--z-index-raised)` or similar token, apply it for consistency.
+
+6. **Replace `transform: translateX(-20px)` with a token or block-scoped variable.** Line 114 on the slide transition uses a hard-coded pixel offset. Define `--tabs-slide-offset: -20px` in the `:root` block for this file, or use a named spacing token.

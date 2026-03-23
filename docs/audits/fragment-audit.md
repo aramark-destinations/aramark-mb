@@ -4,134 +4,128 @@ Date: 2026-03-20
 ## Summary
 | Category | Result |
 |---|---|
-| Structure | PASS |
-| Pattern A Compliance | PASS |
+| Structure | WARNING |
+| Pattern A Compliance | FAIL |
 | CSS Token Usage | PASS (0 violations) |
-| Spec Alignment | PASS |
-| Developer Checklist | 20/22 items passed |
+| Spec Alignment | WARNING |
+| Developer Checklist | 13/18 items passed |
 
-## Overall: GO
+## Overall: NO-GO
 
 ## Details
 
 ### Structure
 
-All required files are present:
-- `fragment.js` — present
-- `fragment.css` — present
-- `fragment.scss` — present
-- `README.md` — present, well-documented
-- `_fragment.json` — present
+| File | Status | Notes |
+|---|---|---|
+| `fragment.js` | PASS | Present |
+| `fragment.css` | PASS | Present |
+| `fragment.scss` | PASS | Present (content identical to `.css`) |
+| `README.md` | PASS | Present, well-documented |
+| `_fragment.json` | WARNING | Not found in block dir or `/models/` |
+| `ticket-details.md` | WARNING | File committed but empty — zero content |
 
-No `ticket-details.md` exists for this block. This is consistent with other blocks in the repo that lack formal ADO tickets.
+Required JS and CSS files are present. Two warnings: no UE model schema and an empty `ticket-details.md`.
 
 ### Pattern A Compliance
 
-**2a. Export signature — PASS**
-- Named export `export async function decorate(block, options = {})` present.
-- Default export `export default (block) => decorate(block, window.Fragment?.hooks)` — correct PascalCase (`Fragment`), correct wiring.
-- `loadFragment` is also exported as a named export — this is a deliberate public API used by header and footer blocks. Correct and intentional.
+**2a. Export signature**
+- Named export: `export async function decorate(block, options = {})` — PASS (line 66)
+- Default export: `export default (block) => decorate(block, window.Fragment?.hooks)` — PASS (line 96)
+- `options = {}` default param — PASS
+- Additional named export `loadFragment` — PASS; intentional public API consumed by header and footer blocks
 
-**2b. Lifecycle hooks and events — PASS**
-- `ctx` constructed as `{ block, options }`.
-- `options.onBefore?.(ctx)` fires before block logic.
-- `block.dispatchEvent(new CustomEvent('fragment:before', { detail: ctx }))` fires before block logic.
-- `options.onAfter?.(ctx)` fires after block logic.
-- `block.dispatchEvent(new CustomEvent('fragment:after', { detail: ctx }))` fires after block logic.
+**2b. Lifecycle hooks and events**
+- `const ctx = { block, options }` — PASS (line 67)
+- `options.onBefore?.(ctx)` before block logic — PASS (line 70)
+- `block.dispatchEvent(new CustomEvent('fragment:before', { detail: ctx }))` — FAIL: dispatched WITHOUT `bubbles: true` (line 71)
+- `readVariant(block)` called — FAIL: not called; not imported from `../../scripts/scripts.js`
+- `options.onAfter?.(ctx)` after block logic — PASS (line 87)
+- `block.dispatchEvent(new CustomEvent('fragment:after', { detail: ctx }))` — FAIL: dispatched WITHOUT `bubbles: true` (line 88)
 
-**Note:** `fragment:before` and `fragment:after` events are dispatched without `bubbles: true`. Minor deviation from the platform convention shown in the skill spec.
+**2c. Imports**
+- `decorateMain`, `moveInstrumentation` from `../../scripts/scripts.js` — PASS (lines 10–12)
+- `loadSections` from `../../scripts/aem.js` — PASS (lines 14–16)
+- `readVariant` from `../../scripts/scripts.js` — MISSING; consistent with the missing call above
 
-**2c. Imports — PASS**
-- `decorateMain`, `moveInstrumentation` imported from `../../scripts/scripts.js` — correct.
-- `loadSections` imported from `../../scripts/aem.js` — correct.
+**2d. No site-specific code**
+- No brand names, hard-coded paths, or property-specific values — PASS
 
-**2d. No site-specific code — PASS**
-- No brand names, hard-coded paths, or property-specific values. Fragment path is entirely author-driven.
+**Overall Pattern A: FAIL** — `bubbles: true` is absent from both CustomEvent dispatches, and `readVariant` is neither imported nor called. These are required Pattern A items.
 
 ### CSS Token Audit
 
-Scanned `fragment.scss` for hard-coded values.
+Audited `fragment.scss` (17 lines). The CSS only sets padding to `0` and `display: none` — all zero values and structural display properties, which are explicitly exempt from token requirements.
 
-No violations found. The CSS only uses `padding-left: 0`, `padding-right: 0`, `padding-top: 0`, `padding-bottom: 0`, and `display: none` — all zero values or structural display properties, which are explicitly excluded from token requirements.
+| Line | Property | Value | Status |
+|---|---|---|---|
+| 3 | `padding-left` | `0` | Exempt |
+| 4 | `padding-right` | `0` | Exempt |
+| 8 | `padding-top` | `0` | Exempt |
+| 12 | `padding-bottom` | `0` | Exempt |
+| 16 | `display` | `none` | Exempt |
 
-**Result: PASS (0 violations)**
+**0 violations. PASS.**
 
 ### Spec Alignment
 
-No `ticket-details.md` found. Alignment assessed against README and solution design.
+`ticket-details.md` is committed but contains no content. Alignment evaluated against `README.md` only.
 
-**Use cases from solution design:**
-| Use Case | Implemented? | Notes |
+| Use Case (from README) | Implemented | Notes |
 |---|---|---|
-| Populating detail pages for structured content | YES | `loadFragment` loads and decorates any page fragment |
-| Dynamic population of Carousels/Accordions with CF data | YES | `loadFragment` is the shared utility consumed by other blocks |
-| Content reuse across all properties | YES | Fragment path is metadata-driven, works across all sites |
-| Single fragment = single authoring location | YES | Delegates entirely to the referenced fragment document |
+| Include content from other pages as fragments | PASS | `loadFragment(path)` fetches `.plain.html` and decorates |
+| Async loading of fragment HTML | PASS | `fetch()` + `await resp.text()` |
+| Automatic media URL fixing for `./media_*` references | PASS | `resetAttribute` corrects `img[src]` and `source[srcset]` |
+| Full block decoration via `decorateMain` + `loadSections` | PASS | Both called on the constructed `<main>` element |
+| Section class propagation to parent section | PASS | `block.closest('.section').classList.add(...fragmentSection.classList)` |
+| UE instrumentation preservation | PASS | `moveInstrumentation(block, block.parentElement)` called |
+| Lifecycle hooks `onBefore`/`onAfter` | PASS | Both hooks implemented |
+| Events `fragment:before`/`fragment:after` | WARNING | Dispatched but missing `bubbles: true` — events will not propagate beyond the fragment element |
 
-**Configurable fields (UE schema vs implementation):**
-| Field | In `_fragment.json` | Used in JS |
-|---|---|---|
-| `reference` (aem-content) | YES | Read as `block.querySelector('a').getAttribute('href')` or `block.textContent.trim()` |
+**Known gap documented in code:** Fragment caching is not implemented. A `TODO` comment in `fragment.js` (lines 18–26) explicitly documents that each `loadFragment()` call makes a fresh `fetch()`, causing redundant network requests when the same fragment path is loaded multiple times. The comment includes the intended solution.
 
-The implementation supports two authoring patterns: link-based and plain-text path. The UE schema correctly uses `aem-content` for the reference field.
-
-**4d. Design details:**
-- Media path resolution for relative `./media_*` references — implemented correctly.
-- Full block decoration via `decorateMain` and `loadSections` — implemented.
-- Section class propagation from fragment to parent — implemented via `block.closest('.section').classList.add(...fragmentSection.classList)`.
-- UE instrumentation preservation via `moveInstrumentation` — implemented.
-
-A `TODO` comment in the code notes that fragment caching has not been implemented yet. Each `loadFragment()` call makes a fresh `fetch()`, meaning repeated loads of the same path result in redundant network requests. This is a known performance gap documented in the code.
+**Spec Alignment: WARNING** — `ticket-details.md` is empty; full ADO verification not possible. All README use cases implemented except event bubbling.
 
 ### Developer Checklist
 
 **General Block Requirements**
-- [PASS] Directory follows `/blocks/fragment/` convention
-- [PASS] Has `fragment.js` with `decorate(block)` export
-- [PASS] Has `fragment.css`
-- [PASS] BEM-style CSS — `.fragment-wrapper`, `.fragment.block` classes used
-- [PASS] README documents use cases and configuration
+- [PASS] Directory convention (`blocks/fragment/`)
+- [PASS] `fragment.js` with `decorate(block, options = {})` export
+- [PASS] `fragment.css` present
+- [PASS] CSS has no BEM violations — structural-only rules with no class hierarchy needed
+- [PASS] README present and documents use cases
 - [PASS] No site-specific code
-- [PASS] Brand differentiation via tokens only
-- [PASS] Uses semantic design tokens (CSS has no brand-sensitive values)
-- [PASS] Supports Root + Brand token cascade
+- [PASS] Token usage — 0 violations
 
-**Responsive Design**
-- [PASS] No block-specific layout — inherits layout from fragment content
-- [N/A] Breakpoints — delegated to fragment content
+**Responsive**
+- [N/A] Breakpoints — fragment inherits layout from loaded content
 - [N/A] Columns — not applicable
 - [N/A] Max-width — not applicable
 
-**Authoring Contract**
-- [PASS] Works with Universal Editor (`_fragment.json` present)
-- [PASS] Author-facing fields clear (single content reference)
-- [PASS] Composable
+**Authoring**
+- [FAIL] No UE schema (`_fragment.json` not found) — in-context editing not configured
+- [PASS] Composable — single content reference pattern
 - [PASS] Structure/content/presentation decoupled
-- [PASS] Content Fragment integration — `loadFragment` is the shared utility for CF-driven content across the platform
+- [PASS] CF integration — `loadFragment` is the platform utility for CF-backed content across other blocks
 
 **Performance**
-- [WARNING] No fragment caching — repeated loads of the same path make redundant network requests (documented TODO in code)
-- [N/A] Images — handled in fragment content
+- [FAIL] No fragment caching — redundant network requests when same path loaded multiple times (documented TODO)
+- [PASS] Fragment loading is async/await
 - [PASS] No unnecessary JavaScript
-- [N/A] Video — not applicable
 
 **Accessibility**
-- [PASS] Keyboard navigation — delegated to fragment content
 - [PASS] Semantic HTML — fragment content is fully decorated via `decorateMain`
-- [PASS] Works with assistive technologies
-- [N/A] Alt text — handled in fragment content
+- [N/A] Keyboard nav — delegated to fragment content
+- [N/A] Color contrast — delegated to fragment content
+- [N/A] Alt text — delegated to fragment content
 
 ## Remediation
 
-**Priority 1 — Blocking**
-
-None. Block is functionally correct and well-implemented.
-
-**Priority 2 — Should Fix**
-
-1. Implement fragment caching as documented in the TODO comment. Cache the raw HTML text (not the DOM element) keyed by path in a module-level `Map` to avoid redundant network requests when the same fragment is loaded multiple times on a page.
-2. Add `bubbles: true` to `fragment:before` and `fragment:after` CustomEvent dispatches to match platform convention.
-
-**Priority 3 — Advisory**
-
-3. Add a `ticket-details.md` if a formal ADO ticket exists for this block.
+1. **(HIGH — Pattern A FAIL)** Add `bubbles: true` to both CustomEvent dispatches:
+   - Line 71: `block.dispatchEvent(new CustomEvent('fragment:before', { detail: ctx, bubbles: true }))`
+   - Line 88: `block.dispatchEvent(new CustomEvent('fragment:after', { detail: ctx, bubbles: true }))`
+2. **(HIGH — Pattern A FAIL)** Add `readVariant` import from `../../scripts/scripts.js` and call `readVariant(block)` after `const ctx = { block, options }`.
+3. **(HIGH)** Create `_fragment.json` UE model schema to enable Universal Editor in-context editing of the fragment content reference.
+4. **(MEDIUM)** Implement fragment caching as documented in the TODO comment (lines 18–26). Cache the raw HTML text keyed by path in a module-level `Map` to avoid redundant fetches. Do not cache the DOM element — callers mutate it.
+5. **(LOW)** Populate `ticket-details.md` with the actual ADO ticket requirements.
+6. **(LOW)** The `.css` and `.scss` files are byte-for-byte identical — confirm the build pipeline compiles SCSS to CSS so the files do not drift.

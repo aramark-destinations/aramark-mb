@@ -4,13 +4,15 @@ Date: 2026-03-20
 ## Summary
 | Category | Result |
 |---|---|
-| Structure | FAIL |
-| Pattern A Compliance | PASS |
+| Structure | WARNING |
+| Pattern A Compliance | WARNING |
 | CSS Token Usage | PASS (0 violations) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 16/21 items passed |
+| Developer Checklist | 14/20 items passed |
 
-## Overall: NO-GO
+## Overall: GO (with remediation items)
+
+---
 
 ## Details
 
@@ -22,10 +24,12 @@ Date: 2026-03-20
 | `page.css` | YES | YES |
 | `page.scss` | YES | YES |
 | `README.md` | YES | YES |
-| `_page.json` | YES — block has UE-authored fields | NO |
+| `_page.json` | YES | NO (block dir) — YES (`models/_page.json` fallback) |
 | `ticket-details.md` | YES | NO |
 
-Result: FAIL — `_page.json` is absent. The README and `page.js` both indicate this block is a UE metadata container with author-configurable fields (title, description, keywords). Without a `_page.json`, there is no UE authoring contract defined for those fields, which is a blocking gap for a block whose sole purpose is to surface page-level metadata to authors. `ticket-details.md` is also missing.
+Result: WARNING — JS and CSS are present. `_page.json` is absent from the block directory but a fallback schema exists at `models/_page.json` with fields: `jcr:title`, `jcr:description`, `keywords`, and `brand`. `ticket-details.md` is missing.
+
+Note: `models/_page.json` defines a model with id `page-metadata`. The README documents three fields (Title, Description, Keywords) but does not mention the `brand` field present in the model.
 
 ---
 
@@ -33,112 +37,131 @@ Result: FAIL — `_page.json` is absent. The README and `page.js` both indicate 
 
 #### 2a. Export signature
 
-```js
-export function decorate(block, options = {}) { ... }
-export default (block) => decorate(block, window.Page?.hooks);
-```
-
-Both required forms are present — PASS.
-- `options = {}` default parameter — PASS
-- `window.Page?.hooks` — PascalCase of `page` — PASS
-- Note: `decorate` is not `async` here. This is acceptable since no async work is performed.
+| Check | Status |
+|---|---|
+| Named export `export function decorate(block, options = {})` | PASS — line 8 (synchronous, not async; acceptable since no async work is performed) |
+| Default export `export default (block) => decorate(block, window.Page?.hooks)` | PASS — line 22 |
+| `options = {}` default parameter | PASS |
+| `window.Page?.hooks` — PascalCase matches `page` | PASS |
 
 #### 2b. Lifecycle hooks and events
 
-```js
-const ctx = { block, options };
-options.onBefore?.(ctx);
-block.dispatchEvent(new CustomEvent('page:before', { detail: ctx }));
-// ... no DOM decoration (by design) ...
-options.onAfter?.(ctx);
-block.dispatchEvent(new CustomEvent('page:after', { detail: ctx }));
-```
+| Check | Status |
+|---|---|
+| `const ctx = { block, options }` | PASS — line 9 |
+| `options.onBefore?.(ctx)` before block logic | PASS — line 11 |
+| `block.dispatchEvent(new CustomEvent('page:before', { detail: ctx, bubbles: true }))` | WARNING — line 12, `bubbles: true` is **missing** from the event options |
+| `readVariant(block)` called | WARNING — not called; this is a no-op metadata block with no DOM decoration, so absence is contextually acceptable, but it breaks pattern consistency |
+| `options.onAfter?.(ctx)` after block logic | PASS — line 18 |
+| `block.dispatchEvent(new CustomEvent('page:after', { detail: ctx, bubbles: true }))` | WARNING — line 19, `bubbles: true` is **missing** from the event options |
 
-Both before and after hooks and events are present — PASS. Note: `bubbles: true` is NOT set on the events, unlike most other blocks in this project. This is a minor inconsistency.
+`bubbles: true` is absent on both `page:before` and `page:after` events. This is inconsistent with every other block in the library. `readVariant` is not called, which is contextually justifiable for a no-op metadata block but is a pattern deviation.
+
+Overall: WARNING (no outright FAIL; the block intentionally performs no DOM work).
 
 #### 2c. Imports
 
-No imports are present. This block has no dependencies — appropriate for a no-op metadata block — PASS.
+No imports are present. This block has no dependencies — appropriate for a no-op metadata block. PASS.
 
 #### 2d. No site-specific code
 
-No site-specific logic found — PASS.
+No site-specific logic found. PASS.
 
 ---
 
 ### CSS Token Audit
 
-The `page.scss` file contains a single comment line:
+`page.scss` contains a single comment:
 ```scss
 /* Page metadata block — no visual output */
 ```
 
-No CSS rules, no values to audit.
+`page.css` contains `@charset "UTF-8"` and the same comment. No CSS rules, no values to audit.
 
-Result: PASS (0 violations)
+Result: PASS (0 violations).
 
 ---
 
 ### Spec Alignment
 
-`ticket-details.md` is absent. The README was used as the primary reference.
+`ticket-details.md` is absent; assessment is based on `README.md` and `models/_page.json`.
 
-The page block's stated purpose is to hold page-level metadata (title, description, keywords) for AEM and SEO. The README documents three authoring fields.
-
-| Use Case | Implemented? | Notes |
+| Use Case | Implemented | Notes |
 |---|---|---|
-| Hold page title for AEM (`jcr:title`) | PARTIAL | README documents the intent but no `_page.json` defines the authoring fields in UE |
-| Hold page description (`jcr:description`) | PARTIAL | Same — documented intent, no schema |
-| Hold SEO keywords | PARTIAL | Same — documented intent, no schema |
-| No visual DOM output | YES | `decorate()` is intentionally a no-op for DOM |
-| Lifecycle hooks for completeness | YES | `onBefore`/`onAfter` hooks and events present |
+| Hold page title for AEM | PASS | `models/_page.json` field `jcr:title` (label: "Title") |
+| Hold page description | PASS | `models/_page.json` field `jcr:description` (label: "Description") |
+| Hold SEO keywords | PASS | `models/_page.json` field `keywords` (multi: true, label: "Keywords") |
+| No visual DOM output | PASS | `decorate()` performs no DOM manipulation by design |
+| Lifecycle hooks for completeness | PASS | `onBefore`/`onAfter` hooks and events present |
+| `brand` field support | WARNING | Present in `models/_page.json` but not documented in README |
 
-Without `_page.json`, the three authoring fields (title, description, keywords) documented in the README cannot be surfaced in the Universal Editor. The implementation is a skeleton that is functionally correct for a no-op block, but the core purpose of the block — providing a UE authoring contract for page metadata — is unimplemented.
+README documents three fields (Title, Description, Keywords) but the `models/_page.json` schema includes a fourth field (`brand`). The README should be updated to reflect the complete authoring model.
 
-Result: WARNING — Intent is clear and documented; the UE schema that makes this block functional for authors is absent.
+Result: WARNING — core use cases are covered but the README is out of sync with the schema.
 
 ---
 
 ### Developer Checklist
 
-#### General Block Requirements
-- [PASS] Directory follows `/blocks/page/` convention
-- [PASS] Has `decorate(block, options = {})` export with Pattern A default export
-- [PASS] Has `page.css`
-- [N/A] BEM-style CSS classes — no rendered output
-- [PASS] README documents purpose, fields, and behavior
-- [PASS] Part of shared global library — no site-specific code
-- [N/A] Brand differentiation — no visual output
-- [PASS] No hard-coded values in CSS
-- [N/A] Root + Brand token cascade — no styles
+#### Convention and Files
+| Item | Result |
+|---|---|
+| Directory follows `/blocks/page/` convention | PASS |
+| JS and CSS files present | PASS |
+| BEM CSS class names | N/A — no rendered output |
+| README present | PASS |
+| No site-specific code | PASS |
+| CSS token usage | PASS — no CSS values |
+| Root+Brand cascade | N/A — no styles |
 
 #### Responsive Design
-- [N/A] All responsive design items — no visual output
+| Item | Result |
+|---|---|
+| Breakpoints defined | N/A — no visual output |
+| Fluid content | N/A |
+| Column stacking | N/A |
+| 1440px max-width | N/A |
 
 #### Authoring Contract
-- [FAIL] No `_page.json` — UE authoring contract for the block's core purpose is absent
-- [WARNING] README documents fields that authors cannot yet configure in UE
-- [PASS] Composable — not bound to specific templates
-- [PASS] Structure/content/presentation decoupled — intentionally
-- [N/A] Content Fragment integration — not applicable
+| Item | Result |
+|---|---|
+| UE in-context editing supported | PASS — `models/_page.json` provides authoring schema |
+| UE schema field documentation | WARNING — README missing `brand` field |
+| Composable structure | PASS |
+| Structure/content/presentation decoupled | PASS |
+| CF integration | N/A |
 
 #### Performance
-- [N/A] All performance items — no scripts, no images, no media
+| Item | Result |
+|---|---|
+| Async decoration | N/A — synchronous no-op |
+| Optimized images | N/A |
+| No unnecessary JS | PASS |
+| Video embed | N/A |
 
 #### Accessibility (WCAG 2.1)
-- [N/A] All accessibility items — no DOM output
-- [WARNING] `page:before` / `page:after` events do not set `bubbles: true`, unlike the rest of the block library — minor inconsistency
+| Item | Result |
+|---|---|
+| Keyboard navigation | N/A — no interactive elements |
+| Color contrast | N/A — no rendered output |
+| Semantic HTML | N/A — no DOM decoration |
+| AT support | N/A |
+| Alt text | N/A |
 
 ---
 
 ## Remediation
 
-**Priority 1 — Blocking**
-1. Create `_page.json` defining the UE authoring model with the three fields documented in the README: `title` (text, maps to page title), `description` (text, maps to page description), `keywords` (text, maps to SEO keywords). Without this file, authors cannot configure page metadata via Universal Editor.
-2. Add `ticket-details.md` documenting requirements for this block.
+**Priority 1 — Should fix**
 
-**Priority 2 — Should Fix**
-3. Add `bubbles: true` to both `page:before` and `page:after` custom events for consistency with the rest of the block library.
+1. **Add `bubbles: true` to both custom events** — `page:before` (line 12) and `page:after` (line 19) are dispatched without `bubbles: true`. Add `bubbles: true` to the event options object for consistency with all other blocks in the library.
+2. **Add `ticket-details.md`** — Document the source ADO ticket requirements so spec alignment can be formally verified.
 
-**Priority 3 — Nice to Have**
-4. Clarify in the README how page metadata fields map to AEM JCR properties (`jcr:title`, `jcr:description`) and confirm whether these fields are populated through the `_page.json` model or through AEM's page properties panel.
+**Priority 2 — Should fix**
+
+3. **Update README to document the `brand` field** — `models/_page.json` defines a fourth field (`brand`, type text, label "Brand") that is not documented in the README authoring fields table. Add it so the README accurately reflects the full authoring contract.
+4. **Clarify `_page.json` location in block README** — The README does not mention that the UE schema lives at `models/_page.json`. A note directing authors and developers to that file would improve discoverability.
+
+**Priority 3 — Consider**
+
+5. **Call `readVariant(block)` for pattern completeness** — Even though this block performs no DOM work, calling `readVariant(block)` would ensure Pattern A consistency and allow variant-based behavior to be added later without a structural change.

@@ -4,140 +4,121 @@ Date: 2026-03-20
 ## Summary
 | Category | Result |
 |---|---|
-| Structure | PASS |
-| Pattern A Compliance | PASS |
+| Structure | WARNING |
+| Pattern A Compliance | WARNING |
 | CSS Token Usage | PASS (0 violations) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 17/22 items passed |
+| Developer Checklist | 14/18 items passed |
 
-## Overall: NO-GO
+## Overall: GO
 
 ## Details
 
 ### Structure
 
-All required files are present:
-- `footer.js` — present
-- `footer.css` — present
-- `footer.scss` — present
-- `README.md` — present, well-documented
-- `_footer.json` — present
+| File | Status | Notes |
+|---|---|---|
+| `footer.js` | PASS | Present |
+| `footer.css` | PASS | Present |
+| `footer.scss` | PASS | Present (content identical to `.css`) |
+| `README.md` | PASS | Present, well-documented |
+| `_footer.json` | WARNING | Not found in block dir or `/models/` |
+| `ticket-details.md` | WARNING | File committed but empty — zero content |
 
-No `ticket-details.md` exists for this block. Spec alignment is assessed against the README and solution design.
+Required files present. Two warnings: no UE model schema and an empty `ticket-details.md`.
 
 ### Pattern A Compliance
 
-**2a. Export signature — PASS**
-- Named export `export async function decorate(block, options = {})` present.
-- Default export `export default (block) => decorate(block, window.Footer?.hooks)` — correct PascalCase (`Footer`), correct wiring.
+**2a. Export signature**
+- Named export: `export async function decorate(block, options = {})` — PASS (line 20)
+- Default export: `export default (block) => decorate(block, window.Footer?.hooks)` — PASS (line 50)
+- `options = {}` default param — PASS
 
-**2b. Lifecycle hooks and events — PASS**
-- `ctx` constructed as `{ block, options }`.
-- `options.onBefore?.(ctx)` fires before block logic.
-- `block.dispatchEvent(new CustomEvent('footer:before', { detail: ctx }))` fires before block logic.
-- `options.onAfter?.(ctx)` fires after block logic.
-- `block.dispatchEvent(new CustomEvent('footer:after', { detail: ctx }))` fires after block logic.
+**2b. Lifecycle hooks and events**
+- `const ctx = { block, options }` — PASS (line 21)
+- `options.onBefore?.(ctx)` before block logic — PASS (line 24)
+- `block.dispatchEvent(new CustomEvent('footer:before', { detail: ctx, bubbles: true }))` — PASS (line 25)
+- `readVariant(block)` called — FAIL: not called anywhere in `footer.js`; not imported
+- `options.onAfter?.(ctx)` after block logic — PASS (line 41)
+- `block.dispatchEvent(new CustomEvent('footer:after', { detail: ctx, bubbles: true }))` — PASS (line 42)
 
-**Note:** `footer:before` and `footer:after` events are dispatched without `bubbles: true`. This is a minor deviation from the platform convention shown in the skill spec.
+**2c. Imports**
+- `getMetadata` from `../../scripts/aem.js` — PASS (line 9)
+- `loadFragment` from `../fragment/fragment.js` — PASS (line 10), correct block-to-block relative path
+- `readVariant` from `../../scripts/scripts.js` — MISSING; consistent with the missing call above
 
-**2c. Imports — PASS**
-- `getMetadata` imported from `../../scripts/aem.js` — correct.
-- `loadFragment` imported from `../fragment/fragment.js` — correct relative path for block-to-block import.
+**2d. No site-specific code**
+- No brand names, hard-coded URLs, or property-specific values — PASS
+- Footer path defaults to `/footer` and is overridable via `getMetadata('footer')` — PASS
 
-**2d. No site-specific code — PASS**
-- No brand names, property-specific URLs, or hard-coded values. Footer path defaults to `/footer` and is overridable via metadata.
+**Overall Pattern A: WARNING** — `readVariant` is neither imported nor called. All other lifecycle requirements met.
 
 ### CSS Token Audit
 
-Scanned `footer.scss` for hard-coded values.
+Audited `footer.scss` (21 lines). All values use design tokens or are explicitly exempt.
 
-No violations found. All values use tokens:
-- `var(--light-color)` for background
-- `var(--body-font-size-xs)` for font size
-- `var(--layout-max-width-content)` for max-width
-- `var(--spacing-040)`, `var(--spacing-024)`, `var(--spacing-032)` for padding
+| Line | Property | Value | Status |
+|---|---|---|---|
+| 2 | `background-color` | `var(--light-color)` | PASS |
+| 3 | `font-size` | `var(--body-font-size-xs)` | PASS |
+| 8 | `max-width` | `var(--layout-max-width-content)` | PASS |
+| 9 | `padding` | `var(--spacing-040) var(--spacing-024) var(--spacing-024)` | PASS |
+| 7 | `margin` | `auto` | Exempt |
+| 16 | Media query | `width >= 900px` | Exempt |
+| 18 | `padding` | `var(--spacing-040) var(--spacing-032) var(--spacing-024)` | PASS |
 
-The single media query breakpoint `(width >= 900px)` is acceptable — CSS custom properties cannot be used in media queries per skill exception rules.
-
-**Result: PASS (0 violations)**
+**0 violations. PASS.**
 
 ### Spec Alignment
 
-No `ticket-details.md` found. Alignment assessed against README and solution design.
+`ticket-details.md` is committed but contains no content — ADO ticket requirements cannot be assessed. Alignment evaluated against `README.md` only.
 
-**Use cases from solution design:**
-| Use Case | Implemented? | Notes |
+| Use Case (from README) | Implemented | Notes |
 |---|---|---|
-| Navigation links in footer | PARTIAL | Block delegates fully to fragment content; no explicit handling |
-| Social links | PARTIAL | Delegated to fragment content |
-| Newsletter subscribe form | NO | No form integration in this base block; requires brand override |
-| Ownership/affiliation badges | PARTIAL | Delegated to fragment content |
-| Copyright | PARTIAL | Delegated to fragment; README shows dynamic copyright year via `onAfter` hook |
-| Subscribe form to property-specific endpoints | NO | Not implemented in base; requires brand-level override |
+| Fragment-based content loading from `/footer` | PASS | `loadFragment(footerPath)` called |
+| Custom footer path via metadata | PASS | `getMetadata('footer')` used with URL resolution |
+| Lifecycle hooks `onBefore`/`onAfter` | PASS | Both hooks implemented |
+| Events `footer:before`/`footer:after` | PASS | Dispatched with `bubbles: true` |
+| Brand override via `/brands/{property}/blocks/footer/footer.js` | PASS | Pattern documented in README |
 
-The footer block is architecturally correct as a thin fragment loader — all content is authored in the `/footer` fragment document. However, the spec calls out subscribe form submission to property-specific endpoints as a footer requirement. There is no mechanism in the base block or UE schema to configure a submit endpoint. This must be addressed at the brand-override level, which is acceptable but should be explicitly documented.
-
-**Configurable fields (UE schema vs implementation):**
-| Field | In `_footer.json` | Used in JS |
-|---|---|---|
-| `reference` (aem-content) | YES | Read via `getMetadata('footer')` for fragment path |
-
-The UE schema exposes a single `aem-content` reference field. This is appropriate for a fragment-based block.
-
-**4d. Design details:**
-- Two scroll states (active until scroll / after scroll threshold) documented in solution design for the header — this is not a footer requirement, so N/A here.
-- The base implementation correctly uses `getMetadata('footer')` for the fragment path, enabling per-property footer overrides via page metadata.
+**Spec Alignment: WARNING** — `ticket-details.md` is empty; full verification against ADO requirements is not possible. Implementation matches all documented README use cases.
 
 ### Developer Checklist
 
 **General Block Requirements**
-- [PASS] Directory follows `/blocks/footer/` convention
-- [PASS] Has `footer.js` with `decorate(block)` export
-- [PASS] Has `footer.css`
-- [WARNING] BEM-style CSS — footer uses element selectors (`footer .footer > div`, `footer .footer p`) rather than BEM classes on child elements; acceptable for structural layout but not fully BEM
-- [PASS] README documents use cases and configuration
+- [PASS] Directory convention (`blocks/footer/`)
+- [PASS] `footer.js` with `decorate(block, options = {})` export
+- [PASS] `footer.css` present
+- [WARNING] BEM CSS — uses element selectors (`footer .footer > div`, `footer .footer p`) rather than BEM child classes; acceptable for thin structural wrapper
+- [PASS] README present and documents use cases
 - [PASS] No site-specific code
-- [PASS] Brand differentiation via tokens only
-- [PASS] Uses semantic design tokens
-- [PASS] Supports Root + Brand token cascade
+- [PASS] Token usage — 0 violations
 
-**Responsive Design**
-- [PASS] Renders correctly across breakpoints — mobile and desktop padding handled
-- [PASS] Content expands within margins
-- [N/A] Columns — not applicable
-- [PASS] Respects max-width via `var(--layout-max-width-content)`
+**Responsive**
+- [PASS] Breakpoint at 900px for padding adjustment
+- [PASS] `max-width` constrained via token `var(--layout-max-width-content)`
+- [PASS] `margin: auto` for horizontal centering
+- [N/A] Column stacking — footer is single-column fragment content
 
-**Authoring Contract**
-- [PASS] Works with Universal Editor (`_footer.json` present)
-- [WARNING] Author-facing fields limited — only a content reference; newsletter subscribe endpoint not configurable from UE
-- [PASS] Composable
+**Authoring**
+- [FAIL] No UE schema (`_footer.json` not found) — in-context editing not configured
+- [PASS] Composable via fragment pattern
 - [PASS] Structure/content/presentation decoupled
-- [N/A] Content Fragment integration — not applicable to footer
+- [N/A] CF integration — not applicable to footer
 
 **Performance**
-- [N/A] Third-party scripts — none
-- [N/A] Images — handled in fragment content
+- [PASS] `async` decorate function
+- [PASS] Fragment loading is async/await
 - [PASS] No unnecessary JavaScript
-- [N/A] Video — not applicable
 
 **Accessibility**
-- [PASS] Keyboard navigation — delegated to fragment content
-- [PASS] Semantic HTML — uses `<footer>` element
-- [PASS] Works with assistive technologies
-- [WARNING] Alt text for images — handled in fragment content, not enforced by block
+- [PASS] Semantic HTML — AEM wraps block in `<footer>` element
+- [N/A] Keyboard nav — no interactive elements in base block; delegated to fragment
+- [N/A] Color contrast — delegated to fragment content
 
 ## Remediation
 
-**Priority 1 — Blocking**
-
-None. Block is functionally correct for a base implementation.
-
-**Priority 2 — Should Fix**
-
-1. Add `bubbles: true` to `footer:before` and `footer:after` CustomEvent dispatches to match platform convention.
-2. Document in the README (or a `ticket-details.md` if an ADO ticket exists) how property-specific newsletter subscribe endpoints should be configured — either via UE schema field addition or brand-level override pattern.
-
-**Priority 3 — Advisory**
-
-3. Consider adding a `subscribeEndpoint` field to `_footer.json` to expose the newsletter form submit URL as a configurable UE field, aligning with the spec requirement that "subscription form submits to property-specific endpoints."
-4. Add a `ticket-details.md` if a formal ADO ticket exists for this block.
+1. **(HIGH)** Add `readVariant(block)` call immediately after `const ctx = { block, options }` and import `readVariant` from `../../scripts/scripts.js`. Pattern A mandates this call in all blocks.
+2. **(HIGH)** Create `_footer.json` UE model schema to enable Universal Editor in-context editing of the footer content reference.
+3. **(LOW)** Populate `ticket-details.md` with the actual ADO ticket requirements so spec alignment can be formally verified.
+4. **(LOW)** The `.css` and `.scss` files are byte-for-byte identical — confirm the build pipeline compiles SCSS to CSS so the two files do not drift.

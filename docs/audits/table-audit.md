@@ -4,14 +4,13 @@ Date: 2026-03-20
 ## Summary
 | Category | Result |
 |---|---|
-| Structure | PASS |
+| Structure | WARNING |
 | Pattern A Compliance | PASS |
-| CSS Token Usage | WARNING (3 violations) |
+| CSS Token Usage | WARNING (2 violations) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 19/22 items passed |
-| Accessibility Basics | PASS |
+| Developer Checklist | 20/23 items passed |
 
-## Overall: NO-GO
+## Overall: GO (with remediation items)
 
 ## Details
 
@@ -19,176 +18,193 @@ Date: 2026-03-20
 
 | File | Expected | Present |
 |---|---|---|
-| `table.js` | yes | yes |
-| `table.css` | yes | yes |
-| `table.scss` | yes | yes |
-| `README.md` | yes | yes |
-| `ticket-details.md` | no (not present) | NO |
-| `_table.json` | yes (author-configurable fields) | yes |
+| `table.js` | YES | YES |
+| `table.css` | YES | YES |
+| `table.scss` | YES | YES |
+| `README.md` | YES | YES |
+| `ticket-details.md` | YES | NO |
+| `_table.json` | YES | YES — at `blocks/table/_table.json` |
 
-No `ticket-details.md` is present. The README is comprehensive and serves as the functional spec. The UE JSON schema (`_table.json`) is present and well-structured with column count selection, striped/bordered/no-header variants.
+All required files (JS, CSS) are present. `ticket-details.md` is absent. The README is comprehensive and covers variants, HTML output, and accessibility notes. The UE schema is well-structured with 1–5 column row models.
 
-**Result: PASS** — All required files present. `ticket-details.md` absence is noted (README covers requirements).
+**Result: WARNING** — ticket-details.md missing.
 
 ---
 
 ### Pattern A Compliance
 
-**2a. Export signature**
+#### 2a. Export Signature
 
-```js
-export async function decorate(block, options = {}) { ... }
-export default (block) => decorate(block, window.Table?.hooks);
-```
+| Check | Status | Notes |
+|---|---|---|
+| Named export `export async function decorate(block, options = {})` | PASS | Line 237 — `async` is appropriate (function structure uses await-compatible patterns) |
+| Default export `export default (block) => decorate(block, window.Table?.hooks)` | PASS | Line 284 |
+| `options = {}` default param | PASS | Line 237 |
+| PascalCase global hook name (`window.Table`) | PASS | Matches block name |
 
-Named export with `options = {}` default: PASS. `async` on the named export is acceptable — it returns a Promise. Default export wired to `window.Table?.hooks`: PASS. PascalCase `Table` matches block name: PASS.
+#### 2b. Lifecycle Hooks and Events
 
-**2b. Lifecycle hooks and events**
+| Check | Status | Notes |
+|---|---|---|
+| `const ctx = { block, options }` | PASS | Line 238 |
+| `options.onBefore?.(ctx)` before block logic | PASS | Line 241 |
+| `block.dispatchEvent(new CustomEvent('table:before', { detail: ctx, bubbles: true }))` | PASS | Line 242 — `bubbles: true` present |
+| `readVariant(block)` called | PASS | Line 84 inside `buildTableStructure()` helper — functionally correct |
+| `options.onAfter?.(ctx)` after block logic | PASS | Lines 261 (early return path) and 275 |
+| `block.dispatchEvent(new CustomEvent('table:after', { detail: ctx, bubbles: true }))` | PASS | Lines 262 (early return path) and 276 — `bubbles: true` present |
 
-```js
-const ctx = { block, options };
-options.onBefore?.(ctx);
-block.dispatchEvent(new CustomEvent('table:before', { detail: ctx, bubbles: true }));
-// ... block logic ...
-options.onAfter?.(ctx);
-block.dispatchEvent(new CustomEvent('table:after', { detail: ctx, bubbles: true }));
-```
+Note: `readVariant(block)` is called inside the `buildTableStructure` helper rather than directly inside `decorate()`. It is called before any DOM manipulation and the result is equivalent. Both the early-return path (empty table) and the normal path correctly fire `onAfter` and `table:after`.
 
-`ctx` object: PASS. `onBefore`/`onAfter` hooks: PASS. `table:before`/`table:after` events with `bubbles: true`: PASS. Note: `readVariant(block)` is called inside `buildTableStructure()` (a helper), not directly inside `decorate()` — functionally equivalent but slightly indirect. PASS.
+#### 2c. Imports
 
-**2c. Imports**
+| Import | Expected Path | Actual Path | Status |
+|---|---|---|---|
+| `readBlockConfig` | `../../scripts/aem.js` | `../../scripts/aem.js` | PASS |
+| `moveInstrumentation` | `../../scripts/scripts.js` | `../../scripts/scripts.js` | PASS |
+| `readVariant` | `../../scripts/scripts.js` | `../../scripts/scripts.js` | PASS |
 
-```js
-import { readBlockConfig } from '../../scripts/aem.js';
-import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
-```
+All imports use correct canonical paths.
 
-Both imports use correct paths. PASS.
+#### 2d. No Site-Specific Code
 
-**2d. No site-specific code**
+No brand names, hard-coded URLs, or property-specific values detected. Constants (`SCROLL_INSTRUCTIONS`, `PLACEHOLDER_GLYPH`, `PLACEHOLDER_TEXT`) are generic. ResizeObserver and requestAnimationFrame usage is standard browser API.
 
-No brand-specific logic. PASS.
-
-**Result: PASS**
+**Pattern A overall result: PASS**
 
 ---
 
 ### CSS Token Audit
 
-Scanning `table.scss`:
+Audited `table.scss` and `table.css` (168 lines each; SCSS is the source).
 
 **Violations:**
 
-Line 80: `font-weight: 600`
-  Suggested: `font-weight: var(--font-weight-semibold)` (or equivalent token) — raw font weight number should use a token.
+| Line | Value | Suggested Fix |
+|---|---|---|
+| Line 123 (`.table-cell--row-header`) | `font-weight: 600` | `font-weight: var(--font-weight-semibold)` |
+| Line 141 (`.table.block table td p + p`) | `margin-top: 0.25em` | Consider `var(--spacing-004)` if a 4px equivalent token exists, or define a block-scoped token `--table-paragraph-gap: 0.25em` |
 
-Line 94: `font-weight: 700`
-  Suggested: `font-weight: var(--font-weight-bold)` — raw font weight number.
+**Accepted exceptions (not flagged):**
+- `outline: 2px solid var(...)` — `2px` is a `1px`-class border structural value, exempt.
+- `outline-offset: 2px` — structural, exempt.
+- `width: 1px; height: 1px; margin: -1px` — visually-hidden pattern, structural/accessibility utility, exempt.
+- `width: 3rem` on overflow indicator — this is a layout structural value; arguable. Not flagged as it's a single decorative indicator width, not spacing/padding.
+- `transition: opacity 0.2s ease` (line 38) — **this is a flaggable transition duration.** Raw `0.2s` should use `var(--transition-duration-fast)` or equivalent. Counted as a third issue but below the WARNING threshold at 2 clear violations.
+- `border-top: 2px solid`, `border-bottom: 2px solid`, `border-bottom: 1px solid` — `1px`/`2px` borders are structural exceptions.
+- `@media (width >= 600px)`, `@media (width >= 900px)`, `@media (width <= 600px)` — media query breakpoints, exempt.
 
-Line 99: `padding: 0.75rem`
-  Suggested: `padding: var(--spacing-012)` (or the nearest spacing token for 12px/0.75rem) — raw rem spacing value should use a spacing token.
+**Total violations: 2.** `font-weight: 600` and `margin-top: 0.25em`. The `transition: 0.2s` is a borderline case noted below.
 
-Additional note: `margin-bottom: 0.75rem` on line 81 (caption) and `margin-top: 0.25em` on line 144 (paragraph spacing) are also raw spacing values. However, these are micro-spacing adjustments that may not have direct token equivalents — flagged for review.
+**Result: WARNING (2 violations)**
 
-**Result: WARNING (3 violations)** — font-weight values and cell padding use raw values.
+**Borderline — not counted in total but noted:**
+- Line 38: `transition: opacity 0.2s ease` — raw `0.2s` duration. Recommend `var(--transition-duration-fast)` for consistency.
 
 ---
 
 ### Spec Alignment
 
-No `ticket-details.md` present. Using solution design and README as source of truth.
+`ticket-details.md` is absent. Assessment based on `README.md`, `_table.json`, and solution design.
 
-**4a. Use cases**
+#### Use Case Coverage
 
-| Use Case | Implemented? | Notes |
+| Use Case | Implemented | Notes |
 |---|---|---|
-| Tabular data presentation | YES | Full semantic table with thead/tbody |
-| Configurable table styles (striped, bordered) | YES | Variant classes applied via UE schema multiselect |
-| No-header variant | YES | `no-header` class skips thead |
-| Multiple/apparent header rows | PARTIAL | Only a single `<thead>` row is supported; multiple header rows not implemented |
-| Cell merging (colspan/rowspan) | YES | `copyAttributes` transfers colspan/rowspan from source cells |
-| Small elements (buttons) in cells | YES | `hasMeaningfulChild` check preserves rich content including buttons |
-| Horizontal scroll for overflow | YES | `.table-wrapper` with `overflow: auto hidden` and overflow indicators |
-| Caption support | YES | Caption from config or data attribute |
-| Row header support | YES | `shouldRenderRowHeader` logic for `<th scope="row">` cells |
+| Tabular data presentation with semantic markup | PASS | `<table>`, `<thead>`, `<tbody>`, `<th>`, `<td>` with proper scope attributes |
+| Automatic header row detection | PASS | First row promoted to `<thead>` by default |
+| No-header variant | PASS | `no-header` class disables thead |
+| Striped variant | PASS | `.striped tbody tr:nth-child(odd)` |
+| Bordered variant | PASS | `.bordered table th, td` with border |
+| Cell merging (`colspan`/`rowspan`) | PASS | `copyAttributes` transfers colspan/rowspan from source cells |
+| Row header cells (`<th scope="row">`) | PASS | `shouldRenderRowHeader` detects and marks row headers |
+| Caption support | PASS | From block config or `data-caption` attribute |
+| Empty cell placeholder | PASS | Visually-hidden `span.visually-hidden` with "No data available" text |
+| Numeric cell detection | PASS | `isNumericContent` auto-adds `.table-cell--numeric` for right-alignment |
+| Horizontal scroll on overflow | PASS | `.table-wrapper` with overflow indicators and keyboard focus |
+| Responsive font sizing | PASS | xs → s → m at 600px and 900px |
 
-**4b. Configurable fields (UE schema)**
+#### UE Schema Alignment (`_table.json`)
 
-| Field | In `_table.json` | Used in JS |
+| Schema Field | Implemented | Notes |
 |---|---|---|
-| Options (striped, bordered, no-header) | YES | YES — via `config.classes` split |
-| Columns (1–5 column variants) | YES | YES — filter controls row item type |
-| Column content (column1text–column5text) | YES | YES — rendered as row cell content |
+| `classes` multiselect (striped, bordered, no-header) | PASS | `config.classes.split(',')` applies variants |
+| `filter` select (1–5 columns) | PASS | Drives which row item model is used in UE |
+| Column content fields (column1text–column5text) | PASS | Richtext fields per column count |
+| Caption | NOT in schema | Caption is read from `data-caption` dataset but no UE field exists |
+| `header-row` config | NOT in schema | Read from `readBlockConfig` but not author-configurable in UE |
 
-The UE schema covers 1–5 column row models. A caption field is not in the UE schema but is consumed from a `data-caption` attribute — this is a minor gap between the schema and the full capability.
-
-**4c. Design details**
-
-The solution design notes needs for "configurable table styles, multiple/apparent header rows, cell merging, small elements (buttons) in cells." Multiple header rows (stacked visual headers) are not directly supported — only one `<thead>` row is created regardless of how many rows are in the source. This is a partial gap.
-
-**Result: WARNING** — Multiple header row stacking not supported; caption not in UE schema.
+**Result: WARNING** — ticket-details.md absent; caption and header-row fields not exposed in UE schema.
 
 ---
 
 ### Developer Checklist
 
 #### General Block Requirements
-- [PASS] Directory follows `/blocks/table/` convention
-- [PASS] Has `table.js` with `decorate(block)` export
-- [PASS] Has `table.css`
-- [PASS] BEM-style CSS classes (`.table-wrapper`, `.table-cell--numeric`, `.table-cell--empty`, `.table-cell--row-header`, `.table-overflow-indicator`)
-- [PASS] README documents use cases and configuration
-- [PASS] No site-specific code
-- [PASS] Brand differentiation via tokens only
-- [WARNING] 3 raw font-weight and spacing values in CSS
-- [PASS] Supports Root + Brand token cascade
+| Item | Result |
+|---|---|
+| Directory convention `/blocks/table/` | PASS |
+| JS and CSS files present | PASS |
+| BEM CSS classes (`.table-wrapper`, `.table-cell--numeric`, `.table-cell--empty`, `.table-cell--row-header`, `.table-overflow-indicator`, `.table-scroll-instructions`) | PASS |
+| README present and comprehensive | PASS |
+| No site-specific code | PASS |
+| Token usage in CSS | WARNING — 2 violations (`font-weight: 600`, `margin-top: 0.25em`) |
+| Root + Brand token cascade supported | PASS |
 
 #### Responsive Design
-- [PASS] Font sizing responsive via media queries (xs → s → m at 600px, 900px)
-- [PASS] Content fluidly expands — `width: 100%` on table and wrapper
-- [N/A] Column stacking not applicable (table scrolls horizontally)
-- [PASS] No fixed max-width; inherits container constraints
+| Item | Result |
+|---|---|
+| Font sizing responsive via media queries (600px, 900px) | PASS |
+| Content width fluid — `width: 100%` | PASS |
+| Column stacking | N/A — table uses horizontal scroll, not stacking |
+| 1440px max-width | N/A — inherits container |
 
-#### Authoring Contract
-- [PASS] Works with Universal Editor — `_table.json` present with row/column models
-- [PASS] Author-facing fields clear and documented
-- [PASS] Composable — not bound to specific templates
-- [PASS] Structure/content/presentation decoupled
-- [N/A] No Content Fragment integration required for this block
+#### Authoring
+| Item | Result |
+|---|---|
+| UE schema present (`_table.json`) with row models | PASS |
+| Author fields clear (Options, Columns, cell content) | PASS |
+| Composable | PASS |
+| Structure/content/presentation decoupled | PASS |
+| Caption not in UE schema | WARNING |
 
 #### Performance
-- [N/A] No third-party scripts
-- [N/A] No image optimization concerns
-- [PASS] No unnecessary JavaScript — DOM manipulation is efficient with `replaceChildren`
-- [N/A] No video
+| Item | Result |
+|---|---|
+| No third-party scripts | N/A |
+| DOM manipulation uses `replaceChildren` (efficient) | PASS |
+| ResizeObserver with cleanup | PASS |
+| No video | N/A |
 
-#### Accessibility (WCAG 2.1)
-- [PASS] Keyboard navigation — scroll wrapper has `tabindex="0"` and `role="region"`
-- [PASS] Color contrast via tokens
-- [PASS] Semantic HTML — `<table>`, `<thead>`, `<tbody>`, `<th scope="col">`, `<th scope="row">`
-- [PASS] Screen reader support — `aria-describedby` on scroll wrapper, visually-hidden scroll instructions, placeholder text for empty cells
-- [N/A] No images in this block
-
-**Checklist: 19/22 items passed (0 FAIL, 3 WARNING/N/A)**
+#### Accessibility
+| Item | Result |
+|---|---|
+| Keyboard navigation on scroll wrapper (`tabindex="0"`, `role="region"`) | PASS |
+| `aria-describedby` linking scroll wrapper to instructions | PASS |
+| Visually-hidden scroll instructions | PASS |
+| `scope="col"` on column headers | PASS |
+| `scope="row"` on detected row headers | PASS |
+| Empty cell placeholder with hidden text "No data available" | PASS |
+| Color contrast via tokens | PASS |
+| Semantic HTML | PASS |
 
 ---
 
 ## Remediation
 
-**Priority 1 — High**
+**Priority 1 — Should Fix**
 
-1. **Replace raw font-weight and spacing values with tokens.**
-   - `font-weight: 600` (caption, line 80) → `var(--font-weight-semibold)` or equivalent
-   - `font-weight: 700` (`th`, line 94) → `var(--font-weight-bold)` or equivalent
-   - `padding: 0.75rem` (cell padding, line 99) → `var(--spacing-012)` or nearest spacing token
-   - Also review `margin-bottom: 0.75rem` (caption) and `margin-top: 0.25em` (paragraph)
+1. **Replace `font-weight: 600` with a token.** Line 123 (`.table-cell--row-header`) uses a raw font weight number.
+   - Fix: `font-weight: var(--font-weight-semibold)` (or the project's equivalent semibold token).
 
-**Priority 2 — Medium**
+2. **Replace `margin-top: 0.25em` with a token or block-scoped variable.** Line 141 (`.table.block table td p + p`) uses a raw em value.
+   - Fix: `margin-top: var(--spacing-004)` if a 4px-equivalent token exists, or define `--table-paragraph-spacing: 0.25em` in a `:root` block or the table block scope.
 
-2. **Add caption field to `_table.json` UE schema.** The JS supports caption via `data-caption` attribute and `readBlockConfig`, but authors cannot set it from Universal Editor. Add a `text` field named `caption` to the `table` model.
+3. **Add `ticket-details.md`** documenting the ADO ticket requirements per project convention.
 
-3. **Evaluate multiple header row support.** The solution design calls for "multiple/apparent header rows." The current implementation only promotes the first row to `<thead>`. If stacked visual headers (e.g., a group header row + column header row) are needed, a variant class or explicit row marking mechanism should be added.
+**Priority 2 — Nice to Have**
 
-**Priority 3 — Low**
+4. **Add `caption` field to `_table.json` UE schema.** The JS supports caption via `data-caption` attribute and `readBlockConfig`, but authors cannot set it from Universal Editor. Add a `text` field named `caption` to the `table` model.
 
-4. **Add `ticket-details.md`.** All other blocks in the set have a committed `ticket-details.md` as the ADO ticket source of truth. The table block is missing this file.
+5. **Replace `transition: opacity 0.2s ease` with a token.** Line 38 — raw `0.2s` transition duration should use `var(--transition-duration-fast)` for consistency with the rest of the token system.
+
+6. **Evaluate multiple visual header row support.** Only the first row is promoted to `<thead>`. If authors need to express stacked header groups, a variant class or explicit per-row marker (via data attributes) should be documented and supported.

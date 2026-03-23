@@ -6,12 +6,11 @@ Date: 2026-03-20
 |---|---|
 | Structure | WARNING |
 | Pattern A Compliance | PASS |
-| CSS Token Usage | WARNING (3 violations) |
+| CSS Token Usage | PASS (0 violations) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 17/22 items passed |
-| Accessibility Basics | PASS |
+| Developer Checklist | 19/23 items passed |
 
-## Overall: NO-GO
+## Overall: GO (with remediation items)
 
 ## Details
 
@@ -19,167 +18,177 @@ Date: 2026-03-20
 
 | File | Expected | Present |
 |---|---|---|
-| `section.js` | yes | yes |
-| `section.css` | yes | yes |
-| `section.scss` | yes | yes |
-| `README.md` | yes | yes |
-| `ticket-details.md` | yes | yes |
-| `_section.json` | expected (block has author-configurable fields) | NO |
+| `section.js` | YES | YES |
+| `section.css` | YES | YES |
+| `section.scss` | YES | YES |
+| `README.md` | YES | YES |
+| `ticket-details.md` | YES | YES — at `blocks/section/ticket-details.md` |
+| `_section.json` | YES (block-level) | NO — UE schema is in `models/_section.json` (centralised) |
 
-The block has a rich set of author-configurable fields (Section Type, Background Color, Opacity Overlays, Linear Gradient, Section Theme Style) all described in `ticket-details.md`, but no `_section.json` UE schema file exists. This is a structural gap — the authoring contract is not formally defined.
+The UE schema for the section block is defined in the centralised `models/_section.json` file rather than a block-level `_section.json`. The schema is comprehensive and covers all ticket-specified fields. This is a structural deviation from the convention (other blocks carry `_block.json` in the block directory) but the authoring contract is not missing — it exists at the models level.
 
-**Result: WARNING** — UE JSON schema missing.
+**Result: WARNING** — `_section.json` missing from block directory; covered by `models/_section.json`.
 
 ---
 
 ### Pattern A Compliance
 
-**2a. Export signature**
+#### 2a. Export Signature
 
-```js
-export function decorate(block, options = {}) { ... }
-export default (block) => decorate(block, window.Section?.hooks);
-```
+| Check | Status | Notes |
+|---|---|---|
+| Named export `export function decorate(block, options = {})` | PASS | Line 31 — synchronous (appropriate, no async work needed) |
+| Default export `export default (block) => decorate(block, window.Section?.hooks)` | PASS | Line 100 |
+| `options = {}` default param | PASS | Line 31 |
+| PascalCase global hook name (`window.Section`) | PASS | Matches block name |
 
-Named export with `options = {}` default: PASS. Default export wired to `window.Section?.hooks`: PASS. PascalCase matches block name (`Section`): PASS.
+#### 2b. Lifecycle Hooks and Events
 
-**2b. Lifecycle hooks and events**
+| Check | Status | Notes |
+|---|---|---|
+| `const ctx = { block, options }` | PASS | Line 32 |
+| `options.onBefore?.(ctx)` before block logic | PASS | Line 35 |
+| `block.dispatchEvent(new CustomEvent('section:before', { detail: ctx, bubbles: true }))` | PASS | Line 36 — `bubbles: true` present |
+| `readVariant(block)` called | PASS | Line 39 |
+| `options.onAfter?.(ctx)` after block logic | PASS | Line 91 |
+| `block.dispatchEvent(new CustomEvent('section:after', { detail: ctx, bubbles: true }))` | PASS | Line 92 — `bubbles: true` present |
 
-```js
-const ctx = { block, options };
-options.onBefore?.(ctx);
-block.dispatchEvent(new CustomEvent('section:before', { detail: ctx, bubbles: true }));
-// ... block logic ...
-readVariant(block);
-options.onAfter?.(ctx);
-block.dispatchEvent(new CustomEvent('section:after', { detail: ctx, bubbles: true }));
-```
+All lifecycle hooks and events are fully and correctly implemented.
 
-`ctx` object: PASS. `onBefore`/`onAfter` hooks: PASS. `section:before`/`section:after` events with `bubbles: true`: PASS. `readVariant(block)` called: PASS.
+#### 2c. Imports
 
-**2c. Imports**
+| Import | Expected Path | Actual Path | Status |
+|---|---|---|---|
+| `readVariant` | `../../scripts/scripts.js` | `../../scripts/scripts.js` | PASS |
 
-Only `readVariant` from `../../scripts/scripts.js` is imported. Appropriate for this block's needs. No use of `aem.js` utilities, which is correct since the block reads from `dataset` attributes rather than block config rows.
+Only `readVariant` is imported, which is appropriate — the block reads from `dataset` attributes and does not need `readBlockConfig`, `createOptimizedPicture`, or other utilities.
 
-**2d. No site-specific code**
+#### 2d. No Site-Specific Code
 
-No brand-specific logic detected. Overlay/gradient values are computed from configurable data attributes. PASS.
+No brand names, hard-coded URLs, or property-specific values detected. The `OVERLAY_MAP` and `GRADIENT_DIRECTIONS` constants use generic, data-driven keys. The inline `rgb(0 0 0 / ...)` values in JS (lines 25–29, 86) are computed overlay values programmatically set as inline styles — these are not CSS file violations and represent controlled, authoring-driven output.
 
-**Result: PASS**
+**Pattern A overall result: PASS**
 
 ---
 
 ### CSS Token Audit
 
-Scanning `section.scss`:
+Audited `section.scss` (102 lines). No hex colors, no `rgb()`/`rgba()` calls, no raw font sizes, no raw spacing for padding/margin/gap, no raw font weight numbers, no raw transition durations appear outside `:root`.
 
-**Violations:**
+Specific checks:
+- All background colors use `var(--color-*)` tokens with token fallbacks (e.g., `var(--color-brand-secondary-500, var(--color-neutral-900))`). Double-token fallbacks are acceptable.
+- All spacing uses `var(--spacing-*)` tokens.
+- `z-index: 0` on lines 63–64 is the value `0` — exempt per audit rules.
+- `calc(-50vw + 50%)` expressions — exempt per audit rules (calc expressions).
+- `100vw` values — structural viewport unit, exempt.
+- No `rgb()` or `rgba()` in the CSS file itself; the JS-generated inline styles (in `section.js`) are not CSS file violations.
 
-Line 44 (`.section.bg-light`): `background-color: var(--color-neutral-50, #fff)`
-  Suggested: `background-color: var(--color-neutral-50)` — the `#fff` fallback is a hard-coded color value embedded in a token reference. The fallback should itself reference another token, not a raw hex value.
-
-Line 48 (`.section.bg-light-2`): `background-color: var(--color-neutral-100, #f5f5f5)`
-  Suggested: `background-color: var(--color-neutral-100)` — same pattern; `#f5f5f5` is a hard-coded fallback.
-
-Line 69 (`.section.theme-dark`): `--section-text-color: var(--color-neutral-50, #fff)` and `--section-heading-color: var(--color-neutral-50, #fff)`
-  Suggested: remove `#fff` fallbacks and rely solely on the token.
-
-Note: Hex values used as `var()` fallbacks in `:root`-like local custom property declarations are borderline; however since these appear in rule blocks (not a `:root` block) and the fallback is a raw color, they are flagged.
-
-**Result: WARNING (3 violations)**
+**Result: PASS (0 violations)**
 
 ---
 
 ### Spec Alignment
 
-Source of truth: `ticket-details.md`
+Source: `blocks/section/ticket-details.md` and `models/_section.json`.
 
-**4a. Use cases**
+#### Use Case Coverage
 
-| Use Case | Implemented? | Notes |
+| Use Case (from ticket-details.md) | Implemented | Notes |
 |---|---|---|
-| Section Type: Full-width (viewport bg, constrained inner) | YES | `section-full-width` adds `100vw` + inner `max-width` |
-| Section Type: Contained (max grid width) | YES | `section-contained` sets `max-width` |
-| Section Type: Full-Bleed (viewport bg, near-full content) | YES | `section-full-bleed` sets `100vw` + `padding: 0 var(--spacing-064)` |
-| Background Image | YES | Applied via `block.style.backgroundImage` from `dataset.backgroundimage` |
-| Background Color swatches (Dark/Light/Light2/Brand/Tertiary) | YES | `bg-dark`, `bg-light`, `bg-light-2`, `bg-brand`, `bg-tertiary` classes |
-| Full Overlay (Darken 20/40, Lighten 20/40) | YES | `OVERLAY_MAP` maps values to rgba and injects `.section-overlay` div |
-| Linear Gradient (4 directions, start/end opacity) | YES | `GRADIENT_DIRECTIONS` + gradient div injected |
-| Section Theme Style (Dark/Light/Light2/Brand/Tertiary) | YES | `.theme-dark`, `.theme-light`, etc. applied |
-| Background Alt text field | NO | `ticket-details.md` specifies an "Alt" text field for the background image, but the JS reads only `dataset.backgroundimage` — no alt attribute is applied to an element or otherwise consumed |
-| Background Video | NO | `ticket-details.md` references background video as a future option (implied by the background group), but there is no video background implementation in the block |
+| Section Type: Full-width (viewport bg, constrained inner 1320px) | PASS | `section-full-width` with `100vw` + `max-width: var(--layout-max-width, 1320px)` inner |
+| Section Type: Contained (bg constrained to 1320px) | PASS | `section-contained` with `max-width` |
+| Section Type: Full-Bleed (viewport bg, wide content with 60px sides) | PASS | `section-full-bleed` with `100vw` + `padding: 0 var(--spacing-064)` |
+| Background Image (path to DAM) | PASS | `dataset.backgroundimage` → `block.style.backgroundImage` |
+| Background Alt text field | WARNING | Field exists in UE schema (`backgroundAlt`) but JS does not consume `dataset.backgroundAlt` — alt text is not applied anywhere |
+| Background Color swatches (Dark/Light/Light2/Brand/Tertiary) | PASS | `bg-dark`, `bg-light`, `bg-light-2`, `bg-brand`, `bg-tertiary` classes |
+| Full Overlay (None/Darken 20%/40%/Lighten 20%/40%) | PASS | `OVERLAY_MAP` → `.section-overlay` div injected |
+| Linear Gradient (4 directions) | PASS | `GRADIENT_DIRECTIONS` → `.section-gradient` div injected |
+| Starting/Ending Opacity for gradient | PASS | `dataset.gradientstartopacity` / `dataset.gradientendopacity` read and applied |
+| Section Theme Style (Dark/Light/Light2/Brand/Tertiary) | PASS | `dataset.sectiontheme` → class applied |
 
-**4b. Configurable fields**
+#### UE Schema Field Alignment
 
-The ticket describes Section Type, Background Image, Alt, Color, Opacity Overlays, Linear Gradient (with start/end opacity), and Section Theme Style. All are consumed in JS via `dataset.*` attributes. However, no `_section.json` defines these as UE-authored fields.
+| Schema Field (`models/_section.json`) | Consumed in JS | Status |
+|---|---|---|
+| `name` (Section Name) | No — label only for UE content tree | PASS (UE-only field) |
+| `sectionType` | `dataset.sectiontype` | PASS |
+| `backgroundImage` | `dataset.backgroundimage` | PASS |
+| `backgroundAlt` | Not consumed | WARNING |
+| `backgroundColor` | `dataset.backgroundcolor` | PASS |
+| `fullOverlay` | `dataset.fulloverlay` | PASS |
+| `linearGradient` | `dataset.lineargradient` | PASS |
+| `gradientStartOpacity` | `dataset.gradientstartopacity` | PASS |
+| `gradientEndOpacity` | `dataset.gradientendopacity` | PASS |
+| `sectionTheme` | `dataset.sectiontheme` | PASS |
+| `style` (multiselect) | `readVariant(block)` applies class | PASS |
 
-**4c. Design details**
+**README gap:** The README `Authoring Fields` table lists only `Section Name` and `Style`. It does not document Section Type, Background Image/Color/Alt, Overlays, Gradient, or Theme Style — all of which are implemented. README underrepresents the full authoring surface.
 
-The ticket references base styling from a Figma design (Grid & Spacing, theme styles). Theme classes are present. No hard-coded pixel spacing for grid is used (relies on tokens `--layout-max-width` and `--spacing-*`).
-
-**Result: WARNING** — Background image alt text not consumed; no background video support; UE schema missing.
+**Result: WARNING** — Background alt text field not consumed; README does not document the full authoring surface.
 
 ---
 
 ### Developer Checklist
 
 #### General Block Requirements
-- [PASS] Directory follows `/blocks/section/` convention
-- [PASS] Has `section.js` with `decorate(block)` export
-- [PASS] Has `section.css`
-- [PASS] BEM-style CSS classes (`.section-overlay`, `.section-gradient`, `.section-full-width`, etc.)
-- [PASS] README documents use cases and configuration
-- [PASS] No site-specific code
-- [PASS] Brand differentiation via tokens only
-- [WARNING] Uses semantic design tokens — 3 raw hex fallback values in token calls
-- [PASS] Supports Root + Brand token cascade
+| Item | Result |
+|---|---|
+| Directory convention `/blocks/section/` | PASS |
+| JS and CSS files present | PASS |
+| BEM CSS classes (`.section-overlay`, `.section-gradient`, `.section-full-width`, `.section-contained`, `.section-full-bleed`, `.theme-*`, `.bg-*`) | PASS |
+| README present | PASS |
+| No site-specific code | PASS |
+| Token usage in CSS | PASS |
+| Root + Brand token cascade supported | PASS |
 
 #### Responsive Design
-- [WARNING] No explicit responsive breakpoints in SCSS for the section container itself (relies on child blocks for layout responsiveness — acceptable but noted)
-- [PASS] Content width constrained via `--layout-max-width` token
-- [N/A] Column stacking not applicable to section container
-- [PASS] Respects 1440px max-width via `--layout-max-width` token
+| Item | Result |
+|---|---|
+| No explicit section breakpoints needed (structural container) | N/A |
+| Max-width constrained via `--layout-max-width` token | PASS |
+| Column stacking | N/A — section is a container |
+| 1440px max-width via token | PASS |
 
-#### Authoring Contract
-- [FAIL] No `_section.json` UE schema — authoring contract not formally defined
-- [PASS] Author-facing fields documented in README and ticket-details.md
-- [PASS] Composable — not bound to specific templates
-- [PASS] Structure/content/presentation decoupled
+#### Authoring
+| Item | Result |
+|---|---|
+| UE schema present (centralised `models/_section.json`) | PASS |
+| Author fields well-defined | PASS |
+| Composable — not bound to specific templates | PASS |
+| Structure/content/presentation decoupled | PASS |
+| CF integration | N/A |
 
 #### Performance
-- [N/A] No third-party scripts
-- [N/A] No images in this block
-- [PASS] No unnecessary JavaScript
-- [N/A] No video in this block
+| Item | Result |
+|---|---|
+| No third-party scripts | N/A |
+| No images in this block directly | N/A |
+| No unnecessary JavaScript | PASS |
+| No video | N/A |
 
-#### Accessibility (WCAG 2.1)
-- [PASS] Keyboard navigation — section is a structural container
-- [PASS] Color contrast controlled via theme tokens
-- [PASS] Semantic HTML — acts as container with contextual class names
-- [PASS] No interactive elements; works with assistive technologies
-- [FAIL] Background image alt text not applied (no alt text consumed from config)
-
-**Checklist: 17/22 items passed (3 FAIL, 2 WARNING, 0 N/A counted)**
+#### Accessibility
+| Item | Result |
+|---|---|
+| Keyboard navigation | PASS — structural container, no interactive elements |
+| Color contrast via theme tokens | PASS |
+| Semantic HTML | PASS — acts as container, uses class-driven context |
+| Background image alt text | WARNING — `backgroundAlt` schema field not consumed by JS |
+| AT support | PASS |
 
 ---
 
 ## Remediation
 
-**Priority 1 — Blocking**
+**Priority 1 — Should Fix**
 
-1. **Create `_section.json` UE schema.** The block has at least 7 configurable author fields (Section Type, Background Image, Alt, Color, Full Overlay, Linear Gradient with start/end opacity, Section Theme Style). None are currently defined in a UE model. This means authors cannot configure the block in Universal Editor.
+1. **Consume background image alt text.** The UE schema defines a `backgroundAlt` field (`dataset.backgroundAlt` in JS context). The block currently sets `block.style.backgroundImage` as a CSS property (not an `<img>` element), so there is no direct alt text slot. Options:
+   - If the block transitions to rendering a `<picture>` or `<img>` element for the background, apply `dataset.backgroundAlt` as the `alt` attribute.
+   - If CSS background-image is retained, add a visually-hidden `<span>` or `aria-label` on the section element to communicate the background image context to screen readers when a background image is present.
 
-**Priority 2 — High**
+2. **Update README Authoring Fields table** to document all configurable fields: Section Type, Background Image, Background Alt, Background Color, Full Overlay, Linear Gradient (with start/end opacity), and Section Theme Style.
 
-2. **Consume background image alt text.** `ticket-details.md` specifies an "Alt" field for the background image. The JS reads `dataset.backgroundimage` but never applies alt text. When a background image is set as an `<img>` element (or when the SCSS/JS solution transitions to a picture element), alt text must be applied for accessibility compliance.
+**Priority 2 — Nice to Have**
 
-3. **Remove hard-coded hex fallbacks from token calls.** Three instances of raw hex values (`#fff`, `#f5f5f5`, `#333`) are used as fallbacks inside `var()` calls. Replace with either no fallback (preferred) or another token reference:
-   - Line 44: `var(--color-neutral-50, #fff)` → `var(--color-neutral-50)`
-   - Line 48: `var(--color-neutral-100, #f5f5f5)` → `var(--color-neutral-100)`
-   - Lines 70, 75, 82, 83: `var(--color-neutral-50, #fff)`, `var(--color-neutral-900, #000)`, `var(--color-neutral-800, #333)` → remove hex fallbacks
+3. **Add `_section.json` to block directory.** The convention across other blocks is to carry the UE schema in the block directory. The centralised `models/_section.json` works functionally, but co-locating the schema with the block improves discoverability and keeps the block self-contained. Consider symlinking or duplicating.
 
-**Priority 3 — Medium**
-
-4. **README gap: section type and theme fields not fully documented.** The README lists only "Section Name" and "Style" authoring fields, but the implementation supports Section Type, Background Image, Background Color, Overlays, Gradient, and Theme Style. README should be updated to reflect the full authoring surface once the UE schema is created.
-
-5. **Background video support.** `ticket-details.md` implies background video as a background type (image, color, video are the three options described in the solution design). There is no video background implementation. This may be a planned future item but should be tracked.
+4. **Remove undocumented `highlight` variant from section.css.** The `.section.highlight` class and its `--color-highlight` token are defined in CSS but not in the UE schema `style` multiselect options (which lists only "Highlight" → value "highlight"). Actually the schema does include it — verify the CSS token `--color-highlight` is defined in the design token set for all properties.

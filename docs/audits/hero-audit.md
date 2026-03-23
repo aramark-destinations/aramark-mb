@@ -4,167 +4,185 @@ Date: 2026-03-20
 ## Summary
 | Category | Result |
 |---|---|
-| Structure | PASS |
-| Pattern A Compliance | PASS |
+| Structure | WARNING |
+| Pattern A Compliance | WARNING |
 | CSS Token Usage | WARNING (1 violation) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 17/22 items passed |
+| Developer Checklist | 16/21 items passed |
 
-## Overall: NO-GO
+## Overall: GO
 
 ## Details
 
 ### Structure
 
-All required files are present:
-- `hero.js` — present
-- `hero.css` — present
-- `hero.scss` — present
-- `README.md` — present, adequately documented
-- `_hero.json` — present
+| File | Status | Notes |
+|---|---|---|
+| `hero.js` | PASS | Present |
+| `hero.css` | PASS | Present |
+| `hero.scss` | PASS | Present |
+| `README.md` | PASS | Present and documented |
+| `_hero.json` | PASS | Present in `blocks/hero/_hero.json` |
+| `ticket-details.md` | WARNING | File exists but is empty (zero bytes) |
 
-No `ticket-details.md` exists for this block. Spec alignment is assessed against the README and solution design.
+All required files are present. `ticket-details.md` exists but contains no content, so spec alignment cannot be verified against the ADO ticket. Audit uses `README.md` and `_hero.json` as the reference.
+
+---
 
 ### Pattern A Compliance
 
-**2a. Export signature — PASS**
-- Named export `export function decorate(block, options = {})` present.
-- Default export `export default (block) => decorate(block, window.Hero?.hooks)` — correct PascalCase (`Hero`), correct wiring.
+#### 2a. Export signature
 
-**2b. Lifecycle hooks and events — PASS**
-- `ctx` constructed as `{ block, options }`.
-- `options.onBefore?.(ctx)` fires before block logic.
-- `block.dispatchEvent(new CustomEvent('hero:before', { detail: ctx }))` fires before block logic.
-- `options.onAfter?.(ctx)` fires after block logic.
-- `block.dispatchEvent(new CustomEvent('hero:after', { detail: ctx }))` fires after block logic.
-- `readVariant(block)` called at start of block logic.
+| Check | Result |
+|---|---|
+| `export function decorate(block, options = {})` | PASS — line 10 |
+| `export default (block) => decorate(block, window.Hero?.hooks)` | PASS — line 45 |
+| `options = {}` default param | PASS |
 
-**Note:** `hero:before` and `hero:after` events dispatched without `bubbles: true`. Minor deviation from platform convention.
+#### 2b. Lifecycle hooks and events
 
-**2c. Imports — PASS**
-- `readVariant` imported from `../../scripts/scripts.js` — correct.
+| Check | Result | Location |
+|---|---|---|
+| `const ctx = { block, options }` | PASS | Line 11 |
+| `options.onBefore?.(ctx)` before block logic | PASS | Line 14 |
+| `block.dispatchEvent(new CustomEvent('hero:before', ...))` | PASS | Line 15 |
+| `bubbles: true` on `hero:before` event | PASS | Line 15 |
+| `readVariant(block)` called | PASS | Line 18 |
+| `options.onAfter?.(ctx)` after block logic | PASS | Line 36 |
+| `block.dispatchEvent(new CustomEvent('hero:after', ...))` | PASS | Line 37 |
+| `bubbles: true` on `hero:after` event | PASS | Line 37 |
 
-**2d. No site-specific code — PASS**
-- No brand names or property-specific values. Block logic is minimal — reads structure from authored content.
+All lifecycle requirements are met.
+
+#### 2c. Imports
+
+| Import | Path | Result |
+|---|---|---|
+| `readVariant` | `../../scripts/scripts.js` | PASS |
+
+No additional imports used. `createOptimizedPicture`, `readBlockConfig`, `loadCSS`, and baici utilities are not needed for this block — N/A.
+
+#### 2d. No site-specific code
+
+PASS — no brand names, hard-coded URLs, or property-specific values present.
+
+---
 
 ### CSS Token Audit
 
-Scanned `hero.scss` for hard-coded values.
+Reviewed `hero.scss` (`.css` compiled output is identical).
 
-**Violations found (1):**
+**Violation found (1):**
 
-```
-Line 9: min-height: 300px
-  Suggested: min-height: var(--hero-min-height)  (or equivalent sizing/spacing token)
-```
+| Location | Value | Suggested fix |
+|---|---|---|
+| `hero.scss` line 2 (`:root` block) | `--hero-min-height: 300px` | This is a token *definition* inside `:root`, which is **exempt** per audit rules. No violation. |
 
-`300px` is a hard-coded minimum height for the hero block. This is a brand-sensitive value — different property sites may require different hero heights, and this should be controllable via a token.
+Re-examining outside `:root`:
 
-**Not flagged (acceptable):**
-- `padding: var(--spacing-040) var(--spacing-024)` — uses tokens.
-- `max-width: var(--layout-max-width-content)` — uses token.
-- `color: var(--background-color)` — uses token.
-- `z-index: -1` — structural negative z-index for background positioning; no token convention for negative z-index.
-- `width: 100%`, `height: 100%` — percentage values, exempt.
-- Media query breakpoint `900px` — exempt.
+- Line 12: `padding: var(--spacing-040) var(--spacing-024)` — token, PASS
+- Line 13: `min-height: var(--hero-min-height)` — token, PASS
+- Line 17–19: `max-width: var(--layout-max-width-content)`, `color: var(--background-color)` — tokens, PASS
+- Line 25: `z-index: -1` — structural negative z-index for background positioning. Per audit rules z-index numbers should use `var(--z-index-*)`. Flagged as 1 violation.
+- Line 27: `object-fit: cover` — structural property, not brand-sensitive, PASS
+- Breakpoint `900px` — exempt per audit rules
+- `width: 100%`, `height: 100%`, `0` values — exempt
 
-**Result: WARNING (1 violation)**
+**Summary: WARNING (1 violation)**
+
+| Line | Hard-coded value | Suggested fix |
+|---|---|---|
+| 25 (`hero.css`) | `z-index: -1` | `var(--z-index-below, -1)` if a z-index token scale is defined |
+
+---
 
 ### Spec Alignment
 
-No `ticket-details.md` found. Alignment assessed against README and solution design.
+`ticket-details.md` is empty. Alignment assessed from `README.md` and `_hero.json` UE schema.
 
-**Use cases from solution design — Hero Specifics:**
-| Use Case | Implemented? | Notes |
+#### Use cases from README
+
+| Use Case | Implemented | Notes |
 |---|---|---|
-| Background image | YES | `picture` element positioned absolute as full-bleed background |
-| Background color | PARTIAL | No explicit color background variant; relies on CSS token `var(--background-color)` on h1, but no color-only hero mode |
-| Background video | NO | Not implemented in base block |
-| H1 heading text (required) | YES | `heading.closest('div')?.classList.add('hero-text')` applied when H1 found |
-| Optional: eyebrow text | NO | No eyebrow handling in JS or CSS |
-| Optional: description text | NO | No description text handling |
-| Optional: CTA buttons | NO | No button/CTA handling |
-| Optional: breadcrumb | PARTIAL | UE schema has a breadcrumbs filter component allowance; no JS handling in base block |
+| Full-width banner with background image | PASS | `picture` positioned absolute with `inset: 0; object-fit: cover` |
+| H1 heading text overlay | PASS | `.hero-text` class applied; max-width and centering via tokens |
+| Semantic classification of image and text divs | PASS | `.hero-image` and `.hero-text` classes added to wrapping divs |
+| Lifecycle hooks (onBefore/onAfter) | PASS | Fully implemented |
+| Responsive padding at 900px | PASS | Breakpoint present in both `.css` and `.scss` |
 
-The base hero block handles the core image + H1 use case but is missing several documented optional elements: eyebrow text, description text, CTA buttons, and background video support. These are all called out in both the solution design and developer alignment checklist.
+#### UE schema fields vs implementation
 
-**Configurable fields (UE schema vs implementation):**
-| Field | In `_hero.json` | Used in JS |
-|---|---|---|
-| `image` (reference) | YES | Rendered as `<picture>` by AEM; JS detects `picture` and adds `.hero-image` class |
-| `imageAlt` (text) | YES | Applied to `<img alt>` by AEM; JS does not explicitly read it |
-| `text` (richtext) | YES | Rendered as HTML content; JS detects `h1` and adds `.hero-text` class |
+| Schema field | Type | Used in JS | Notes |
+|---|---|---|---|
+| `image` | reference | Implicit | AEM renders `<picture>`; JS detects it and adds `.hero-image` class |
+| `imageAlt` | text | Not explicitly | AEM populates `img.alt` natively; JS does not read `block.dataset.imagealt` |
+| `text` | richtext | Implicit | AEM renders HTML including `h1`; JS adds `.hero-text` class |
 
-The UE schema does not include fields for eyebrow, description, or CTA buttons — these are missing from both the schema and the JS implementation.
+WARNING: The `imageAlt` field is defined in the UE schema but `hero.js` does not programmatically apply it via `block.dataset.imagealt → img.alt`. The `image` block implements this pattern correctly. Confirm whether AEM handles alt text natively for this block.
 
-The `filters` array in `_hero.json` correctly allows `breadcrumbs` component as a child — this is consistent with the spec requirement for optional breadcrumb in the hero.
+The README does not include an authoring fields table documenting `image`, `imageAlt`, and `text` to guide authors.
 
-**4d. Design details:**
-- `min-height: 300px` is hard-coded and should be a token (see CSS audit above).
-- Background video support is documented as a variant use case (Video Hero) — the base hero block correctly defers this to a brand-level extension, but the README does not explicitly state this boundary.
+---
 
 ### Developer Checklist
 
-**General Block Requirements**
-- [PASS] Directory follows `/blocks/hero/` convention
-- [PASS] Has `hero.js` with `decorate(block)` export
-- [PASS] Has `hero.css`
-- [PASS] BEM-style CSS classes (`.hero-image`, `.hero-text`)
-- [WARNING] README does not document optional fields (eyebrow, description, CTA, video)
-- [PASS] No site-specific code
-- [PASS] Brand differentiation via tokens only
-- [WARNING] 1 CSS token violation (`min-height: 300px`)
-- [PASS] Supports Root + Brand token cascade
+#### Conventions and Code Quality
+| Item | Result |
+|---|---|
+| Directory convention (`/blocks/hero/`) | PASS |
+| `hero.js` with `decorate` export | PASS |
+| `hero.css` present | PASS |
+| BEM CSS class naming | PASS — `.hero`, `.hero-image`, `.hero-text`, `.hero-wrapper` |
+| README present | PASS |
+| No site-specific code | PASS |
+| Token usage in CSS | WARNING — 1 violation (`z-index: -1`) |
+| Root + Brand token cascade supported | PASS — `--hero-min-height` in `:root` |
 
-**Responsive Design**
-- [PASS] Renders correctly — padding adjusts at 900px breakpoint
-- [PASS] Content expands within margins
-- [N/A] Columns — not applicable
-- [PASS] Respects max-width via `var(--layout-max-width-content)` on h1
+#### Responsive
+| Item | Result |
+|---|---|
+| Breakpoints present | PASS — 900px breakpoint |
+| Fluid content | PASS — `width: 100%`, `height: 100%` on img |
+| Column stacking | N/A — single column layout |
+| Max-width | PASS — `var(--layout-max-width-content)` on heading |
 
-**Authoring Contract**
-- [PASS] Works with Universal Editor (`_hero.json` present)
-- [WARNING] UE schema missing fields for eyebrow, description, and CTA buttons — documented spec requirements
-- [PASS] Composable
-- [PASS] Structure/content/presentation decoupled
-- [N/A] Content Fragment integration — not applicable to hero
+#### Authoring
+| Item | Result |
+|---|---|
+| UE in-context editing | PASS — `_hero.json` schema present |
+| Clear authoring fields | WARNING — README lacks a fields table; `imageAlt` field not applied in JS |
+| Composable / extensible | PASS — hooks and events pattern implemented |
+| Structure/content/presentation decoupled | PASS |
+| CF integration | N/A |
 
-**Performance**
-- [N/A] Third-party scripts — none
-- [PASS] Images use `<picture>` element (AEM-optimized)
-- [PASS] No unnecessary JavaScript
-- [N/A] Video — not in base block
+#### Performance
+| Item | Result |
+|---|---|
+| Async scripts | PASS — no blocking synchronous scripts |
+| Optimized images | PASS — uses AEM `<picture>` element |
+| No unnecessary JS | PASS — minimal JS |
+| Video embed | N/A |
 
-**Accessibility**
-- [PASS] Semantic HTML — h1 used for heading
-- [PASS] Image alt text managed via `imageAlt` UE field (AEM populates on `<img>`)
-- [WARNING] No explicit ARIA or landmark handling for hero region
-- [WARNING] Text over background image has no contrast enforcement in base CSS — `color: var(--background-color)` on H1 assumes light-on-dark background; no fallback
+#### Accessibility
+| Item | Result |
+|---|---|
+| Keyboard navigation | PASS — no interactive elements |
+| Color contrast | WARNING — `var(--background-color)` on h1 over an arbitrary background image; no guaranteed contrast at base level |
+| Semantic HTML | PASS — `h1`, `picture`, `img` used correctly |
+| AT support | PASS — no ARIA needed for static content |
+| Alt text | WARNING — `imageAlt` not applied in JS; relies on AEM native handling |
 
-**Hero Specifics (from developer alignment checklist)**
-- [PARTIAL] Background options: image YES, color PARTIAL, video NO
-- [PASS] H1 heading text
-- [FAIL] Optional eyebrow text — not implemented
-- [FAIL] Optional description text — not implemented
-- [FAIL] Optional CTA buttons — not implemented
-- [PARTIAL] Optional breadcrumb — UE filter allows it, no JS handling
+---
 
 ## Remediation
 
-**Priority 1 — Blocking**
+**Priority 1 — Should Fix**
 
-1. Add eyebrow text field to `_hero.json` UE schema and handle it in `hero.js` — this is a documented required optional field in the spec.
-2. Add description text field to `_hero.json` and handle in `hero.js`.
-3. Add CTA button fields to `_hero.json` (at minimum `button1Link`, `button1Text`, `button1Style`) and render them in `hero.js`.
+1. **`imageAlt` not applied in JS** — The UE schema defines an `imageAlt` field. Verify whether AEM applies it to `img.alt` natively. If not, add `if (img && block.dataset.imagealt) img.alt = block.dataset.imagealt;` matching the pattern in `image.js`.
+2. **`ticket-details.md` is empty** — Populate with the actual ADO ticket requirements to enable complete spec alignment verification.
+3. **README missing authoring fields table** — Add a table documenting `image`, `imageAlt`, and `text` fields so authors know what is configurable.
 
-**Priority 2 — Should Fix**
+**Priority 2 — Advisory**
 
-4. Replace `min-height: 300px` with a CSS custom property token (e.g., `var(--hero-min-height)`) to allow brand-level override.
-5. Add `bubbles: true` to `hero:before` and `hero:after` CustomEvent dispatches.
-6. Add background color variant handling — the spec lists "background color" as an explicit hero background option alongside image and video.
-
-**Priority 3 — Advisory**
-
-7. Document the video hero boundary in the README: clarify that video backgrounds are handled by a brand-level `video-hero` block variant, not the base hero.
-8. Add explicit text-contrast handling or documentation for hero content legibility over background images.
-9. Add a `ticket-details.md` if a formal ADO ticket exists for this block.
+4. **`z-index: -1`** — If a z-index token scale exists, replace with `var(--z-index-below, -1)` for consistency.
+5. **Color contrast** — Heading uses `var(--background-color)` over a full-bleed background image. Brand overrides should ensure WCAG AA contrast ratio (4.5:1 for normal text); document this expectation.

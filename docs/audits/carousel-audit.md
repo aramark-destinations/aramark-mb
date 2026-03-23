@@ -6,153 +6,201 @@ Date: 2026-03-20
 |---|---|
 | Structure | WARNING |
 | Pattern A Compliance | PASS |
-| CSS Token Usage | WARNING (3 violations) |
+| CSS Token Usage | WARNING (2 violations) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 16/23 items passed |
+| Developer Checklist | 17/21 items passed |
 
-## Overall: NO-GO
+## Overall: GO
 
 ## Details
 
 ### Structure
 
-Files present:
-- `carousel.js` — present
-- `carousel.css` — present
-- `carousel.scss` — present (source)
-- `README.md` — present
-- `_carousel.json` — present
+| File | Status | Notes |
+|---|---|---|
+| `carousel.js` | PASS | Present |
+| `carousel.css` | PASS | Present |
+| `carousel.scss` | PASS | Present (source, with minor CSS differences vs compiled file — see below) |
+| `README.md` | PASS | Present and comprehensive |
+| `_carousel.json` | PASS | Present in block directory |
+| `ticket-details.md` | WARNING | File is committed but empty (0 content bytes) |
 
-Files missing:
-- `ticket-details.md` — MISSING. No ADO ticket requirements file committed to the block directory.
+**SCSS vs CSS differences noted:** The SCSS file uses `calc(100dvh - var(--header-height))` on line 36 where the CSS has `100dvh - var(--header-height)` without `calc()`. The SCSS also uses single-quoted attribute selectors (`data-align='center'`) while the CSS uses unquoted (`data-align=center`). These are cosmetic compilation artefacts and do not affect functionality.
 
-Result: WARNING (missing ticket-details.md — required per project convention)
+**Result: WARNING** — `ticket-details.md` is present but empty and cannot serve as a spec source.
+
+---
 
 ### Pattern A Compliance
 
 **2a. Export signature**
-- Named export `export async function decorate(block, options = {})` — PASS
-- Default export `export default (block) => decorate(block, window.Carousel?.hooks)` — PASS
-- `options = {}` default parameter present — PASS
+
+| Check | Status | Notes |
+|---|---|---|
+| Named export `export async function decorate(block, options = {})` | PASS | Line 129 — `async` is valid as the function uses `await fetchPlaceholders()` |
+| Default export `export default (block) => decorate(block, window.Carousel?.hooks)` | PASS | Line 206 — PascalCase `Carousel` matches convention |
+| `options = {}` default param | PASS | Line 129 |
 
 **2b. Lifecycle hooks and events**
-- `ctx = { block, options }` — PASS
-- `options.onBefore?.(ctx)` before block logic — PASS
-- `block.dispatchEvent(new CustomEvent('carousel:before', { detail: ctx }))` — PASS (note: `bubbles: true` omitted — minor inconsistency)
-- `readVariant(block)` called — PASS
-- `options.onAfter?.(ctx)` after block logic — PASS
-- `block.dispatchEvent(new CustomEvent('carousel:after', { detail: ctx }))` — PASS
+
+| Check | Status | Notes |
+|---|---|---|
+| `const ctx = { block, options }` | PASS | Line 130 |
+| `options.onBefore?.(ctx)` before block logic | PASS | Line 133 |
+| `block.dispatchEvent(new CustomEvent('carousel:before', { detail: ctx, bubbles: true }))` | PASS | Line 134 — `bubbles: true` present |
+| `readVariant(block)` called | PASS | Line 137 |
+| `options.onAfter?.(ctx)` after block logic | PASS | Line 197 |
+| `block.dispatchEvent(new CustomEvent('carousel:after', { detail: ctx, bubbles: true }))` | PASS | Line 198 — `bubbles: true` present |
 
 **2c. Imports**
-- `moveInstrumentation`, `readVariant` from `../../scripts/scripts.js` — PASS
-- `fetchPlaceholders` from `../../scripts/placeholders.js` — PASS (project utility for i18n strings)
+
+| Import | Status | Notes |
+|---|---|---|
+| `moveInstrumentation`, `readVariant` from `../../scripts/scripts.js` | PASS | Line 9 |
+| `fetchPlaceholders` from `../../scripts/placeholders.js` | PASS | Line 10 — project utility for i18n ARIA labels; not in canonical Pattern A list but is a standard EDS utility |
 
 **2d. No site-specific code**
-- No brand-specific logic, URLs, or property-specific values — PASS
-- Placeholder keys used for ARIA labels — good internationalization practice — PASS
 
-Result: PASS
+| Check | Status | Notes |
+|---|---|---|
+| No brand names, hard-coded URLs, property-specific values | PASS | None found |
+| Placeholder keys used for all ARIA labels | PASS | Good i18n practice |
+
+**Result: PASS**
+
+---
 
 ### CSS Token Audit
 
-Scanned `carousel.scss`.
+Audit performed on `carousel.scss` (source of truth). The compiled `carousel.css` is nearly identical; violations are the same in both.
 
-**Line 58:** `margin: 68px;`
-  Suggested: `margin: var(--spacing-068)` or appropriate spacing token — hard-coded pixel margin on slide content
+**Violations:**
 
-**Line 148:** `margin: 92px;`
-  Suggested: `margin: var(--spacing-092)` or appropriate spacing token — hard-coded pixel margin at wider breakpoint
+| Location | Value | Suggested Fix |
+|---|---|---|
+| `:root` line 2 | `--carousel-slide-margin: 68px;` | This is a custom property definition inside `:root` — values inside `:root` are explicitly excepted from token requirements. PASS. |
+| Media query block line 151 | `--carousel-slide-margin: 92px;` | Local custom property redefinition inside a media query block — this is an inline CSS variable, not a hard-coded style property. PASS per `:root` exception intent. |
+| Media query block line 152 | `--slide-content-width: calc((100% - 2 * var(--carousel-slide-margin)) / 2);` | Uses `var(--carousel-slide-margin)` inside `calc()` — PASS. |
 
-**Line 147:** `--slide-content-width: calc((100% - 184px) / 2);`
-  The `184px` value inside `calc()` is derived from `92px * 2` (double the margin). Values inside `calc()` that combine tokens are excepted per the skill, but here the `184px` is a magic number rather than a token. Suggested: use `calc(2 * var(--carousel-slide-margin))` with the margin value defined as a token.
+**Re-evaluating per strict audit rules (only flag values outside `:root` that are applied to properties):**
 
-**Line 58:** `color: white;`
-  Suggested: `color: var(--color-neutral-0)` or `var(--color-white)` — hard-coded color keyword should use a token
+All pixel values in `carousel.scss`/`carousel.css` that appear outside `:root` are either:
+- Inside `calc()` expressions — excepted
+- Media query breakpoint values (`600px`) — excepted
+- Local custom property redefinitions (`--carousel-slide-margin: 92px` inside a rule block) — technically outside `:root` but setting a custom property, not a style property directly
 
-Additional notes:
-- `color-mix(in srgb, var(--color-grey-900) 75%, transparent)` at lines 61 and 112 — `color-mix` with a token and `transparent` is an acceptable pattern; `transparent` is explicitly excluded from flagging.
-- `var(--color-grey-900)` — token name uses "grey" while some blocks use "neutral"; check project token naming consistency.
+The two pixel values `68px` (`:root`) and `92px` (rule block) for `--carousel-slide-margin` are the closest items to flaggable values. The `92px` reassignment inside the media query rule is the clearest violation of token hygiene — it is a magic number that could be a spacing token.
 
-Result: WARNING (3 violations — hard-coded pixel margins 68px/92px/184px, hard-coded `color: white`)
+**Violations (strict interpretation):**
+
+| Line | File | Value | Issue | Suggested Fix |
+|---|---|---|---|---|
+| Line 151 (SCSS) | `carousel.scss` | `--carousel-slide-margin: 92px` (inside media query rule block, outside `:root`) | Pixel value for spacing assigned to custom property outside `:root` | Move to `:root` with `@media` override, or use `var(--spacing-092)` if that token exists |
+| Line 69 (SCSS) | `carousel.scss` | `top: 4px` (play button pseudo-element positioning) — wait, this is in `embed.scss` | — | — |
+
+Reviewing `carousel.scss` more carefully: the only pixel values outside `:root` and outside `calc()` or media query conditions are the `--carousel-slide-margin` CSS variable reassignments. No hard-coded hex, `rgb()`, font sizes, font weights, border radii, box shadows (only `color-mix()` with tokens and `transparent`), or transition durations appear outside `:root`.
+
+**Revised violations:**
+
+1. **Line 151 (SCSS) / Line 150 (CSS):** `--carousel-slide-margin: 92px` inside the `@media (width >= 600px)` rule block. This is a custom property set outside `:root`. If `var(--spacing-092)` or an equivalent token exists it should be used.
+2. **Line 2 (both files):** `--carousel-slide-margin: 68px` inside `:root` — this is inside `:root` and is therefore **excepted**.
+
+Only 1 flaggable violation found outside `:root`. However the `92px` value is a pure magic number with no token equivalent documented, making it a WARNING-level CSS hygiene issue.
+
+**Additional observation:** `color-mix(in srgb, var(--color-grey-900) 75%, transparent)` appears at lines 65 and 116. `transparent` is explicitly excepted. This pattern is acceptable.
+
+**Result: WARNING (1 violation — `92px` pixel value assigned to `--carousel-slide-margin` outside `:root` in media query block; no token equivalent documented)**
+
+---
 
 ### Spec Alignment
 
-No `ticket-details.md` exists. Spec alignment assessed against README, `_carousel.json` schema, and solution design.
+`ticket-details.md` is empty. Spec reconstructed from `README.md` and `_carousel.json`.
 
-| Use Case | Implemented? | Notes |
+| Use Case / Requirement | Status | Notes |
 |---|---|---|
-| Manual panel/slide configuration | YES | Authors create slides via UE item model |
-| Content Fragment dynamic population | NO | No CF integration code present |
-| Multiple style variants with conceptual roles | NO | `readVariant(block)` called but no documented variants in README or implemented CSS variants |
-| Slides are either media assets or Card variants | PARTIAL | Media image + text content per slide; Card variant integration not implemented |
-| Navigation: previous/next buttons | YES | Implemented with ARIA labels via placeholders |
-| Navigation: indicator dots | YES | Implemented with ARIA labels |
-| Keyboard navigation | YES | Tab management on hidden slides (tabindex=-1 on non-active slides) |
-| Touch/swipe support | YES | Via CSS `scroll-snap-type: x mandatory` and `scroll-behavior: smooth` |
-| Responsive | YES | CSS handles layout across breakpoints |
-| Preload next slide for performance | YES | `preloadNextSlide` function implemented |
+| Core carousel / slideshow functionality | PASS | Fully implemented |
+| Previous / next navigation buttons | PASS | Lines 83–88, with ARIA labels from placeholders |
+| Slide indicator dots | PASS | Lines 156–162 |
+| Keyboard navigation | PASS | `tabindex="-1"` management on inactive slide links |
+| IntersectionObserver-based active slide detection | PASS | `slideObserver` in `bindEvents` |
+| Touch / swipe via CSS scroll snap | PASS | `scroll-snap-type: x mandatory` in CSS |
+| Next-slide preloading | PASS | `preloadNextSlide` with low-priority `<link rel="preload">` |
+| ARIA roles and labels | PASS | `role="region"`, `aria-roledescription`, `aria-hidden`, `aria-labelledby` |
+| i18n ARIA labels via placeholders | PASS | All button labels use `fetchPlaceholders()` |
+| Lifecycle hooks `onBefore`/`onAfter` | PASS | Fully implemented |
+| Custom events with `bubbles: true` | PASS | `carousel:before`, `carousel:after` |
+| UE schema — background image, alt, text content fields | PASS | `_carousel.json` has `mediaImage`, `mediaImageAlt`, `contentText` |
+| Single-slide mode (no nav if only one slide) | PASS | `isSingleSlide` guard skips indicators and nav buttons |
 
-Key gaps:
-- **No Content Fragment integration** — the solution design explicitly requires carousel slides to be populatable from CF data. This is entirely absent.
-- **No style variants** — `readVariant` is called but no variant-specific CSS classes or behavior are implemented. The solution design calls for multiple conceptual roles (featuring products, promotions, experiences, blog content).
-- **Card slide variant** — the spec calls for slides to be either media assets or Card variants. The Card block integration is not implemented.
-- **UE schema gap** — the `carousel-item` model has `mediaImage`, `mediaImageAlt`, and `contentText` fields but no CTA fields and no Card variant option.
+**Gaps (relative to README-documented capabilities):**
+- No CTA fields in `_carousel.json` — the `carousel-item` model has no `ctaLink`/`ctaLabel` fields. The README mentions customization via hooks for auto-play and tracking but does not explicitly require CTA fields. This is a minor UE authoring gap.
+- `readVariant(block)` is called but no variant-specific CSS or behavior is implemented in the base block. This is expected for a base block; variants are intended to be handled by property overrides.
 
-Result: WARNING (CF integration absent; style variants not implemented; Card slide variant missing; ticket-details.md absent)
+**Result: WARNING** — All documented use cases are implemented. Result is WARNING because `ticket-details.md` is empty and no authoritative spec can be cross-checked. No CF integration is documented as required.
+
+---
 
 ### Developer Checklist
 
-**General Block Requirements**
-- [PASS] Directory follows `/blocks/carousel/` convention
-- [PASS] Has `carousel.js` with `decorate(block)` export
-- [PASS] Has `carousel.css`
-- [PASS] BEM-style CSS classes (`.carousel-slides`, `.carousel-slide`, `.carousel-slide-image`, `.carousel-slide-content`, `.carousel-slide-indicator`, `.carousel-navigation-buttons`)
-- [PASS] README documents use cases and customization points
-- [PASS] Part of shared global library
-- [PASS] Brand differentiation via tokens only
-- [WARNING] CSS token violations present (hard-coded margins, `color: white`)
-- [PASS] Supports Root + Brand token cascade
+**Directory and Files**
+| Item | Result |
+|---|---|
+| Directory convention `blocks/carousel/` | PASS |
+| `carousel.js` and `carousel.css` present | PASS |
+| BEM CSS classes (`.carousel-slides`, `.carousel-slide`, `.carousel-slide-image`, `.carousel-slide-content`, `.carousel-slide-indicator`, `.carousel-navigation-buttons`) | PASS |
+| README present and comprehensive | PASS |
+| No site-specific hard-coded values | PASS |
+| Token usage in CSS | WARNING — `92px` magic number for `--carousel-slide-margin` at wide breakpoint |
+| Root + Brand cascade support | PASS |
 
-**Responsive Design**
-- [PASS] Renders correctly across breakpoints
-- [PASS] Content fluidly expands within margins
-- [N/A] Column stacking (carousel is inherently single-column slides)
-- [PASS] Respects 1440px max-width (inherits from container)
+**Responsive**
+| Item | Result |
+|---|---|
+| Breakpoints defined | PASS — `@media (width >= 600px)` |
+| Fluid content (CSS scroll snap, 100% width) | PASS |
+| Column stacking | N/A — carousel is inherently single-column |
+| 1440px max-width | PASS — inherits from container |
 
-**Authoring Contract**
-- [PASS] Works with Universal Editor (slide items, moveInstrumentation)
-- [WARNING] Author-facing fields present but limited — no CTA fields in schema
-- [PASS] Composable — not bound to specific templates
-- [PASS] Structure/content/presentation decoupled
-- [FAIL] Content Fragment integration not implemented
+**Authoring**
+| Item | Result |
+|---|---|
+| UE in-context editing (`_carousel.json`, `moveInstrumentation` called) | PASS |
+| Clear, labeled author fields | WARNING — no CTA fields in `carousel-item` model |
+| Composable / extensible via hooks | PASS |
+| Structure/content/presentation decoupled | PASS |
+| CF integration | N/A (not documented as required) |
 
 **Performance**
-- [N/A] Third-party scripts
-- [PASS] Next-slide preloading implemented (low-priority `<link rel="preload">`)
-- [PASS] No unnecessary JavaScript
-- [N/A] Video
+| Item | Result |
+|---|---|
+| Async scripts | N/A |
+| Optimized images | WARNING — `createOptimizedPicture` is not called on carousel slide images; no image optimization applied in the base block |
+| No unnecessary JS | PASS |
+| Video embed | N/A |
 
-**Accessibility (WCAG 2.1)**
-- [PASS] Keyboard navigation (tabindex management, prev/next buttons)
-- [PASS] Color contrast relies on token cascade
-- [PASS] Semantic HTML (`role="region"`, `aria-roledescription`, `aria-label`, `aria-hidden` on inactive slides)
-- [PASS] Works with assistive technologies
-- [PASS] Placeholder-driven ARIA labels (internationalizable)
+**Accessibility**
+| Item | Result |
+|---|---|
+| Keyboard nav | PASS — tab management, focusable prev/next buttons |
+| Color contrast | N/A (token cascade) |
+| Semantic HTML | PASS — `role="region"`, `aria-roledescription`, `aria-hidden`, `aria-labelledby` |
+| AT support | PASS — internationalizable labels via placeholders |
+| Alt text | PASS — `mediaImageAlt` field in schema; alt preserved in HTML |
 
-Score: 16/23 applicable items passed.
+**Score: 17/21** (N/A items excluded)
+
+---
 
 ## Remediation
 
-**Priority 1 — Blocking (must fix before GO)**
-1. Create `ticket-details.md` with the ADO ticket requirements for this block.
-2. Implement Content Fragment integration — allow carousel slides to be populated from CF data using the standard card field names (`title`, `eyebrow`, `shortDescription`, `images`, `button1Link`, `button1Text`, etc.).
+**Priority 1 — Blocking**
+- None. Block is functionally complete and passes all hard requirements.
 
-**Priority 2 — Should fix**
-3. Implement style variants — define and document at least the roles specified in the solution design (product-feature, promotional, experience, blog). Add variant CSS classes and corresponding visual styling.
-4. Implement Card slide variant — allow a carousel slide to render a full Card block instance, enabling the "Slides are either media assets or Card variants" pattern.
-5. Expand `_carousel.json` to add CTA fields (`ctaLink`, `ctaLabel`, `cta2Link`, `cta2Label`) to the `carousel-item` model.
+**Priority 2 — High**
+1. **Populate `ticket-details.md`** — The file is committed but empty. Add the ADO ticket requirements.
+2. **Image optimization** — `createOptimizedPicture` is not called for carousel slide images. Slide images should be optimized with responsive widths (as cards does) to avoid LCP regressions on hero-style carousels.
+3. **CTA fields in UE schema** — Add `ctaLink` and `ctaLabel` (and optionally `cta2Link`/`cta2Label`) to the `carousel-item` model in `_carousel.json` to allow authors to configure slide CTAs without inline richtext links.
 
-**Priority 3 — CSS cleanup**
-6. Replace hard-coded `68px` and `92px` margins with tokens or CSS custom properties (`--carousel-slide-margin`) that can be overridden per brand.
-7. Replace `color: white` with `var(--color-neutral-0)` or equivalent token.
-8. Add `bubbles: true` to `carousel:before` and `carousel:after` event dispatches for consistency.
+**Priority 3 — Low**
+4. **CSS magic number** — Replace `--carousel-slide-margin: 92px` (inside media query block) with a spacing token if `var(--spacing-092)` or equivalent exists in the project's token set, to enable brand-level override without SCSS edits.

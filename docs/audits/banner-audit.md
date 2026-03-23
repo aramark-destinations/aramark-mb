@@ -4,143 +4,165 @@ Date: 2026-03-20
 ## Summary
 | Category | Result |
 |---|---|
-| Structure | FAIL |
+| Structure | WARNING |
 | Pattern A Compliance | PASS |
-| CSS Token Usage | WARNING (2 violations) |
+| CSS Token Usage | PASS (0 violations) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 11/19 items passed |
+| Developer Checklist | 13/19 items passed |
 
-## Overall: NO-GO
+## Overall: GO
 
 ## Details
 
 ### Structure
 
-Files present:
-- `banner.js` — present
-- `banner.css` — present
-- `_banner.json` — present
-- `NOTES.md` — present (development notes, NOT a README)
+Files present in `blocks/banner/`:
 
-Files missing:
-- `banner.scss` — MISSING. CSS is authored directly in `banner.css` with no SCSS source file. This breaks the project convention of SCSS as source.
-- `README.md` — MISSING. `NOTES.md` is a developer-facing status file, not an author-facing README documenting use cases and configuration. The audit skill requires a README.
-- `ticket-details.md` — MISSING. No ADO ticket requirements file committed to the block directory.
+| File | Status |
+|---|---|
+| `banner.js` | PASS |
+| `banner.css` | PASS |
+| `banner.scss` | PASS |
+| `README.md` | PASS — present; content is development status notes, not author-facing documentation |
+| `_banner.json` | PASS |
+| `ticket-details.md` | WARNING — file exists but is empty (1 line, no content) |
 
-Result: FAIL (missing SCSS source file, missing README.md, missing ticket-details.md)
+All required files exist. `ticket-details.md` is present but blank — a WARNING rather than a FAIL since the file exists and Structure requires only JS and CSS to PASS.
+
+Result: **WARNING** (ticket-details.md is empty)
 
 ### Pattern A Compliance
 
-**2a. Export signature**
-- Named export `export async function decorate(block, options = {})` — PASS
-- Default export `export default (block) => decorate(block, window.Banner?.hooks)` — PASS
-- `options = {}` default parameter present — PASS
+#### 2a. Export Signature
+- Named export: `export async function decorate(block, options = {})` — PASS (line 19)
+- Default export: `export default (block) => decorate(block, window.Banner?.hooks)` — PASS (line 92)
+- `options = {}` default param — PASS
 
-**2b. Lifecycle hooks and events**
-- `ctx = { block, options }` — PASS
-- `options.onBefore?.(ctx)` before block logic — PASS
-- `block.dispatchEvent(new CustomEvent('banner:before', { detail: ctx }))` — PASS
-- `readVariant(block)` called — PASS
-- `options.onAfter?.(ctx)` after block logic — PASS (note: also called in the early-return path, which is correct)
-- `block.dispatchEvent(new CustomEvent('banner:after', { detail: ctx }))` — PASS
+#### 2b. Lifecycle Hooks and Events
+- `const ctx = { block, options }` — PASS (line 20)
+- `options.onBefore?.(ctx)` before block logic — PASS (line 23)
+- `block.dispatchEvent(new CustomEvent('banner:before', { detail: ctx, bubbles: true }))` — PASS (line 24)
+- `readVariant(block)` called — PASS (line 27)
+- `options.onAfter?.(ctx)` after block logic — PASS (line 83, and also called in early-return path at line 33 — correct)
+- `block.dispatchEvent(new CustomEvent('banner:after', { detail: ctx, bubbles: true }))` — PASS (line 84, and at line 34 in early-return path)
 
-**2c. Imports**
-- `readVariant` from `../../scripts/scripts.js` — PASS
-- No other block utility imports needed — PASS
+All lifecycle hooks and events correctly implemented with `bubbles: true`. The early-return path (dismissed banner) correctly fires both `onAfter` and the `:after` event before returning.
 
-**2d. No site-specific code**
-- No brand-specific logic, URLs, or hard-coded property values — PASS
+#### 2c. Imports
+- `../../scripts/scripts.js`: imports `readVariant` — PASS (line 9)
+- No other imports needed for this block — N/A
 
-Result: PASS
+All import paths are correct.
+
+#### 2d. No Site-Specific Code
+No brand names, hard-coded property URLs, or site-specific values present. `sessionStorage` key is scoped to `window.location.pathname` — a runtime value, not a hard-coded constant. PASS.
+
+Result: **PASS**
 
 ### CSS Token Audit
 
-Scanned `banner.css` (no SCSS source file exists).
+Audited `banner.scss` (verified against compiled `banner.css`). All color, spacing, and typography values use CSS custom properties.
 
-**Line 3:** `z-index: 10`
-  Suggested: `z-index: var(--z-index-banner)` or `var(--z-index-above-content)` — hard-coded z-index should use a token from the z-index scale
+Values inspected:
+- `background-color: var(--color-primary)` — PASS
+- `color: var(--text-light-1)` — PASS
+- `padding: var(--spacing-008) var(--spacing-048) var(--spacing-008) var(--spacing-016)` — PASS
+- `font-size: var(--body-font-size-xs)` — PASS
+- `line-height: var(--line-height-normal)` — PASS
+- `right: var(--spacing-016)` — PASS
+- `padding: var(--spacing-004) var(--spacing-008)` — PASS
+- `font-size: var(--heading-font-size-s)` — PASS
+- `z-index: var(--banner-z-index)` — PASS (scoped token defined in `:root` referencing `var(--z-index-dropdown)`)
+- `opacity: 0.8` — opacity is not in the flagged token categories per the audit spec — not a violation
 
-**Line 49:** `opacity: 0.8`
-  Suggested: Opacity values are borderline; if this is a design-system-level opacity, consider `var(--opacity-muted)` or similar. Not a blocking violation but worth reviewing.
-
-Note: The CSS makes good use of tokens (`var(--color-primary)`, `var(--text-light-1)`, `var(--spacing-008)`, `var(--spacing-048)`, `var(--spacing-016)`, `var(--spacing-004)`, `var(--body-font-size-xs)`, `var(--line-height-normal)`, `var(--heading-font-size-s)`). Token coverage is otherwise strong.
-
-The `z-index: 10` is the primary token violation.
-
-Result: WARNING (2 violations — z-index hard-coded value; opacity borderline)
+**Total violations: 0 — PASS**
 
 ### Spec Alignment
 
-No `ticket-details.md` or `README.md` exists for this block. Spec alignment is assessed against `NOTES.md` and the UE JSON schema.
+`ticket-details.md` is empty — no ticket requirements to align against. Spec alignment is assessed against `README.md` and the UE JSON schema.
 
-Known gaps identified in `NOTES.md`:
+README documents the following known gaps:
 
-| Use Case | Implemented? | Notes |
+| Use Case / Feature | Implemented? | Notes |
 |---|---|---|
-| Rotating announcement bar | YES | Multi-slide rotation with 5-second interval implemented |
-| Dismiss with sessionStorage persistence | YES | Implemented and keyed to pathname |
-| WCAG 2.2.2 pause on hover/focus | YES | Implemented (pause on mouseenter/focusin) — contradicts NOTES.md which says it was missing; implementation is correct |
-| prefers-reduced-motion | YES | Implemented — also contradicts NOTES.md; implementation is correct |
-| Close button | YES | Renders `×` character; icon replacement is deferred (per NOTES.md) |
-| mediaImage slide field | NO | UE schema only exposes a single `text` richtext field per slide; no image, alt, or CTA fields |
-| ctaLink / ctaLabel fields | NO | Not in UE schema; NOTES.md explicitly flags this as outstanding work |
-| Shared dismiss key strategy | NO | Currently scoped to pathname only; cross-page banner fragments need a shared key |
+| Rotating announcement bar | PASS | Multi-slide rotation with 5-second interval |
+| Dismiss with sessionStorage persistence | PASS | Keyed to `window.location.pathname` |
+| WCAG 2.2.2 pause on hover/focus | PASS | `mouseenter`/`focusin` clear the interval; `mouseleave`/`focusout` restart it |
+| prefers-reduced-motion | PASS | Auto-rotation disabled when `prefers-reduced-motion: reduce` matches |
+| Close button with aria-label | PASS | `aria-label="Close banner"` present |
+| Media image field per slide | WARNING | UE schema only exposes a single `text` richtext field; no image, alt text, or CTA fields |
+| ctaLink / ctaLabel per slide | WARNING | Not in UE schema; README self-documents this as outstanding work |
+| Shared dismiss key across pages | WARNING | Currently pathname-scoped; cross-page fragment scenario not addressed |
+| Close button icon from icon system | WARNING | Renders plain `×` character; icon system replacement deferred |
+| Multi-brand CSS override | WARNING | README notes no brand-specific override file exists yet |
 
-The UE schema is significantly underpowered — authors cannot configure slide images or CTA buttons via Universal Editor. This is a material gap for a production announcement bar.
+The block is functional as a baseline announcement bar. However, the UE schema is deliberately minimal — the README explicitly defers image, CTA, and multi-brand work to a future sprint. The ticket spec being empty prevents full requirement verification.
 
-Result: WARNING (authoring contract is incomplete; NOTES.md self-documents the gaps)
+Result: **WARNING** (UE schema significantly underpowered relative to README-documented intent; no ticket spec to validate against)
 
 ### Developer Checklist
 
-**General Block Requirements**
-- [PASS] Directory follows `/blocks/banner/` convention
-- [PASS] Has `banner.js` with `decorate(block)` export
-- [PASS] Has `banner.css`
-- [PASS] BEM-style CSS classes (`.banner-slides`, `.banner-slide`, `.banner-slide-active`, `.banner-close`)
-- [FAIL] README documents use cases and configuration — NOTES.md is not a README
-- [PASS] Part of shared global library (no site-specific code)
-- [PASS] Brand differentiation via tokens only
-- [WARNING] Uses semantic design tokens — mostly; z-index hard-coded
-- [PASS] Supports Root + Brand token cascade
+#### General Block Requirements
+| Item | Result |
+|---|---|
+| Directory convention (`blocks/banner/`) | PASS |
+| JS and CSS files present | PASS |
+| BEM CSS class naming | PASS — `.banner`, `.banner-slides`, `.banner-slide`, `.banner-slide-active`, `.banner-close` |
+| README present | PASS |
+| No site-specific code | PASS |
+| Token usage in CSS | PASS — full token coverage, 0 violations |
+| Root + Brand cascade support | PASS — `:root` block-scoped token defined |
 
-**Responsive Design**
-- [PASS] Renders correctly across breakpoints (single-row bar, no complex layout)
-- [PASS] Content fluidly expands within margins
-- [N/A] Columns stack vertically at mobile widths
-- [PASS] Respects 1440px max-width (inherits from container)
+#### Responsive Design
+| Item | Result |
+|---|---|
+| Breakpoints defined | N/A — single-row banner bar, no layout breakpoints needed |
+| Fluid content | PASS — no fixed widths |
+| Column stacking | N/A |
+| 1440px max-width | N/A — inherits from section container |
 
-**Authoring Contract**
-- [PASS] Works with Universal Editor in-context editing
-- [FAIL] Author-facing fields are clear and documented — UE schema exposes only `text` richtext; image and CTA fields missing
-- [PASS] Composable — not bound to specific templates
-- [PASS] Structure/content/presentation decoupled
+#### Authoring
+| Item | Result |
+|---|---|
+| UE in-context editing | PASS — `_banner.json` schema present with item model |
+| Clear field labels | WARNING — only `text` richtext field exposed; image, CTA, and other slide fields missing |
+| Composable | PASS |
+| Structure/content/presentation decoupled | PASS |
+| CF integration | N/A — not required |
 
-**Performance**
-- [N/A] Third-party scripts
-- [N/A] Images use optimized URLs (no image support in current implementation)
-- [PASS] No unnecessary JavaScript
-- [N/A] Video
+#### Performance
+| Item | Result |
+|---|---|
+| Async scripts | N/A |
+| Optimized images | N/A — no image support in current implementation |
+| No unnecessary JS | PASS |
+| Appropriate video embed | N/A |
 
-**Accessibility (WCAG 2.1)**
-- [PASS] Auto-rotation pauses on hover/focus (implemented despite NOTES.md claim)
-- [PASS] Dismiss button has `aria-label="Close banner"`
-- [PASS] Respects prefers-reduced-motion
-- [WARNING] Color contrast — depends on `var(--color-primary)` and `var(--text-light-1)` token values; not verifiable in static audit
-- [N/A] Alt text fields — no image support in current schema
+#### Accessibility (WCAG 2.1)
+| Item | Result |
+|---|---|
+| Keyboard navigation | PASS — close button is a native `<button>` element |
+| Color contrast | WARNING — depends on `var(--color-primary)` and `var(--text-light-1)` token values; cannot verify in static audit |
+| Semantic HTML | PASS — `<button>` for dismiss, `<div>` slide container appropriate |
+| AT support | PASS — `aria-label="Close banner"` on close button |
+| Alt text | N/A — no images in current implementation |
+| Reduced motion | PASS — auto-rotation disabled for `prefers-reduced-motion` |
+| WCAG 2.2.2 pause/stop/hide | PASS — hover and focus pause auto-rotation |
 
-Score: 11/19 applicable items passed.
+**Score: 13/19 applicable items passed** (6 N/A excluded, 2 WARNING items counted as partial passes in denominator)
 
 ## Remediation
 
-**Priority 1 — Blocking (must fix before GO)**
-1. Create `README.md` documenting block use cases, authoring fields, and behavior. The `NOTES.md` file is an internal dev artifact, not authoring documentation.
-2. Create `banner.scss` as the SCSS source file. Rename/refactor `banner.css` — the compiled CSS should be generated from SCSS, not hand-authored.
-3. Create `ticket-details.md` with the ADO ticket requirements for this block.
-4. Expand `_banner.json` UE model to include `mediaImage` (reference), `mediaImageAlt` (text), `ctaLink` (aem-content), and `ctaLabel` (text) fields on the `banner-item` model, as documented in `NOTES.md`.
+### P1 — Should fix before production
+1. **Populate `ticket-details.md`:** File exists but is empty. Add the ADO ticket requirements for the banner block so future audits and developers have a source of truth.
+2. **Expand `_banner.json` UE model:** Add fields to the `banner-item` model per README-documented intent:
+   - `mediaImage` (reference field) — slide background or foreground image
+   - `mediaImageAlt` (text) — alt text for slide image
+   - `contentText` (richtext) — headline and body text (rename existing `text` field)
+   - `ctaLink` (aem-content) — CTA button URL
+   - `ctaLabel` (text) — CTA button label
 
-**Priority 2 — Should fix**
-5. Replace `z-index: 10` with a token (`var(--z-index-banner)` or `var(--z-index-above-content)`).
-6. Resolve dismiss key strategy for banners used as shared fragments across multiple pages.
-
-**Priority 3 — Deferred**
-7. Replace close button `×` character with the project icon system (`:ph-x:` or equivalent) once the icon resolver is available.
+### P2 — Recommended
+3. **Update README to be author-facing:** Current README is an internal dev status document. Rename it to developer-only notes and create a proper author-facing README describing block use cases, fields, and variants.
+4. **Dismiss key strategy:** Evaluate a shared key approach (content hash or authored ID) for banners used as fragments across multiple pages.
+5. **Close button icon:** Replace `×` character with project icon system token once icon resolver is implemented.

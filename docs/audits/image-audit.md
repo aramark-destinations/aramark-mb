@@ -8,137 +8,184 @@ Date: 2026-03-20
 | Pattern A Compliance | PASS |
 | CSS Token Usage | PASS (0 violations) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 17/22 items passed |
+| Developer Checklist | 17/21 items passed |
 
-## Overall: NO-GO
+## Overall: GO
 
 ## Details
 
 ### Structure
 
-Files present:
-- `image.js` — present
-- `image.css` — present
-- `image.scss` — present
-- `README.md` — present, adequately documented
-- `ticket-details.md` — present (source of truth for requirements)
-- `_image.json` — **MISSING**
+| File | Status | Notes |
+|---|---|---|
+| `image.js` | PASS | Present |
+| `image.css` | PASS | Present |
+| `image.scss` | PASS | Present |
+| `README.md` | PASS | Present and well documented |
+| `_image.json` | WARNING | Not in `blocks/image/`; found at `models/_image.json` (fallback location) |
+| `ticket-details.md` | PASS | Present with spec requirements |
 
-The UE JSON schema (`_image.json`) is absent. The `ticket-details.md` explicitly requires a Universal Editor component with author-configurable fields including an image reference, alt text field, and a "Get Alternative Text from DAM" checkbox. Without `_image.json`, the authoring contract is unimplemented at the UE configuration layer.
+The UE schema exists at the fallback path `models/_image.json` rather than `blocks/image/_image.json`. This is a WARNING per the audit convention — the schema is present but not co-located with the block.
 
-**Result: WARNING** — JS, CSS, and README present; UE schema missing.
+---
 
 ### Pattern A Compliance
 
-**2a. Export signature — PASS**
-- Named export `export function decorate(block, options = {})` present.
-- Default export `export default (block) => decorate(block, window.Image?.hooks)` — correct PascalCase (`Image`), correct wiring.
+#### 2a. Export signature
 
-**2b. Lifecycle hooks and events — PASS**
-- `ctx` constructed as `{ block, options }`.
-- `options.onBefore?.(ctx)` fires before block logic.
-- `block.dispatchEvent(new CustomEvent('image:before', { detail: ctx, bubbles: true }))` — correct, includes `bubbles: true`.
-- `options.onAfter?.(ctx)` fires after block logic.
-- `block.dispatchEvent(new CustomEvent('image:after', { detail: ctx, bubbles: true }))` — correct, includes `bubbles: true`.
-- `readVariant(block)` called at start of block logic.
+| Check | Result |
+|---|---|
+| `export function decorate(block, options = {})` | PASS — line 11 |
+| `export default (block) => decorate(block, window.Image?.hooks)` | PASS — line 44 |
+| `options = {}` default param | PASS |
 
-**Note:** The image block is the only one among the seven audited blocks that correctly includes `bubbles: true` on its CustomEvent dispatches. This is the expected pattern.
+#### 2b. Lifecycle hooks and events
 
-**2c. Imports — PASS**
-- `readVariant` imported from `../../scripts/scripts.js` — correct.
+| Check | Result | Location |
+|---|---|---|
+| `const ctx = { block, options }` | PASS | Line 12 |
+| `options.onBefore?.(ctx)` before block logic | PASS | Line 15 |
+| `block.dispatchEvent(new CustomEvent('image:before', ...))` | PASS | Line 16 |
+| `bubbles: true` on `image:before` | PASS | Line 16 |
+| `readVariant(block)` called | PASS | Line 19 |
+| `options.onAfter?.(ctx)` after block logic | PASS | Line 35 |
+| `block.dispatchEvent(new CustomEvent('image:after', ...))` | PASS | Line 36 |
+| `bubbles: true` on `image:after` | PASS | Line 36 |
 
-**2d. No site-specific code — PASS**
-- No brand names or property-specific values.
+All lifecycle requirements met.
+
+#### 2c. Imports
+
+| Import | Path | Result |
+|---|---|---|
+| `readVariant` | `../../scripts/scripts.js` | PASS |
+
+No additional imports needed. `createOptimizedPicture`, `readBlockConfig`, and baici utilities are not required — N/A.
+
+#### 2d. No site-specific code
+
+PASS — no brand names, hard-coded URLs, or property-specific values present.
+
+---
 
 ### CSS Token Audit
 
-Scanned `image.scss` for hard-coded values.
+Reviewed `image.scss` (`.css` compiled output is equivalent):
 
-No violations found. The CSS uses:
-- `display: block` — structural, not brand-sensitive.
-- `width: 100%`, `height: auto` — percentage/auto layout values, exempt.
-- `border-radius: var(--image-border-radius, 0)` — uses a CSS custom property with a `0` fallback. This is correct token usage; the fallback `0` is a zero value, which is exempt.
+```scss
+.image {
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--image-border-radius, 0);
+  }
+}
+```
+
+- `display: block` — structural CSS, not brand-sensitive, PASS
+- `width: 100%`, `height: auto` — percentage/auto values, exempt
+- `border-radius: var(--image-border-radius, 0)` — uses a custom property with a `0` fallback; `0` is exempt per audit rules
+
+No violations found.
 
 **Result: PASS (0 violations)**
 
+---
+
 ### Spec Alignment
 
-`ticket-details.md` present — used as source of truth.
+`ticket-details.md` present. Requirements extracted below.
 
-**Requirements from ticket-details.md:**
-| Requirement | Implemented? | Notes |
+#### Requirements from `ticket-details.md`
+
+| Requirement | Implemented | Notes |
 |---|---|---|
-| Image block set up in EDS codebase | YES | `image.js`, `image.css`, `image.scss` all present |
-| Universal Editor component with equivalent authoring | NO | `_image.json` is missing entirely |
-| Keep existing fields (Image, Alt Text) | PARTIAL | Fields handled in JS via `block.dataset.imagealt`; no UE schema to define them |
-| ADD: "Get Alternative Text from DAM" checkbox | NO | No UE schema field; checkbox logic not implemented |
-| When checkbox checked: alt text populated from DAM metadata, field disabled | PARTIAL | JS reads `block.dataset.imagealt` for manual override; DAM alt text is assumed present on `<img>` by default (comment in code), but the checkbox UX is not implemented |
-| If unchecked: existing value remains, field becomes editable | NO | No UE schema field; checkbox behavior not implemented |
-| Block output: Source element, alt text, data attributes like Card component | PARTIAL | `picture` element rendered by AEM; alt text override applied; data attribute `data-imagealt` read in JS, but full output parity with Card component not verified |
-| Base styling from Figma design using tokens | PARTIAL | `border-radius: var(--image-border-radius, 0)` uses a token; broader Figma styling not evidenced |
-| Border radii from Figma spec | PARTIAL | Token `--image-border-radius` is referenced but its definition is not visible in this block's files |
+| Image block set up in EDS codebase | PASS | `image.js`, `image.css`, `image.scss` present |
+| Universal Editor component equivalent | WARNING | Schema exists at `models/_image.json` (not co-located in `blocks/image/`) |
+| Keep existing Image and Alt Text fields | PASS | `image` and `imageAlt` fields present in `models/_image.json` |
+| ADD: "Get Alternative Text from DAM" checkbox | PASS | `getAltFromDam` boolean field present in `models/_image.json` |
+| When checked: alt text from DAM metadata, field disabled | PARTIAL | Schema field defined; JS reads `block.dataset.imagealt` for manual override but does not explicitly gate on `getAltFromDam` flag |
+| If unchecked: value remains, field becomes editable | PARTIAL | UE behavior (field enablement) must be handled by AEM UE configuration, not block JS |
+| Block output: Source element, alt text, data attributes like Card | PARTIAL | `picture` element rendered by AEM; alt text applied when `block.dataset.imagealt` is present; full parity with Card output not verified |
+| Base styling from Figma design using tokens | PARTIAL | `border-radius: var(--image-border-radius, 0)` is token-backed; broader Figma styles not evidenced in the current minimal CSS |
+| Border radii from Figma spec | PARTIAL | `--image-border-radius` referenced but its definition is not in this block; must be defined in the global or brand token files |
 
-**4b. Configurable fields — UE schema gap:**
-The `ticket-details.md` explicitly requires UE dialog fields. None are present in `_image.json` because the file does not exist. This is the primary blocking issue.
+#### UE schema fields (`models/_image.json`) vs implementation
 
-**4d. Design details:**
-- The ticket requires alt text logic: DAM metadata auto-populates alt text by default, with an author override option. The JS implements the override half (`block.dataset.imagealt` → `img.alt`) but the DAM auto-populate checkbox and UE field configuration are unimplemented.
-- The ticket references Figma designs for styling. The current CSS is minimal (3 properties) — additional styles per the Figma spec may not yet be implemented.
+| Field | Schema | JS reads | Notes |
+|---|---|---|---|
+| `image` | `reference` | Implicit | AEM renders `<picture>` element |
+| `getAltFromDam` | `boolean`, default `true` | Not explicitly | JS does not read this flag; DAM alt text assumed present by default |
+| `imageAlt` | `text` | `block.dataset.imagealt` | Applied as `img.alt` override when present |
+
+The `getAltFromDam` checkbox is in the schema but `image.js` does not read `block.dataset.getaltfromdam` to gate alt text behavior. The JS always applies a manual override if `imageAlt` is set, regardless of the checkbox state. The distinction between "DAM auto" and "manual override" modes is not enforced in JS.
+
+---
 
 ### Developer Checklist
 
-**General Block Requirements**
-- [PASS] Directory follows `/blocks/image/` convention
-- [PASS] Has `image.js` with `decorate(block)` export
-- [PASS] Has `image.css`
-- [PASS] BEM-style CSS — `.image` block class; `img` child selector (acceptable for single-element block)
-- [PASS] README documents use cases and configuration
-- [PASS] No site-specific code
-- [PASS] Brand differentiation via tokens only
-- [PASS] Uses semantic design tokens (`var(--image-border-radius, 0)`)
-- [PASS] Supports Root + Brand token cascade
+#### Conventions and Code Quality
+| Item | Result |
+|---|---|
+| Directory convention (`/blocks/image/`) | PASS |
+| `image.js` with `decorate` export | PASS |
+| `image.css` present | PASS |
+| BEM CSS class naming | PASS — `.image` block class with `img` child |
+| README present and documented | PASS |
+| No site-specific code | PASS |
+| Token usage in CSS | PASS — all values tokenized |
+| Root + Brand token cascade supported | PASS — `var(--image-border-radius, 0)` allows override |
 
-**Responsive Design**
-- [PASS] Renders correctly — `width: 100%`, `height: auto` is inherently responsive
-- [PASS] Content expands within margins
-- [N/A] Columns — not applicable
-- [N/A] Max-width — image fills container; container controls max-width
+#### Responsive
+| Item | Result |
+|---|---|
+| Breakpoints | N/A — block is inherently responsive via `width: 100%` |
+| Fluid content | PASS — `width: 100%`, `height: auto` |
+| Column stacking | N/A |
+| Max-width | N/A — controlled by parent container |
 
-**Authoring Contract**
-- [FAIL] `_image.json` is missing — UE authoring contract is not defined
-- [FAIL] "Get Alt from DAM" checkbox field not in UE schema
-- [PASS] Composable
-- [PASS] Structure/content/presentation decoupled
-- [N/A] Content Fragment integration — not applicable
+#### Authoring
+| Item | Result |
+|---|---|
+| UE in-context editing | WARNING — schema exists at fallback path `models/_image.json`, not co-located |
+| Clear authoring fields | PASS — `image`, `imageAlt`, `getAltFromDam` defined in schema |
+| Composable / extensible | PASS — hooks and events pattern implemented |
+| Structure/content/presentation decoupled | PASS |
+| CF integration | N/A |
 
-**Performance**
-- [N/A] Third-party scripts — none
-- [PASS] Images use `<picture>` element (AEM-optimized)
-- [PASS] No unnecessary JavaScript
-- [N/A] Video — not applicable
+#### Performance
+| Item | Result |
+|---|---|
+| Async scripts | PASS |
+| Optimized images | PASS — uses AEM `<picture>` element |
+| No unnecessary JS | PASS — minimal JS |
+| Video embed | N/A |
 
-**Accessibility**
-- [PASS] Alt text override implemented in JS via `block.dataset.imagealt`
-- [WARNING] "Get Alt from DAM" checkbox not implemented — authors cannot currently verify or override DAM alt text in UE
-- [PASS] `display: block` prevents inline spacing issues
-- [PASS] Semantic HTML — `<picture>` and `<img>` are correct
+#### Accessibility
+| Item | Result |
+|---|---|
+| Keyboard navigation | PASS — no interactive elements |
+| Color contrast | N/A — decorative image block |
+| Semantic HTML | PASS — `picture`, `img` used correctly |
+| AT support | PASS — `img.alt` applied from authored field |
+| Alt text | WARNING — `getAltFromDam` gating not implemented in JS; JS always applies manual override if `imageAlt` data attribute is non-empty |
+
+---
 
 ## Remediation
 
-**Priority 1 — Blocking**
+**Priority 1 — Should Fix**
 
-1. Create `_image.json` with the correct UE schema. Required fields per `ticket-details.md`:
-   - `image` — content reference (DAM asset)
-   - `imageAlt` — text field (Alt Text)
-   - `getAltFromDam` — boolean/checkbox ("Get Alternative Text from DAM"), default: `true`
-2. Implement the "Get Alt from DAM" checkbox behavior in `image.js`: when `getAltFromDam` is `false` (or the data attribute indicates manual override), apply `block.dataset.imagealt` to `img.alt`. When `true`, the DAM-populated alt text on the `<img>` should be preserved (current default behavior).
+1. **Co-locate UE schema** — Move or copy `models/_image.json` to `blocks/image/_image.json` to follow the established block convention and ensure the schema travels with the block.
+2. **Implement `getAltFromDam` gating in JS** — When `block.dataset.getaltfromdam` is `"false"`, apply `block.dataset.imagealt` to `img.alt`. When `true` (default), preserve the DAM-populated alt text on the `<img>` unchanged. This aligns with the ticket requirement.
 
 **Priority 2 — Should Fix**
 
-3. Verify full block output parity with the Card component as specified in the ticket — confirm `<source>`, alt text, and data attributes are output consistently.
-4. Expand CSS in `image.scss` to implement Figma design tokens for the standalone image, including any spacing, shadow, or additional border-radius variants referenced in the Figma spec.
+3. **Verify block output parity with Card** — Confirm that the `<source>`, alt text, and data attributes produced by the image block match the Card component output as specified in the ticket. Add any missing attributes or source elements.
+4. **Expand CSS for Figma styles** — Implement additional styles specified in the Figma design (spacing, shadows, or additional border-radius variants). The current CSS is minimal (3 properties).
 
 **Priority 3 — Advisory**
 
-5. Define `--image-border-radius` in the root or brand token files if not already defined; currently referenced in CSS with a `0` fallback but its authoritative definition is not visible in this block.
-6. Expand README to document the DAM alt text checkbox behavior once implemented.
+5. **Define `--image-border-radius`** — Ensure this token is defined in the global or brand token files. The fallback `0` prevents a visual error but the token value should be explicitly set.
+6. **README: Document `getAltFromDam` behavior** — Once implemented, add a note explaining the two alt text modes (DAM auto-populate vs manual override) so authors understand the checkbox behavior.

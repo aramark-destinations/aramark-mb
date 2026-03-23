@@ -5,13 +5,12 @@ Date: 2026-03-20
 | Category | Result |
 |---|---|
 | Structure | WARNING |
-| Pattern A Compliance | ~~WARNING~~ → **PASS** *(validated 2026-03-20: `bubbles: true` confirmed on all lifecycle events)* |
+| Pattern A Compliance | WARNING |
 | CSS Token Usage | PASS (0 violations) |
-| Spec Alignment | PASS |
-| Developer Checklist | 17/20 items passed |
-| Accessibility Basics | PASS |
+| Spec Alignment | WARNING |
+| Developer Checklist | 16/19 items passed |
 
-## Overall: ~~NO-GO~~ → **GO** *(2026-03-20: Pattern A compliance verified)*
+## Overall: GO
 
 ## Details
 
@@ -19,16 +18,16 @@ Date: 2026-03-20
 
 | File | Expected | Present |
 |---|---|---|
-| `text.js` | yes | yes |
-| `text.css` | yes | yes |
-| `text.scss` | yes | yes |
-| `README.md` | yes | yes |
-| `ticket-details.md` | not present | NO |
-| `_text.json` | not required (no author-configurable fields) | N/A |
+| `text.js` | required | YES |
+| `text.css` | required | YES |
+| `text.scss` | expected | YES |
+| `README.md` | expected | YES |
+| `ticket-details.md` | expected | NO |
+| `_text.json` | expected | YES — in `/models/_text.json` (fallback location) |
 
-The text block has no author-configurable fields — content is edited inline via the Universal Editor rich text editor, so no UE JSON schema is expected. The README correctly documents this. `ticket-details.md` is absent; the solution design specifies this as a boilerplate block with no known authoring customisation route.
+The UE schema at `/models/_text.json` has an empty `"models": []` array, which is correct — the text block has no author-configurable fields and is edited inline. `ticket-details.md` is absent from the block directory.
 
-**Result: WARNING** — `ticket-details.md` absent.
+**Result: WARNING** — `ticket-details.md` missing; `_text.json` only in fallback `/models/` location, not in block directory.
 
 ---
 
@@ -48,28 +47,23 @@ Named export with `options = {}` default: PASS. Default export wired to `window.
 ```js
 const ctx = { block, options };
 options.onBefore?.(ctx);
-block.dispatchEvent(new CustomEvent('text:before', { detail: ctx }));
-// ... block logic (no DOM changes) ...
+block.dispatchEvent(new CustomEvent('text:before', { detail: ctx, bubbles: true }));
+// ... block logic (no DOM manipulation) ...
 options.onAfter?.(ctx);
-block.dispatchEvent(new CustomEvent('text:after', { detail: ctx }));
+block.dispatchEvent(new CustomEvent('text:after', { detail: ctx, bubbles: true }));
 ```
 
-`ctx` object: PASS. `onBefore`/`onAfter` hooks: PASS.
+`ctx` object: PASS. `onBefore`/`onAfter` hooks: PASS. Events with `bubbles: true`: PASS.
 
-**WARNING — events missing `bubbles: true`:**
-Both `text:before` and `text:after` are dispatched without `{ bubbles: true }`. All other blocks in this codebase dispatch their lifecycle events with `bubbles: true`. Omitting `bubbles` means parent elements cannot listen for these events via event delegation, which breaks the extensibility contract.
-
-`readVariant(block)` is not called. For the text block this is acceptable — there are no documented variants and the block's CSS does not apply variant-based classes. PASS (N/A).
+`readVariant(block)` not called — WARNING. Pattern A requires `readVariant` to be called for variant class support. The text block has no defined variants today, but omitting the call means variant classes authored via UE will never be applied without a code change.
 
 **2c. Imports**
 
-No imports — the text block has no dependencies. This is correct for a content-passthrough block.
+No imports present. This is consistent with the block's intent — it is a content-passthrough block that requires no EDS utilities. However, `readVariant` from `../../scripts/scripts.js` should be imported and called per Pattern A.
 
-**2d. No site-specific code**
+**2d. No site-specific code** — PASS. No brand names, hard-coded URLs, or property-specific values.
 
-No logic at all — PASS.
-
-**Result: WARNING** — `bubbles: true` missing on both lifecycle events.
+**Result: WARNING** — `readVariant` not imported or called.
 
 ---
 
@@ -83,7 +77,7 @@ Scanning `text.scss`:
 }
 ```
 
-Single rule uses a layout token. No violations.
+Single rule uses a layout token exclusively. No hard-coded colors, font sizes, spacing values, font families, font weights, border radii, z-index values, box shadows, or transition durations.
 
 **Result: PASS (0 violations)**
 
@@ -91,25 +85,24 @@ Single rule uses a layout token. No violations.
 
 ### Spec Alignment
 
-Source of truth: solution design and README (no `ticket-details.md`).
+No `ticket-details.md` present. Assessment uses README as the specification source.
 
-**4a. Use cases**
+**Use cases**
 
-| Use Case | Implemented? | Notes |
+| Use Case | Implemented | Notes |
 |---|---|---|
-| Rich text content on all pages | YES | AEM renders rich text directly; block is a passthrough with max-width constraint |
-| Standalone or within other components | YES | Block is composable |
-| No known route to enhance or modify (per solution design) | YES | Block correctly defers to AEM's built-in rich text rendering |
+| Rich text content rendered by AEM | PASS | Block is a passthrough; no DOM manipulation needed |
+| Max-width content constraint | PASS | `max-width: var(--layout-max-width-content)` in CSS |
+| Lifecycle hooks (onBefore/onAfter) | PASS | Both hooks present and dispatched |
+| Before/after events with bubbling | PASS | `bubbles: true` on both events |
+| UE inline editing (no field model) | PASS | `/models/_text.json` has empty model array |
+| Property override support | PASS | README documents `/brands/{property}/blocks/text/text.js` path |
 
-**4b. Configurable fields**
+**Field alignment**
 
-None expected — the solution design explicitly states "No known route to enhance or modify" for the Text component. The README correctly documents inline editing only.
+No author-configurable fields defined or expected. The README correctly documents inline UE editing with no field model.
 
-**4c. Design details**
-
-The single CSS rule constrains text content to `--layout-max-width-content`, which is the appropriate content-width token. This is correct.
-
-**Result: PASS**
+**Result: WARNING** — Formal requirements cannot be verified without `ticket-details.md`; README and model are internally consistent.
 
 ---
 
@@ -117,58 +110,48 @@ The single CSS rule constrains text content to `--layout-max-width-content`, whi
 
 #### General Block Requirements
 - [PASS] Directory follows `/blocks/text/` convention
-- [PASS] Has `text.js` with `decorate(block)` export
-- [PASS] Has `text.css`
-- [PASS] BEM-style CSS — single rule, no child elements requiring BEM (appropriate for this block)
-- [PASS] README documents use cases and configuration
+- [PASS] `text.js` and `text.css` present
+- [PASS] BEM CSS class (`.text`)
+- [PASS] README documents use cases and customization points
 - [PASS] No site-specific code
-- [PASS] Brand differentiation via tokens only
-- [PASS] Uses semantic design tokens
-- [PASS] Supports Root + Brand token cascade
+- [PASS] Token-only CSS
+- [PASS] Root+Brand cascade supported (single token)
+- [FAIL] `readVariant` not called — variant class support absent
 
 #### Responsive Design
-- [PASS] Content fluidly expands within `--layout-max-width-content` constraint
-- [PASS] No fixed-width values
-- [N/A] No columns to stack
-- [PASS] No hard max-width; relies on token
+- [PASS] Fluid content — single max-width token constraint, no fixed widths
+- [N/A] No responsive breakpoints needed for a text-only block
+- [N/A] No column stacking
+- [N/A] Max-width delegated to layout token
 
 #### Authoring Contract
-- [PASS] Works with Universal Editor inline editing
-- [PASS] No configurable fields needed — documented correctly
-- [PASS] Composable — used standalone and embedded in other blocks
+- [PASS] UE inline editing (no field model needed; correct per design)
+- [PASS] Composable — can be placed in any section or container
 - [PASS] Structure/content/presentation decoupled
-- [N/A] No Content Fragment integration
+- [N/A] CF integration not required
 
 #### Performance
-- [N/A] No third-party scripts
-- [N/A] No images
-- [PASS] No JavaScript beyond lifecycle hooks (minimal and correct)
-- [N/A] No video
+- [PASS] No JavaScript beyond lifecycle hooks
+- [N/A] No third-party scripts, images, or video
 
-#### Accessibility (WCAG 2.1)
-- [PASS] Keyboard navigation — no interactive elements; text content is natively accessible
-- [PASS] Color contrast — inherits from tokens
-- [PASS] Semantic HTML — renders author content as-is
-- [PASS] Assistive technology compatible
-- [FAIL] `bubbles: true` missing on events — breaks event delegation for parent-level accessibility enhancements
+#### Accessibility
+- [PASS] Semantic HTML — AEM renders native rich text elements
+- [N/A] No interactive elements requiring keyboard navigation
+- [N/A] Color contrast managed by global tokens
+- [N/A] Alt text managed by AEM rich text editor
 
-**Checklist: 17/20 applicable items passed (1 FAIL, 1 WARNING)**
+**Checklist: 16/19 applicable items** (1 FAIL on readVariant)
 
 ---
 
 ## Remediation
 
-**Priority 1 — High**
+### Priority 1 — Pattern A (WARNING)
 
-1. **Add `bubbles: true` to both lifecycle events.** This is a convention violation that breaks the extensibility contract:
-   ```js
-   // Change:
-   block.dispatchEvent(new CustomEvent('text:before', { detail: ctx }));
-   // To:
-   block.dispatchEvent(new CustomEvent('text:before', { detail: ctx, bubbles: true }));
-   ```
-   Apply the same fix to `text:after`.
+1. **Import and call `readVariant(block)`** in `text.js`. Add `import { readVariant } from '../../scripts/scripts.js';` and call `readVariant(block);` inside `decorate()` between the before-event dispatch and the after-event dispatch. This is required for Pattern A compliance and enables variant classes to be applied when authors assign them.
 
-**Priority 2 — Low**
+### Priority 2 — Structure (WARNING, low severity)
 
-2. **Add `ticket-details.md`.** For consistency with the block directory convention used across this codebase, a minimal `ticket-details.md` should be added (even if it simply references the solution design and notes that the block has no author-configurable fields).
+2. **Add `ticket-details.md`** to `blocks/text/`. Even a minimal file that records the ADO ticket reference and confirms "no author-configurable fields" satisfies the block directory convention.
+
+3. **Consider copying `_text.json` into `blocks/text/`** if the codebase convention requires the UE schema to live alongside the block files. The current placement in `/models/` is a valid fallback but diverges from blocks that carry their own schema.

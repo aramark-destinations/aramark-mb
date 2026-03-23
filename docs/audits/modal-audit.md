@@ -8,7 +8,7 @@ Date: 2026-03-20
 | Pattern A Compliance | FAIL |
 | CSS Token Usage | PASS (0 violations) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 16/23 items passed |
+| Developer Checklist | 16/22 items passed |
 
 ## Overall: NO-GO
 
@@ -16,139 +16,166 @@ Date: 2026-03-20
 
 ### Structure
 
-| File | Expected | Present |
+| File | Status | Notes |
 |---|---|---|
-| `modal.js` | YES | YES |
-| `modal.css` | YES | YES |
-| `modal.scss` | YES | YES |
-| `README.md` | YES | YES |
-| `_modal.json` | YES | YES |
-| `ticket-details.md` | YES | NO |
+| `modal.js` | PASS | Present |
+| `modal.css` | PASS | Present |
+| `modal.scss` | PASS | Present |
+| `README.md` | PASS | Present and well documented |
+| `_modal.json` | PASS | Present in `blocks/modal/_modal.json` |
+| `ticket-details.md` | WARNING | Not present |
 
-Result: WARNING — All required files are present. `ticket-details.md` is missing; README is present and documents the API, use cases, and HTML output structure adequately.
+All required files are present. `ticket-details.md` is missing; README is used as the reference.
 
 ---
 
 ### Pattern A Compliance
 
-#### 2a. Export signature
+The modal block is explicitly documented as a non-traditional utility block:
 
-The modal block intentionally has **no `decorate()` function** — it is a utility/library block, not a traditional decorated block. It exports `createModal()` and `openModal()` named functions, and has **no default export** using the Pattern A form.
+> "This is not a traditional block, so there is no decorate function. Instead, links to a /modals/ path are automatically transformed into a modal."
 
-- No `export function decorate(block, options = {})` — FAIL
-- No `export default (block) => decorate(block, window.Modal?.hooks)` — FAIL
+#### 2a. Export signature — FAIL
 
-This is a known architectural deviation explicitly documented in the block's source code comment:
-> "This is not a traditional block, so there is no decorate function."
+- No `export function decorate(block, options = {})` — FAIL (by design, intentional)
+- No `export default (block) => decorate(block, window.Modal?.hooks)` — FAIL (by design)
 
-The deviation is intentional and documented. However, the block does not conform to Pattern A.
+The block exports `createModal(contentNodes)` and `openModal(fragmentUrl)` as its public API, which is intentional. The deviation from Pattern A is architecturally justified and documented in code.
 
-#### 2b. Lifecycle hooks and events
+#### 2b. Lifecycle hooks and events — FAIL (N/A by design)
 
-No `before`/`after` lifecycle hooks or custom events are dispatched — FAIL (N/A by design).
+No `ctx`, no `onBefore`/`onAfter` hooks, no `modal:before`/`modal:after` events dispatched. Not applicable for a utility/library block.
 
 #### 2c. Imports
 
-Imports are correct:
-- `../../scripts/aem.js` — `buildBlock`, `decorateBlock`, `loadBlock`, `loadCSS` — PASS
-- `../fragment/fragment.js` — `loadFragment` — PASS (valid cross-block import)
+| Import | Path | Result |
+|---|---|---|
+| `loadFragment` | `../fragment/fragment.js` | PASS — valid cross-block import |
+| `buildBlock`, `decorateBlock`, `loadBlock`, `loadCSS` | `../../scripts/aem.js` | PASS |
+
+All import paths are correct.
 
 #### 2d. No site-specific code
 
-No brand-specific logic, hard-coded brand names, or property-specific values found — PASS.
+PASS — no brand names, hard-coded URLs, or property-specific values. `window.hlx.codeBasePath` is the standard EDS platform variable.
 
 ---
 
 ### CSS Token Audit
 
-The `modal.scss` file was reviewed for hard-coded values. All spacing, color, and sizing values use CSS custom properties. No violations found.
+Reviewed `modal.scss` (and confirmed against compiled `modal.css`). All values use CSS custom properties.
 
-Notable token-compliant usages:
-- `var(--spacing-048)`, `var(--spacing-024)`, `var(--spacing-032)`, `var(--spacing-064)`
-- `var(--color-grey-900)` (via `color-mix()`)
-- `var(--layout-max-width-narrow)`, `var(--header-height)`
-- `var(--weight-s)`, `var(--weight-m)`, `var(--dark-color)`, `var(--text-color)`
-- `var(--sizing-024)`, `var(--line-height-none)`
+Notable usages:
+- Spacing: `var(--spacing-024)`, `var(--spacing-032)`, `var(--spacing-048)`, `var(--spacing-064)`
+- Color: `var(--color-grey-900)` inside `color-mix()`, `var(--dark-color)`, `var(--text-color)`
+- Layout: `var(--layout-max-width-narrow)`, `var(--header-height)`
+- Sizing: `var(--sizing-024)`, `var(--weight-s)`, `var(--weight-m)`, `var(--line-height-none)`
 
-Media query breakpoint (`900px`) — acceptable exception per skill rules.
+**Potentially ambiguous values reviewed:**
+- `border-radius: 0` — zero value, exempt
+- `padding: 0` — zero value, exempt
+- `margin: 0` — zero value, exempt
+- `background-color: transparent` — exempt keyword
+- `background-color: currentcolor` — exempt keyword
+- `color-mix(in srgb, var(--color-grey-900) 75%, transparent)` — uses a token with a `transparent` keyword; no raw hex or rgb values outside this expression
+- Media query breakpoint `900px` — exempt
+- `calc()` expressions — all use `var()` references inside calc; exempt
 
-Result: PASS (0 violations)
+No violations found.
+
+**Result: PASS (0 violations)**
 
 ---
 
 ### Spec Alignment
 
-`ticket-details.md` is absent for this block. The README and solution design documentation were used as the reference.
+No `ticket-details.md`. Alignment assessed from README and `_modal.json`.
 
-| Use Case | Implemented? | Notes |
+#### Use cases from README
+
+| Use Case | Implemented | Notes |
 |---|---|---|
-| Dynamic modals (rule-based, popup after page load) | PARTIAL | Block provides the mechanism but rule-based trigger logic is not implemented in this block; must be handled by the consuming page/script |
-| Modals triggered from links/buttons | YES | `openModal(fragmentUrl)` supports this |
-| Content sourced from Experience Fragments | YES | `loadFragment(path)` fetches fragment content |
-| Button "Open in Modal" behavior with XF link/path | YES | `openModal()` accepts any fragment URL |
-| Native `<dialog>` element with backdrop | YES | Implemented |
-| Close button with accessible label | YES | `aria-label="Close"` present |
-| Click-outside-to-close | YES | Dialog click bounds check implemented |
-| Body scroll lock | YES | `modal-open` class on body |
-| Programmatic API (`createModal`, `openModal`) | YES | Both exported |
+| Fragment-based content loaded from `/modals/` paths | PASS | `openModal(fragmentUrl)` calls `loadFragment()` |
+| Native `<dialog>` element with backdrop | PASS | `dialog` element used; `::backdrop` styled in CSS |
+| Close button with accessible label | PASS | `aria-label="Close"` on close button |
+| Click-outside-to-close | PASS | Bounds check on dialog click event |
+| Body scroll lock when modal is open | PASS | `modal-open` class on `<body>` |
+| Programmatic API (`createModal`, `openModal`) | PASS | Both exported and documented |
+| Modal removed from DOM on close | PASS | `block.remove()` in `dialog close` listener |
+| Scroll reset on modal open | PASS | `dialogContent.scrollTop = 0` via setTimeout |
 
-The UE JSON schema (`_modal.json`) defines a `link` and `linkText` field — however, the JS implementation does not have a `decorate()` function that reads these fields. The schema appears to be a placeholder and does not align with actual rendering logic. This is a minor gap.
+#### UE schema alignment
 
-Result: WARNING — Rule-based display mechanism is delegated outside the block; UE schema fields are not consumed by any decorate logic.
+The `_modal.json` schema defines `link` (aem-content) and `linkText` (text) fields. However, `modal.js` has no `decorate()` function that reads these fields. The schema appears to define the modal as an authored block trigger (where a link + text would launch a modal), but the JS implementation only provides a programmatic API. This creates a disconnect — the schema suggests author-configurable behavior that is not implemented.
+
+**Result: WARNING** — core programmatic use cases fully implemented; authored `link`/`linkText` fields not consumed by any JS logic.
 
 ---
 
 ### Developer Checklist
 
-#### General Block Requirements
-- [PASS] Directory follows `/blocks/modal/` convention
-- [FAIL] No `decorate(block)` export — intentional utility block deviation
-- [PASS] Has `modal.css`
-- [PASS] BEM-style CSS classes (`.modal-content`, `.close-button`)
-- [PASS] README documents use cases and API
-- [PASS] Part of shared global library — no site-specific code
-- [PASS] Brand differentiation via tokens only
-- [PASS] Uses semantic design tokens — no hard-coded values
-- [PASS] Supports Root + Brand token cascade
+#### Conventions and Code Quality
+| Item | Result |
+|---|---|
+| Directory convention (`/blocks/modal/`) | PASS |
+| `decorate(block)` export | FAIL — intentional utility block; no decorate function |
+| `modal.css` present | PASS |
+| BEM CSS class naming | PASS — `.modal-content`, `.close-button`, `.icon-close` |
+| README documents use cases and API | PASS |
+| No site-specific code | PASS |
+| Token usage in CSS | PASS — 0 violations |
+| Root + Brand token cascade supported | PASS |
 
-#### Responsive Design
-- [PASS] Single breakpoint at 900px adjusts padding
-- [PASS] Width uses `calc(100vw - var(--spacing-048))` — fluid
-- [PASS] Respects max-width via `var(--layout-max-width-narrow)`
-- [N/A] Column stacking — not applicable
-- [PASS] Max-width respected
+#### Responsive
+| Item | Result |
+|---|---|
+| Breakpoints present | PASS — 900px breakpoint adjusts width and padding |
+| Fluid width | PASS — `calc(100vw - var(--spacing-048))` |
+| Max-width respected | PASS — `var(--layout-max-width-narrow)` |
+| Column stacking | N/A |
 
-#### Authoring Contract
-- [WARNING] UE JSON schema defines fields not consumed by the JS implementation
-- [PASS] Author-facing fields documented in README
-- [PASS] Composable — used by other blocks via API
-- [PASS] Structure/content/presentation decoupled
-- [N/A] Content Fragment integration — handled via `loadFragment()`
+#### Authoring
+| Item | Result |
+|---|---|
+| UE in-context editing | WARNING — `_modal.json` defines fields not consumed by any JS |
+| Clear authoring fields | WARNING — `link`/`linkText` fields not documented as non-functional in README |
+| Composable — usable by other blocks via API | PASS |
+| Structure/content/presentation decoupled | PASS |
+| CF integration | PASS — `loadFragment()` handles fragment-sourced content |
 
 #### Performance
-- [N/A] Third-party scripts — none
-- [N/A] Images — none
-- [PASS] No unnecessary JavaScript
-- [N/A] Video — none
+| Item | Result |
+|---|---|
+| Async scripts | PASS — `createModal` and `openModal` are async |
+| CSS loaded lazily | PASS — `loadCSS()` called at runtime in `createModal` |
+| No unnecessary JS | PASS |
+| Video embed | N/A |
 
-#### Accessibility (WCAG 2.1)
-- [PASS] Keyboard navigation — native `<dialog>` supports focus trap
-- [PASS] Close button has `aria-label="Close"`
-- [PASS] Semantic HTML — native `<dialog>` element used
-- [WARNING] Screen reader announcement on open not explicitly implemented (relies on browser's native dialog behavior)
-- [N/A] Alt text — no images
+#### Accessibility
+| Item | Result |
+|---|---|
+| Keyboard navigation | PASS — native `<dialog>` provides built-in focus trap |
+| Close button accessible label | PASS — `aria-label="Close"` present |
+| Semantic HTML | PASS — native `<dialog>` element used |
+| Screen reader announcement on open | WARNING — relies on browser's native dialog behavior; no explicit `aria-live` or `role="alertdialog"` |
+| Alt text | N/A — no images |
 
 ---
 
 ## Remediation
 
-**Priority 1 — Blocking**
-1. Add `ticket-details.md` to document the block's requirements and intended behavior.
+**Priority 1 — FAIL (Pattern A): Noted as intentional, no code change required, but documentation needed**
+
+1. **Document Pattern A deviation in README** — Add a note explaining that the modal is a utility block with a programmatic API, not a decorated block. This prevents future developers from incorrectly expecting a `decorate()` function.
 
 **Priority 2 — Should Fix**
-2. Align UE JSON schema with actual behavior: either remove the `link`/`linkText` fields from `_modal.json` (since they are never read by decorate logic), or document that these fields are only used in a future authoring context.
-3. Document the intentional Pattern A deviation in the README so future developers understand why this block lacks a `decorate()` export.
 
-**Priority 3 — Nice to Have**
-4. Consider adding an `aria-live` or `role="status"` announcement when the modal opens for improved screen reader support beyond native dialog behavior.
-5. Add rule-based display logic (e.g., session-storage-gated popup after page load) either in this block or as a documented extension point.
+2. **Reconcile `_modal.json` with implementation** — Either:
+   - Remove `link` and `linkText` fields from `_modal.json` since they are never consumed, or
+   - Implement a `decorate()` function that reads these fields and calls `openModal()` when the block is present in the authored page, enabling author-triggered modals without JavaScript.
+3. **Add `ticket-details.md`** — Document the block requirements for traceability.
+
+**Priority 3 — Advisory**
+
+4. **Screen reader announcement** — Consider adding `role="alertdialog"` or an `aria-live` region announcement when the modal opens for improved AT support beyond native dialog behavior.
+5. **Rule-based modal triggers** — If session-storage-gated popups (e.g., "show once per session") are a planned use case, document the extension point in the README.

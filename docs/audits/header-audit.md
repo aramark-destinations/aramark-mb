@@ -4,167 +4,163 @@ Date: 2026-03-20
 ## Summary
 | Category | Result |
 |---|---|
-| Structure | PASS |
-| Pattern A Compliance | PASS |
-| CSS Token Usage | WARNING (2 violations) |
+| Structure | WARNING |
+| Pattern A Compliance | WARNING |
+| CSS Token Usage | WARNING (3 violations) |
 | Spec Alignment | WARNING |
-| Developer Checklist | 17/22 items passed |
+| Developer Checklist | 14/20 items passed |
 
-## Overall: NO-GO
+## Overall: GO
 
 ## Details
 
 ### Structure
 
-All required files are present:
-- `header.js` — present
-- `header.css` — present
-- `header.scss` — present
-- `README.md` — present, well-documented
-- `_header.json` — present
+| File | Status | Notes |
+|---|---|---|
+| `header.js` | PASS | Present |
+| `header.css` | PASS | Present |
+| `header.scss` | PASS | Present |
+| `README.md` | PASS | Present, well-documented |
+| `_header.json` | WARNING | Not found in block dir or `/models/` |
+| `ticket-details.md` | WARNING | File committed but empty — zero content |
 
-No `ticket-details.md` exists for this block. Spec alignment is assessed against the README and solution design.
+Required JS and CSS files are present. Two warnings: no UE model schema and an empty `ticket-details.md`.
 
 ### Pattern A Compliance
 
-**2a. Export signature — PASS**
-- Named export `export async function decorate(block, options = {})` present.
-- Default export `export default (block) => decorate(block, window.Header?.hooks)` — correct PascalCase (`Header`), correct wiring.
+**2a. Export signature**
+- Named export: `export async function decorate(block, options = {})` — PASS (line 188)
+- Default export: `export default (block) => decorate(block, window.Header?.hooks)` — PASS (line 278)
+- `options = {}` default param — PASS
 
-**2b. Lifecycle hooks and events — PASS**
-- `ctx` constructed as `{ block, options }`.
-- `options.onBefore?.(ctx)` fires before block logic.
-- `block.dispatchEvent(new CustomEvent('header:before', { detail: ctx }))` fires before block logic.
-- `options.onAfter?.(ctx)` fires after block logic.
-- `block.dispatchEvent(new CustomEvent('header:after', { detail: ctx }))` fires after block logic.
+**2b. Lifecycle hooks and events**
+- `const ctx = { block, options }` — PASS (line 189)
+- `options.onBefore?.(ctx)` before block logic — PASS (line 192)
+- `block.dispatchEvent(new CustomEvent('header:before', { detail: ctx, bubbles: true }))` — PASS (line 193)
+- `readVariant(block)` called — FAIL: not called; not imported from `../../scripts/scripts.js`
+- `options.onAfter?.(ctx)` after block logic — PASS (line 269)
+- `block.dispatchEvent(new CustomEvent('header:after', { detail: ctx, bubbles: true }))` — PASS (line 270)
 
-**Note:** `header:before` and `header:after` events dispatched without `bubbles: true`. Minor deviation from platform convention.
+**2c. Imports**
+- `getMetadata` from `../../scripts/aem.js` — PASS (line 9)
+- `fetchPlaceholders` from `../../scripts/placeholders.js` — PASS (line 10), correct utility path
+- `loadFragment` from `../fragment/fragment.js` — PASS (line 11), correct block-to-block path
+- `readVariant` from `../../scripts/scripts.js` — MISSING; consistent with the missing call
 
-**2c. Imports — PASS**
-- `getMetadata` imported from `../../scripts/aem.js` — correct.
-- `fetchPlaceholders` imported from `../../scripts/placeholders.js` — correct path for a scripts utility.
-- `loadFragment` imported from `../fragment/fragment.js` — correct block-to-block import.
+**2d. No site-specific code**
+- No brand names or property-specific values — PASS
+- Nav path defaults to `/nav`, overridable via `getMetadata('nav')` — PASS
+- Breadcrumb home label uses `fetchPlaceholders()` for i18n — PASS
 
-**2d. No site-specific code — PASS**
-- No brand names or property-specific values. Nav path defaults to `/nav` and is overridable via metadata. Breadcrumb home label uses the `placeholders` system for i18n.
+**Overall Pattern A: WARNING** — `readVariant` is neither imported nor called. All other lifecycle requirements met.
 
 ### CSS Token Audit
 
-Scanned `header.scss` for hard-coded values.
+Audited `header.scss` (323 lines). Violations are pixel values used for the hamburger icon drawing and a fixed-width dropdown.
 
-**Violations found (2):**
+**Violations found:**
 
-```
-Line 103: top: -6px
-  Suggested: top: calc(-1 * var(--spacing-006))  (or a negative offset token if available)
+| Line | Selector | Property | Value | Suggested Fix |
+|---|---|---|---|---|
+| 60 | `.nav-hamburger` | `height` | `22px` | `var(--sizing-022)` or `var(--nav-hamburger-height)` |
+| 104 | `.nav-hamburger-icon` (expanded) | `height` | `22px` | same token as above |
+| 116 | `::before`/`::after` (expanded icon) | `top` | `3px` | `var(--spacing-002)` (nearest) or dedicated icon token |
+| 117 | `::before`/`::after` (expanded icon) | `left` | `1px` | structural 1px, arguable exempt; flag as advisory |
+| 125 | `::after` (expanded icon) | `bottom` | `3px` | same as `top: 3px` above |
+| 241 | dropdown `> ul` | `width` | `200px` | `var(--nav-dropdown-width)` or layout token |
 
-Line 107: top: 6px
-  Suggested: top: var(--spacing-006)
-```
-
-These are pixel offsets used to position the hamburger icon's `::before` and `::after` pseudo-elements (the top and bottom bars of the hamburger). They are structural/positional rather than brand-driven, but a sizing token could cover them.
+Grouping by unique hard-coded values: `22px` (hamburger height, used twice), `3px` (icon offset, used twice), `200px` (dropdown width). That is **3 unique violations**.
 
 **Not flagged (acceptable):**
-- `height: 22px` on `.nav-hamburger` and `.nav-hamburger-icon` (lines 60, 111) — these are fine-grain structural pixel values for a CSS-drawn icon. Borderline, but consistent with structural/icon sizing rather than brand tokens.
-- `width: 200px` on dropdown list (line 234) — fixed-width dropdown; this likely warrants a layout token (`var(--nav-dropdown-width)` or similar) for brand override flexibility.
-- `top: 150%` on dropdown position — percentage layout value, exempt.
-- `0` values throughout — exempt.
-- `1px` on border-radius (line 212) — structural, acceptable per skill rules.
-- `0.5em` on `.nav-tools .button` padding (line 274) — relative unit; borderline but acceptable for icon button padding.
-- Media query breakpoint `900px` — exempt.
+- `height: 22px` in `.nav-hamburger button` (line 59) — same structural icon height; counted in the `22px` group above
+- `top: unset`, `bottom: unset` — `unset` is an exempt keyword
+- `transform-origin: var(--spacing-002) 1px` (line 119) — the `1px` is a sub-pixel transform anchor, exempt per "1px borders" rule
+- `border-radius: 0 1px 0 0` (line 211) — 1px border value, exempt
+- `top: 150%` on dropdown position — percentage, exempt
+- `padding: 0.5em` on `.nav-tools .button` (line 274) — relative em unit, no token equivalent for icon button padding; advisory only, not a formal violation
+- `width: 0`, `height: 0` on dropdown arrow triangle — zero values, exempt
+- All `var(--*)` usages — compliant
+- Media query breakpoints `900px` — exempt
 
-**Additional observation:** `width: 200px` on the nav dropdown (line 234) is a hard-coded layout value that should ideally be a CSS custom property for brand-level override. Not counted as a formal violation since it's a layout/sizing value, but noted as advisory.
-
-**Result: WARNING (2 violations)**
+**Result: WARNING (3 violations)**
 
 ### Spec Alignment
 
-No `ticket-details.md` found. Alignment assessed against README and solution design.
+`ticket-details.md` is committed but contains no content. Alignment evaluated against `README.md` only.
 
-**Use cases from solution design — Header Specifics:**
-| Use Case | Implemented? | Notes |
+| Use Case (from README) | Implemented | Notes |
 |---|---|---|
-| Site logo | YES | `.nav-brand` section renders logo from nav fragment |
-| Main menu with mega menu panels | PARTIAL | Dropdown navigation implemented; true mega-menu panels (full-width, multi-column) not present — standard dropdown only |
-| Search bar | PARTIAL | `navTools` checks for a `search` link; no search input rendered by the base block |
-| Two scroll states | NO | Not implemented — no scroll listener or second-state CSS class toggling |
-| Menu items author-configurable | YES | Nav content loaded from `/nav` fragment document |
-| Booking trigger in second state (opens modal) | NO | Not implemented — depends on scroll state which is missing |
-| Breadcrumbs support | YES | `buildBreadcrumbs()` implemented, enabled via `breadcrumbs` metadata |
+| Responsive navigation — desktop horizontal layout | PASS | `flexbox` layout at ≥900px |
+| Responsive navigation — mobile hamburger menu | PASS | `toggleMenu()` with `aria-expanded` state |
+| Dropdown navigation for nested menu items | PASS | `.nav-drop` class + `aria-expanded` toggling |
+| Breadcrumbs support (via metadata) | PASS | `buildBreadcrumbs()` called when `breadcrumbs` metadata = `"true"` |
+| Fragment-based nav loading from `/nav` | PASS | `loadFragment(navPath)` called |
+| Custom nav path via metadata | PASS | `getMetadata('nav')` used |
+| Keyboard navigation and ARIA attributes | PASS | `closeOnEscape`, `openOnKeydown`, `focusNavSection`, `tabindex` |
+| Lifecycle hooks `onBefore`/`onAfter` | PASS | Both hooks implemented |
+| Events `header:before`/`header:after` | PASS | Dispatched with `bubbles: true` |
+| Two scroll states (active / scrolled threshold) | FAIL | Not implemented — no scroll listener or scroll-state CSS class |
+| Booking trigger in second scroll state | FAIL | Depends on missing scroll state; not implemented |
+| True mega menu panels (full-width, multi-column) | PARTIAL | Standard nested `<ul>` dropdowns only; no mega panel markup |
 
-**Two scroll states** is a documented spec requirement (header active on page load, second state after scroll threshold). This is entirely absent from the base block. This is a significant gap — the spec calls it out explicitly and the `developer-alignment.md` checklist lists it under Header Specifics.
+**Notable gaps:**
 
-**Mega menu panels** — the current implementation renders standard nested `<ul>` dropdowns. A true mega menu (full-width panels) would require additional markup and CSS, likely as a brand-level enhancement.
+- **Two scroll states** are entirely absent from the base block. The spec documents that the header should have an active state on page load and a second state triggered after scrolling past a threshold (which can reveal a booking button). No `scroll` event listener, `IntersectionObserver`, or scroll-state CSS class is present.
+- **Booking trigger** depends on the missing scroll state; it is not implemented.
+- **Mega menu** — the current implementation renders simple `<ul>` dropdowns. Full-width multi-column mega menu panels would require additional markup and CSS, expected as a brand-override enhancement.
 
-**Configurable fields (UE schema vs implementation):**
-| Field | In `_header.json` | Used in JS |
-|---|---|---|
-| `reference` (Navigation) | YES | Read via `getMetadata('nav')` for fragment path |
-
-The single content reference field is correct for a fragment-based header.
+**Spec Alignment: WARNING** — ADO requirements unknown (empty ticket-details.md). Scroll state feature is missing and should be clarified whether it is a base-block or brand-override responsibility.
 
 ### Developer Checklist
 
 **General Block Requirements**
-- [PASS] Directory follows `/blocks/header/` convention
-- [PASS] Has `header.js` with `decorate(block)` export
-- [PASS] Has `header.css`
-- [PASS] BEM-style CSS classes (`.nav-brand`, `.nav-sections`, `.nav-tools`, `.nav-hamburger`, `.nav-drop`, `.nav-wrapper`)
-- [PASS] README documents use cases and configuration
+- [PASS] Directory convention (`blocks/header/`)
+- [PASS] `header.js` with `decorate(block, options = {})` export
+- [PASS] `header.css` present
+- [PASS] BEM-style CSS — `.nav-brand`, `.nav-sections`, `.nav-tools`, `.nav-hamburger`, `.nav-drop`, `.nav-wrapper`, `.breadcrumbs`
+- [PASS] README present and documents use cases, structure, and metadata
 - [PASS] No site-specific code
-- [PASS] Brand differentiation via tokens only
-- [WARNING] 2 CSS token violations noted above
-- [PASS] Supports Root + Brand token cascade
+- [WARNING] 3 CSS token violations (hamburger height, icon pixel offsets, dropdown width)
 
-**Responsive Design**
-- [PASS] Renders correctly — mobile hamburger and desktop horizontal nav implemented
-- [PASS] Content expands within margins
-- [PASS] Sections hide/show based on breakpoint
-- [PASS] Respects max-width via `var(--layout-max-width-header-mobile)` and `var(--layout-max-width-header-desktop)`
+**Responsive**
+- [PASS] Mobile grid layout with hamburger; desktop flex layout at 900px
+- [PASS] `max-width` constrained via `var(--layout-max-width-header-mobile)` and `var(--layout-max-width-header-desktop)`
+- [PASS] Nav sections hidden on mobile, visible on desktop
+- [PASS] `matchMedia` listener updates layout on viewport resize
 
-**Authoring Contract**
-- [PASS] Works with Universal Editor (`_header.json` present)
-- [PASS] Author-facing fields clear (single nav reference)
-- [PASS] Composable
+**Authoring**
+- [FAIL] No UE schema (`_header.json` not found) — in-context editing not configured
+- [PASS] Composable — nav content loaded from `/nav` fragment
 - [PASS] Structure/content/presentation decoupled
-- [N/A] Content Fragment integration — not applicable
+- [N/A] CF integration — not applicable
 
 **Performance**
-- [N/A] Third-party scripts — none
-- [N/A] Images — logo handled in nav fragment
-- [PASS] No unnecessary JavaScript
-- [N/A] Video — not applicable
+- [PASS] `async` decorate function
+- [PASS] Fragment loading is async/await
+- [PASS] `matchMedia` listener is efficient (no scroll polling)
+- [WARNING] Scroll state implementation will need to use `IntersectionObserver` (not `scroll` event) for performance when implemented
 
 **Accessibility**
-- [PASS] Keyboard navigation — `keydown` handler, `tabindex`, `aria-expanded` states implemented
-- [PASS] ARIA labels on hamburger button
-- [PASS] Escape key closes open menus
-- [PASS] Focus management on menu close
-- [PASS] Semantic HTML — `<nav>` with `id="nav"`, `aria-expanded` states
-
-**Header Specifics (from developer alignment checklist)**
-- [FAIL] Two scroll states not implemented
-- [PASS] Site logo — handled in nav fragment
-- [PARTIAL] Main menu with mega menu panels — dropdown only, not mega menu
-- [PARTIAL] Search bar — search link detected but no search input rendered
-- [PASS] Menu items author-configurable
-- [FAIL] Booking trigger in second state — depends on missing scroll state
+- [PASS] `<nav id="nav">` semantic element
+- [PASS] Hamburger `<button>` with `aria-label="Open navigation"` / `"Close navigation"`
+- [PASS] `aria-expanded` state on `<nav>` and nav drop items
+- [PASS] Escape key closes open menus (`closeOnEscape`)
+- [PASS] Focus lost closes menus (`closeOnFocusLost`)
+- [PASS] Keyboard open/close for desktop dropdowns (`openOnKeydown`)
+- [PASS] `tabindex` management for keyboard dropdown navigation
+- [PASS] `aria-current="page"` on breadcrumb current item
+- [FAIL] `readVariant(block)` not called — variant-based accessibility classes (e.g., high-contrast mode) would not be applied
 
 ## Remediation
 
-**Priority 1 — Blocking**
-
-1. Implement two scroll states: add a `scroll` or `IntersectionObserver`-based mechanism to apply a CSS class (e.g., `header--scrolled`) to the header wrapper after the user scrolls past the first section threshold. This is an explicit spec requirement and is entirely absent.
-2. The booking modal trigger (displayed in the second scroll state) depends on the above. This integration point must be designed before the header can be considered complete.
-
-**Priority 2 — Should Fix**
-
-3. Replace hard-coded pixel offsets `top: -6px` and `top: 6px` on hamburger icon pseudo-elements with spacing tokens.
-4. Replace hard-coded `width: 200px` on nav dropdown with a CSS custom property to enable brand-level override.
-5. Add `bubbles: true` to `header:before` and `header:after` CustomEvent dispatches.
-
-**Priority 3 — Advisory**
-
-6. Document the mega menu gap: the base block implements simple dropdowns. If mega menu panels are required at the brand level, this needs a brand-override extension or an enhancement to the base block's markup structure.
-7. Clarify search bar implementation: the current code only detects a search link — an actual search input/bar integration (per the spec) requires additional work.
-8. Add a `ticket-details.md` if a formal ADO ticket exists for this block.
+1. **(HIGH)** Add `readVariant(block)` call after `const ctx = { block, options }` and import `readVariant` from `../../scripts/scripts.js`. Required by Pattern A.
+2. **(HIGH)** Create `_header.json` UE model schema to enable Universal Editor in-context editing of the nav content reference.
+3. **(MEDIUM)** Implement two scroll states: add an `IntersectionObserver` (not a `scroll` event) to apply a scroll-state modifier class (e.g., `header--scrolled`) to the `.nav-wrapper` after the user scrolls past the first section. Clarify with the team whether this is a base-block requirement or a brand-override concern.
+4. **(MEDIUM)** Replace hard-coded pixel values with tokens:
+   - `22px` hamburger height → `var(--sizing-022)` or `var(--nav-hamburger-height)` (lines 60, 104)
+   - `3px` expanded icon offsets → `var(--spacing-002)` or nearest available token (lines 116, 125)
+   - `200px` dropdown width → `var(--nav-dropdown-width)` CSS custom property (line 241)
+5. **(LOW)** Populate `ticket-details.md` with the actual ADO ticket requirements.
+6. **(LOW)** Document the mega menu gap in the README: the base block supports simple dropdowns; full mega panel behavior requires a brand-level override with additional markup.
+7. **(LOW)** Document booking trigger integration point in the README: the second scroll state is expected to surface a booking CTA; brand overrides should know where to hook into this.
