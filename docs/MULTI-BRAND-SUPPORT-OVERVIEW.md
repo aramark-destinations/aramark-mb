@@ -8,7 +8,7 @@ This document summarizes the work done to support multiple Aramark brands ("prop
 
 The EDS platform is built on Adobe's Edge Delivery Services (AEM.live) with a **repoless** configuration model. This means:
 
-- **A single shared GitHub repository** (`BlueAcornInc/aramark-mb`) hosts all block code, styles, scripts, and brand configs.
+- **A single shared GitHub repository** (`aramark-destinations/aramark-mb`) hosts all block code, styles, scripts, and brand configs.
 - **Each brand is registered as an independent EDS site** via the `admin.hlx.page` configuration API — no `fstab.yaml` changes are required.
 - **Each brand has its own AEM content tree** (`/content/{brand-name}/`) in AEM Cloud, with an independent preview and live URL.
 - **Content path mappings** translate the brand root (`/content/{brand-name}/`) to the web root (`/`), so all brands share the same URL structure.
@@ -169,8 +169,8 @@ A full step-by-step guide lives at [`docs/BRAND-SETUP-GUIDE.md`](BRAND-SETUP-GUI
 
 | Brand | Status | Preview URL |
 |---|---|---|
-| `lake-powell` | Active | `https://main--lake-powell--blueacorninc.aem.page` |
-| `unbranded` | Active (default/reference) | `https://main--unbranded--blueacorninc.aem.page` |
+| `lake-powell` | Active | `https://main--lake-powell--aramark-destinations.aem.page` |
+| `unbranded` | Active (default/reference) | `https://main--unbranded--aramark-destinations.aem.page` |
 
 > Note: Brand-specific token values for Lake Powell are currently placeholder values pending final brand color confirmation.
 

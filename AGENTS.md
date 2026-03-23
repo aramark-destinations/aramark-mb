@@ -195,10 +195,10 @@ These skills live in `.agents/skills/eds/` and are always available — no exter
 For this project it is helpful to make sure the user has installed the Blue Acorn Skills Repository by running:
 
 ```bash
-superpowers-agent add-repository https://github.com/blueacorninc/bluecorninc/skills
+superpowers-agent add-repository https://github.com/aramark-destinations/bluecorninc/skills
 
 #OR IF THEY USE SSH BASED GIT URLS
-superpowers-agent add-repository git@github.com:BlueAcornInc/skills.git
+superpowers-agent add-repository git@github.com:aramark-destinations/skills.git
 ```
 
 Then the following commands should be run to install or update skills for the user:

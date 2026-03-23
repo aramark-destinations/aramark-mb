@@ -24,7 +24,7 @@ All Config API calls authenticate via one of two mechanisms:
 |-----|---------|
 | `https://admin.hlx.page/login` | Initiates the login flow to authenticate and obtain a session token. Redirects through Adobe IMS. |
 | `https://admin.hlx.page/profile` | Returns the authenticated user's profile: identity, org memberships, and roles. Use this to verify that your session is valid and that you have the expected permissions before running config operations. |
-| `https://admin.hlx.page/config/{org}/sites.json` | Lists all registered sites within an org (e.g., `https://admin.hlx.page/config/blueacorninc/sites.json`). Requires an authenticated session with admin or config_admin role on the org. Useful for verifying which sites exist and auditing the org's configuration state. |
+| `https://admin.hlx.page/config/{org}/sites.json` | Lists all registered sites within an org (e.g., `https://admin.hlx.page/config/aramark-destinations/sites.json`). Requires an authenticated session with admin or config_admin role on the org. Useful for verifying which sites exist and auditing the org's configuration state. |
 
 ---
 
@@ -215,7 +215,7 @@ curl -s "https://admin.hlx.page/config/aramark/sites.json" \
   -H "x-auth-token: <ADMIN_TOKEN>" | python -m json.tool
 ```
 
-This is equivalent to what you see at `https://admin.hlx.page/config/blueacorninc/sites.json` for the current BlueAcorn org — it returns every registered site and its configuration.
+This is equivalent to what you see at `https://admin.hlx.page/config/aramark-destinations/sites.json` for the current aramark-destinations org — it returns every registered site and its configuration.
 
 ### Step 5 — Generate API keys per site
 

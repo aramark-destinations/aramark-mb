@@ -20,7 +20,7 @@ This replaces the previous `fstab.yaml` mountpoint approach.
 - **Location**: `/conf/mb-root`
 - **Scope**: Shared across all brands (all content trees reference this config)
 - **Project Type**: `aem.live with repoless config setup`
-- **Organization**: `BlueAcornInc` (temporary — will move to Aramark-owned org)
+- **Organization**: `aramark-destinations` (temporary — will move to Aramark-owned org)
 - **Site Name**: `aramark-mb` (temporary repo name)
 - **Branch**: `main`
 
@@ -59,8 +59,8 @@ Brand preview URLs are configured in `scripts/dev-brand.js`:
 
 ```javascript
 const BRAND_URLS = {
-  'lake-powell': 'https://main--lake-powell--blueacorninc.aem.page',
-  'unbranded': 'https://main--unbranded--blueacorninc.aem.page',
+  'lake-powell': 'https://main--lake-powell--aramark-destinations.aem.page',
+  'unbranded': 'https://main--unbranded--aramark-destinations.aem.page',
 };
 ```
 

@@ -8,7 +8,7 @@
 
 The platform runs on **Adobe Edge Delivery Services (Helix 5 / AEM.live)** using a **repoless multi-site configuration**. The key architectural decision:
 
-- **Single shared GitHub repository** (`BlueAcornInc/aramark-mb`) — all block code, styles, scripts, and brand configs live here.
+- **Single shared GitHub repository** (`aramark-destinations/aramark-mb`) — all block code, styles, scripts, and brand configs live here.
 - **Each brand registers as an independent EDS site** via the `admin.hlx.page` API — no `fstab.yaml` mountpoints needed (this is the Helix 5 repoless model).
 - **Each brand has its own AEM content tree** (`/content/{brand}/`) and its own preview/live URLs.
 - **Path mappings** (`/content/{brand}/` → `/`) keep all brand URLs clean and consistent regardless of the AEM content structure.
@@ -48,11 +48,11 @@ brands/unbranded/
 | | Value |
 |---|---|
 | Site name | `unbranded` |
-| Code repo | `BlueAcornInc/aramark-mb` |
+| Code repo | `aramark-destinations/aramark-mb` |
 | AEM content root | `/content/unbranded/` |
 | Path mapping | `/content/unbranded/` → `/` |
-| Preview URL | `https://main--unbranded--blueacorninc.aem.page` |
-| Live URL | `https://main--unbranded--blueacorninc.aem.live` |
+| Preview URL | `https://main--unbranded--aramark-destinations.aem.page` |
+| Live URL | `https://main--unbranded--aramark-destinations.aem.live` |
 
 **AEM Content Tree:**
 
@@ -70,7 +70,7 @@ The `brand: unbranded` metadata field is what triggers `scripts/site-resolver.js
 
 ```bash
 pnpm start:brand unbranded
-# → Proxies localhost to https://main--unbranded--blueacorninc.aem.page
+# → Proxies localhost to https://main--unbranded--aramark-destinations.aem.page
 ```
 
 ---
@@ -114,11 +114,11 @@ brands/lake-powell/
 | | Value |
 |---|---|
 | Site name | `lake-powell` |
-| Code repo | `BlueAcornInc/aramark-mb` |
+| Code repo | `aramark-destinations/aramark-mb` |
 | AEM content root | `/content/lake-powell/` |
 | Path mapping | `/content/lake-powell/` → `/` |
-| Preview URL | `https://main--lake-powell--blueacorninc.aem.page` |
-| Live URL | `https://main--lake-powell--blueacorninc.aem.live` |
+| Preview URL | `https://main--lake-powell--aramark-destinations.aem.page` |
+| Live URL | `https://main--lake-powell--aramark-destinations.aem.live` |
 
 **AEM Content Tree:**
 
@@ -134,7 +134,7 @@ brands/lake-powell/
 
 ```bash
 pnpm start:brand lake-powell
-# → Proxies localhost to https://main--lake-powell--blueacorninc.aem.page
+# → Proxies localhost to https://main--lake-powell--aramark-destinations.aem.page
 ```
 
 ---
