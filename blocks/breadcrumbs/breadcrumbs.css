@@ -1,0 +1,122 @@
+/* Breadcrumbs Block Styles */
+.section.breadcrumbs-container {
+  overflow: hidden;
+}
+
+/* Container - Semantic navigation element */
+.breadcrumbs-wrapper {
+  position: relative;
+}
+
+.breadcrumbs {
+  width: 100%;
+  padding: var(--spacing-small) 0;
+  text-transform: uppercase;
+}
+
+.breadcrumbs-wrapper::before {
+  content: "";
+  display: block;
+  width: 100vw;
+  height: 100%;
+  background-color: var(--color-neutral-100);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -1;
+}
+
+/* Breadcrumb list - Horizontal layout */
+.breadcrumbs-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: var(--spacing-xsmall);
+}
+
+/* Individual breadcrumb items */
+.breadcrumbs-item {
+  display: flex;
+  align-items: center;
+}
+
+/* Add separator between items (not after last item) */
+.breadcrumbs-item:not(:last-child)::after {
+  content: "/";
+  margin: 0 var(--spacing-xsmall);
+  color: var(--color-neutral-500);
+  pointer-events: none;
+}
+
+/* Breadcrumb links - Ancestors */
+.breadcrumbs-link {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.breadcrumbs-link:hover {
+  color: var(--link-hover-color);
+  text-decoration: underline;
+}
+
+.breadcrumbs-link:focus {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ARIA live region for dynamic updates (visually hidden) */
+.breadcrumbs[aria-live=polite]:empty::before {
+  content: "Breadcrumb navigation loading...";
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Responsive Design - Mobile First */
+/* Small screens (< 600px) - Compact spacing */
+@media (width < 600px) {
+  /* Reduce gap on mobile for tighter layout */
+  .breadcrumbs-list {
+    gap: var(--spacing-xxsmall);
+  }
+  .breadcrumbs-item:not(:last-child)::after {
+    margin: 0 var(--spacing-xxsmall);
+  }
+}
+/* Print styles - Show full breadcrumb trail */
+@media print {
+  .breadcrumbs {
+    margin: 0.5rem 0;
+    padding: 0;
+  }
+  .breadcrumbs-link {
+    color: #000;
+    text-decoration: none;
+  }
+  .breadcrumbs-item:not(:last-child)::after {
+    color: #000;
+  }
+}
+/* High contrast mode support - progressive enhancement */
+/* stylelint-disable-next-line media-feature-name-value-no-unknown */
+@media (prefers-contrast: high) {
+  .breadcrumbs-link {
+    text-decoration: underline;
+  }
+  .breadcrumbs-link:focus {
+    outline-width: 3px;
+  }
+}
+/* Reduced motion support - Disable transitions */
+@media (prefers-reduced-motion: reduce) {
+  .breadcrumbs-link {
+    transition: none;
+  }
+}

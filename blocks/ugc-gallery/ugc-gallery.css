@@ -6,6 +6,6 @@
 }
 
 .ugc-gallery-container h2 {
-  font-size: var(--heading-font-size-xxl);
-  line-height: var(--heading-line-height-xxxl);
+  font-size: var(--heading-font-size-h2);
+  line-height: var(--heading-line-height);
 }

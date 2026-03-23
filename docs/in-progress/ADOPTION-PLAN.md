@@ -1,7 +1,6 @@
 # Aramark EDS Adoption Plan
 
 **Project:** Aramark Multi-Brand EDS
-**Reference:** `docs/SECTION-AND-CTA-IMPLEMENTATION.md`
 **Last updated:** 2026-03-15
 
 Outstanding work from the EDS analysis. Items already shipped have been removed.
@@ -15,7 +14,6 @@ Outstanding work from the EDS analysis. Items already shipped have been removed.
 **Files:** `component-models.json`, `scripts/scripts.js`, `styles/styles.css`
 **Multi-brand concern:** Root level. All CSS values reference custom properties. Brand overrides go in `brands/{brand}/styles/sections.css`.
 **Complexity:** Medium (1–2 days)
-**Detail:** See `docs/SECTION-AND-CTA-IMPLEMENTATION.md` — Workstream A
 
 The section component needs to support configurable background treatment and content layout. This is a prerequisite for the bgimage composition pattern and for any page where a background image or overlay is needed independent of block content.
 
@@ -36,7 +34,6 @@ The section component needs to support configurable background treatment and con
 **Complexity:** Large (2–3 days — each variant needs design review and CSS)
 **Dependencies:** `readVariant` (done), Section model expansion (item 1 above — needed for bgimage composition pattern)
 **Blocking:** Needs design sign-off on variant layouts before implementation
-**Detail:** See `docs/SECTION-AND-CTA-IMPLEMENTATION.md` — Workstream B
 
 The CTA block covers promotional layout patterns that currently have no block representation: image-left/right with text, icon + text, and button groups.
 

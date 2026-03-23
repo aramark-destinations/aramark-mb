@@ -9,7 +9,6 @@
  * - Respects prefers-reduced-motion
  *
  * TODO (accordion dev): Review +/− icon vs. arrow icon — see blocks/accordion/accordion.css
- * TODO (accordion dev): Review whether subtitle (h5) column is used; remove if not needed
  */
 
 import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
@@ -26,7 +25,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('accordion:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('accordion:before', { detail: ctx, bubbles: true }));
 
   // === ACCORDION BLOCK LOGIC ===
   readVariant(block);
@@ -72,7 +71,7 @@ export function decorate(block, options = {}) {
     }
 
     if (subtitleDiv && subtitleDiv.textContent.trim()) {
-      const subtitleText = document.createElement('h5');
+      const subtitleText = document.createElement('h4');
       subtitleText.className = 'accordion-subtitle';
       subtitleText.innerHTML = subtitleDiv.textContent.trim();
       titleContainer.append(subtitleText);
@@ -152,7 +151,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('accordion:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('accordion:after', { detail: ctx, bubbles: true }));
 }
 
 /**

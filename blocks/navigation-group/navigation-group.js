@@ -125,7 +125,20 @@ function decorateGroupItem(item, anchorList, idx = null) {
   });
 }
 
-export default async function decorate(block) {
+/**
+ * Decorates the navigation-group block
+ * @param {Element} block The navigation-group block element
+ * @param {Object} options Configuration options
+ * @param {Function} options.onBefore Lifecycle hook called before decoration
+ * @param {Function} options.onAfter Lifecycle hook called after decoration
+ * @returns {Promise<void>}
+ */
+export async function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('navigation-group:before', { detail: ctx, bubbles: true }));
   const groupItems = [];
   const configOptions = [
     {
@@ -225,7 +238,19 @@ export default async function decorate(block) {
       }
     }, 100));
   });
+
+  // lifecycle hook + event (after) — fire on the final li so listeners see the decorated DOM
+  ctx.block = li;
+  options.onAfter?.(ctx);
+  li.dispatchEvent(new CustomEvent('navigation-group:after', { detail: ctx, bubbles: true }));
 }
+
+/**
+ * Default export
+ * - Calls decorate()
+ * - Allows global hook injection via window.NavigationGroup?.hooks
+ */
+export default (block) => decorate(block, window.NavigationGroup?.hooks);
 
 // Event handler references for proper add/remove
 function handleGroupDecorate(event) {

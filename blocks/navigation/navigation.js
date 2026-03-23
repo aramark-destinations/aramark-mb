@@ -1,19 +1,10 @@
-import { loadCSS, toCamelCase, readBlockConfig } from '../../scripts/aem.js';
+import {
+  loadCSS, toCamelCase, toClassName, readBlockConfig,
+} from '../../scripts/aem.js';
 import { fetchSvg } from '../../scripts/baici/utils/utils.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 const isDesktop = window.matchMedia('(min-width: 768px)');
-
-/* Sanitizes a string for use as class name. */
-function toClassName(name) {
-  return typeof name === 'string'
-    ? name
-      .toLowerCase()
-      .replace(/[^0-9a-z]/gi, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '')
-    : '';
-}
 
 export function resetMenuState(section) {
   const desktop = isDesktop.matches;

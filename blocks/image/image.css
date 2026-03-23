@@ -1,5 +1,13 @@
+.image {
+  overflow: hidden;
+  border-radius: var(--radius-s);
+}
+.image picture {
+  display: block;
+}
 .image img {
   display: block;
   width: 100%;
   height: auto;
+  border-radius: var(--image-border-radius, 0);
 }

@@ -14,7 +14,7 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 import { pushAnalyticsEvent } from '../../scripts/analytics.js';
 
-function sanitizeCSSClass(className) {
+export function sanitizeCSSClass(className) {
   if (!className) return '';
   return className
     .split(' ')
@@ -23,7 +23,7 @@ function sanitizeCSSClass(className) {
     .join(' ');
 }
 
-function isLikelyURL(text) {
+export function isLikelyURL(text) {
   if (!text || typeof text !== 'string') return false;
   const trimmed = text.trim();
   if (trimmed.length < 2) return false;
@@ -93,7 +93,7 @@ function wrapCardWithLink(card, link, linkLabel) {
 }
 
 function getCardTitle(card) {
-  return card.querySelector('h1, h2, h3, h4, h5, h6')?.textContent.trim() || 'Untitled';
+  return card.querySelector('h1, h2, h3, h4')?.textContent.trim() || 'Untitled';
 }
 
 function getCardLink(card) {
@@ -203,7 +203,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('cards:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('cards:before', { detail: ctx, bubbles: true }));
 
   // === CARDS BLOCK LOGIC ===
   readVariant(block);
@@ -226,7 +226,7 @@ export function decorate(block, options = {}) {
     const cols = Array.from(row.children);
     if (cols.length >= 2) return true;
     if (cols.length === 1) {
-      return cols[0].querySelector('picture, img, h1, h2, h3, h4, h5, h6, p:not(:empty), ul, ol') !== null;
+      return cols[0].querySelector('picture, img, h1, h2, h3, h4, p:not(:empty), ul, ol') !== null;
     }
     return false;
   });
@@ -299,7 +299,7 @@ export function decorate(block, options = {}) {
       }
 
       if (child.querySelector('picture, img')) return;
-      if (child.querySelector('h1, h2, h3, h4, h5, h6, ul, ol, table, blockquote')) return;
+      if (child.querySelector('h1, h2, h3, h4, ul, ol, table, blockquote')) return;
 
       const matchesConfigValue = textContent === orientation
         || textContent === cssClass
@@ -358,7 +358,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('cards:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('cards:after', { detail: ctx, bubbles: true }));
 }
 
 /**

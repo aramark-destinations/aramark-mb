@@ -226,7 +226,7 @@ This is not yet implemented — current workflow is direct CSS file editing.
 
 ## Unknowns & TODOs
 
-- UE Token Editor / App Builder integration is not yet implemented — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) and [FED-SOLUTION-DESIGN.md](FED-SOLUTION-DESIGN.md) open items
-- Font family and font size tokens live in `styles.css`, not in the design token chain — brands cannot yet override them via `tokens.css` — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #5
-- `--nav-height` is not in the design token system — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #4
-- Zero test files exist for brand detection or token loading — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #15
+- UE Token Editor / App Builder integration is not yet implemented — see [TODOS.md](project/TODOS.md) and [FED-SOLUTION-DESIGN.md](in-progress/FED-SOLUTION-DESIGN.md) open items
+- Font family and font size tokens live in `styles.css`, not in the design token chain — brands cannot yet override them via `tokens.css` — see [TODOS.md](project/TODOS.md) #5
+- `--nav-height` is not in the design token system — see [TODOS.md](project/TODOS.md) #4
+- Zero test files exist for brand detection or token loading — see [TODOS.md](project/TODOS.md) #15

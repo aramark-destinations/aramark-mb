@@ -204,6 +204,6 @@ Because layout, accessibility, typography, and component logic remain centralize
 
 ## TODOs
 
-- Font families and responsive font sizes live in `styles.css`, not in the design token system — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #5
-- `--nav-height` is not part of the token system — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #4
-- No test files exist for any of this logic — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #15
+- Font families and responsive font sizes live in `styles.css`, not in the design token system — see [TODOS.md](../project/TODOS.md) #5
+- `--nav-height` is not part of the token system — see [TODOS.md](../project/TODOS.md) #4
+- No test files exist for any of this logic — see [TODOS.md](../project/TODOS.md) #15

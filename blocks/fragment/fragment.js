@@ -90,6 +90,7 @@ export async function decorate(block, options = {}) {
 
 /**
  * Default export
- * Allows the base implementation to be used directly or with hooks
+ * - Calls decorate()
+ * - Allows global hook injection via window.Fragment?.hooks
  */
-export default decorate;
+export default (block) => decorate(block, window.Fragment?.hooks);

@@ -97,7 +97,7 @@ function bindEvents(block) {
   });
 }
 
-function createSlide(row, slideIndex, carouselId) {
+export function createSlide(row, slideIndex, carouselId) {
   const slide = document.createElement('li');
   slide.dataset.slideIndex = slideIndex;
   slide.setAttribute('id', `carousel-${carouselId}-slide-${slideIndex}`);
@@ -108,7 +108,7 @@ function createSlide(row, slideIndex, carouselId) {
     slide.append(column);
   });
 
-  const labeledBy = slide.querySelector('h1, h2, h3, h4, h5, h6');
+  const labeledBy = slide.querySelector('h1, h2, h3, h4');
   if (labeledBy) {
     slide.setAttribute('aria-labelledby', labeledBy.getAttribute('id'));
   }
@@ -131,7 +131,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('carousel:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('carousel:before', { detail: ctx, bubbles: true }));
 
   // === CAROUSEL BLOCK LOGIC ===
   readVariant(block);
@@ -195,11 +195,12 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('carousel:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('carousel:after', { detail: ctx, bubbles: true }));
 }
 
 /**
  * Default export
- * Allows the base implementation to be used directly or with hooks
+ * - Calls decorate()
+ * - Allows global hook injection via window.Carousel?.hooks
  */
-export default decorate;
+export default (block) => decorate(block, window.Carousel?.hooks);

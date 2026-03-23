@@ -18,10 +18,10 @@ function findNextHeading(el) {
   let preceedingEl = el.parentElement.previousElement || el.parentElement.parentElement;
   let h = 'H2';
   while (preceedingEl) {
-    const lastHeading = [...preceedingEl.querySelectorAll('h1, h2, h3, h4, h5, h6')].pop();
+    const lastHeading = [...preceedingEl.querySelectorAll('h1, h2, h3, h4')].pop();
     if (lastHeading) {
       const level = parseInt(lastHeading.nodeName[1], 10);
-      h = level < 6 ? `H${level + 1}` : 'H6';
+      h = level < 4 ? `H${level + 1}` : 'H4';
       preceedingEl = false;
     } else {
       preceedingEl = preceedingEl.previousElement || preceedingEl.parentElement;
@@ -30,7 +30,7 @@ function findNextHeading(el) {
   return h;
 }
 
-function highlightTextElements(terms, elements) {
+export function highlightTextElements(terms, elements) {
   elements.forEach((element) => {
     if (!element || !element.textContent) return;
 
@@ -160,7 +160,7 @@ function compareFound(hit1, hit2) {
   return hit1.minIdx - hit2.minIdx;
 }
 
-function filterData(searchTerms, data) {
+export function filterData(searchTerms, data) {
   const foundInHeader = [];
   const foundInMeta = [];
 
@@ -263,7 +263,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('search:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('search:before', { detail: ctx, bubbles: true }));
 
   // === SEARCH BLOCK LOGIC ===
   readVariant(block);
@@ -285,7 +285,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('search:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('search:after', { detail: ctx, bubbles: true }));
 }
 
 export default (block) => decorate(block, window.Search?.hooks);

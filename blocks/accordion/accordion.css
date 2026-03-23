@@ -42,6 +42,7 @@
   --accordion-body-anchor-color: var(--accordion-body-color);
   --accordion-body-anchor-hover-color: var(--accordion-body-anchor-color);
   --accordion-body-anchor-active-color: var(--accordion-body-anchor-color);
+  --accordion-icon-size: 28px;
 }
 
 /* TODO (accordion dev): Review +/− character icon vs. original arrow icon.
@@ -65,7 +66,7 @@
   list-style: none;
   overflow: visible;
   transition: background-color 0.2s;
-  color: var(--accordion-title-color, #231f20);
+  color: var(--accordion-title-color);
 }
 .accordion details summary::-webkit-details-marker {
   display: none;
@@ -81,14 +82,14 @@
   font: var(--accordion-title-font);
   text-transform: var(--accordion-title-text-transform);
   letter-spacing: var(--accordion-title-letter-spacing);
-  color: var(--accordion-title-color, #231f20);
+  color: var(--accordion-title-color);
 }
 .accordion details summary .accordion-subtitle {
   margin: 8px 0 0;
   font: var(--accordion-subtitle-font);
   text-transform: var(--accordion-subtitle-text-transform);
   letter-spacing: var(--accordion-subtitle-letter-spacing);
-  color: var(--accordion-subtitle-color, #231f20);
+  color: var(--accordion-subtitle-color);
 }
 .accordion details summary::after {
   content: "+"/"";
@@ -97,8 +98,8 @@
   position: absolute;
   right: 0;
   top: 25px;
-  font-size: 28px;
-  line-height: 28px;
+  font-size: var(--accordion-icon-size);
+  line-height: var(--accordion-icon-size);
   display: inline-block;
   overflow: hidden;
   text-align: center;
@@ -108,7 +109,7 @@
   transform: rotate(0deg);
 }
 .accordion details[open] summary {
-  background-color: var(--accordion-open-background-color, #fff);
+  background-color: var(--accordion-open-background-color);
 }
 .accordion details[open] summary::after {
   content: "−"/"";
@@ -116,15 +117,13 @@
 }
 .accordion details .accordion-item-body {
   padding: var(--accordion-body-padding);
-  background-color: var(--accordion-open-body-background-color, #fff);
-  color: var(--accordion-body-color, #231f20);
+  background-color: var(--accordion-open-body-background-color);
+  color: var(--accordion-body-color);
 }
 .accordion details .accordion-item-body h1,
 .accordion details .accordion-item-body h2,
 .accordion details .accordion-item-body h3,
-.accordion details .accordion-item-body h4,
-.accordion details .accordion-item-body h5,
-.accordion details .accordion-item-body h6 {
+.accordion details .accordion-item-body h4 {
   color: var(--accordion-body-heading-color, var(--accordion-body-color));
 }
 .accordion details .accordion-item-body p {
@@ -155,5 +154,5 @@
 }
 
 .keyfocus .accordion summary:focus, .keyfocus .accordion summary:focus-within {
-  outline: var(--focus-outline, 3px solid var(--color-brand-primary, #de1219));
+  outline: var(--focus-outline);
 }

@@ -10,7 +10,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('text:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('text:before', { detail: ctx, bubbles: true }));
 
   // === TEXT BLOCK LOGIC ===
   // Rich text content is rendered directly by AEM
@@ -18,7 +18,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('text:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('text:after', { detail: ctx, bubbles: true }));
 }
 
 /**

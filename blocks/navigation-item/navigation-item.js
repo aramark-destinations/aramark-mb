@@ -10,7 +10,20 @@ function decorateMenuItem(parent) {
   });
 }
 
-export default async function decorate(block) {
+/**
+ * Decorates the navigation-item block
+ * @param {Element} block The navigation-item block element
+ * @param {Object} options Configuration options
+ * @param {Function} options.onBefore Lifecycle hook called before decoration
+ * @param {Function} options.onAfter Lifecycle hook called after decoration
+ * @returns {Promise<void>}
+ */
+export async function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('navigation-item:before', { detail: ctx, bubbles: true }));
   const {
     title = 'Menu Item',
     link = '#',
@@ -62,7 +75,19 @@ export default async function decorate(block) {
 
   moveInstrumentation(block, li);
   block.replaceWith(li);
+
+  // lifecycle hook + event (after) — now operate on the final li element
+  ctx.block = li;
+  options.onAfter?.(ctx);
+  li.dispatchEvent(new CustomEvent('navigation-item:after', { detail: ctx, bubbles: true }));
 }
+
+/**
+ * Default export
+ * - Calls decorate()
+ * - Allows global hook injection via window.NavigationItem?.hooks
+ */
+export default (block) => decorate(block, window.NavigationItem?.hooks);
 
 // Event handler reference for proper add/remove
 function handleItemDecorate(event) {

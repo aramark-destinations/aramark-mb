@@ -72,9 +72,24 @@
         "multi": false
       },
       {
+        "component": "boolean",
+        "name": "getAltFromDam",
+        "label": "Get Alternative Text from DAM",
+        "description": "When checked, alt text is populated from the image DAM metadata and the Alt Text field is disabled",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
         "component": "text",
         "name": "imageAlt",
         "label": "Alt Text"
+      },
+      {
+        "component": "boolean",
+        "name": "imageAltFromDam",
+        "label": "Get Alternative Text from DAM",
+        "valueType": "boolean",
+        "value": true
       }
     ]
   },
@@ -84,34 +99,65 @@
       {
         "component": "aem-content",
         "name": "link",
-        "label": "Link"
+        "label": "Button Link",
+        "description": "Page path, DAM asset for download, or fragment reference for modal trigger"
       },
       {
         "component": "text",
         "name": "linkText",
-        "label": "Text"
+        "label": "Button Text"
       },
       {
         "component": "text",
         "name": "linkTitle",
-        "label": "Title"
+        "label": "Button Screen Reader Text",
+        "description": "Accessible title shown as tooltip"
       },
       {
         "component": "select",
         "name": "linkType",
-        "label": "Type",
+        "label": "Button Style",
+        "description": "Visual style of the button",
         "options": [
           {
-            "name": "default",
-            "value": ""
+            "name": "Filled",
+            "value": "filled"
           },
           {
-            "name": "primary",
+            "name": "Outlined",
+            "value": "outlined"
+          },
+          {
+            "name": "Text-only",
+            "value": "text-only"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "linkColor",
+        "label": "Button Color",
+        "description": "Color theme for the button",
+        "options": [
+          {
+            "name": "Primary Color",
             "value": "primary"
           },
           {
-            "name": "secondary",
+            "name": "Secondary Color",
             "value": "secondary"
+          },
+          {
+            "name": "Tertiary Color",
+            "value": "tertiary"
+          },
+          {
+            "name": "Black",
+            "value": "black"
+          },
+          {
+            "name": "White",
+            "value": "white"
           }
         ]
       }
@@ -125,6 +171,164 @@
         "name": "name",
         "label": "Section Name",
         "description": "The label shown for this section in the Content Tree"
+      },
+      {
+        "component": "select",
+        "name": "sectionType",
+        "label": "Section Type",
+        "description": "Controls the width of the Section and the content inside the Section",
+        "options": [
+          {
+            "name": "Full-width",
+            "value": "full-width"
+          },
+          {
+            "name": "Contained",
+            "value": "contained"
+          },
+          {
+            "name": "Full-Bleed",
+            "value": "full-bleed"
+          }
+        ]
+      },
+      {
+        "component": "reference",
+        "name": "backgroundImage",
+        "label": "Background Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "backgroundAlt",
+        "label": "Background Alt",
+        "description": "Alt text for background image"
+      },
+      {
+        "component": "select",
+        "name": "backgroundColor",
+        "label": "Background Color",
+        "options": [
+          {
+            "name": "Dark",
+            "value": "dark"
+          },
+          {
+            "name": "Light",
+            "value": "light"
+          },
+          {
+            "name": "Light 2",
+            "value": "light-2"
+          },
+          {
+            "name": "Brand",
+            "value": "brand"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "fullOverlay",
+        "label": "Full Overlay",
+        "description": "Overlay applied over background",
+        "options": [
+          {
+            "name": "None",
+            "value": ""
+          },
+          {
+            "name": "Darken - 20%",
+            "value": "darken-20"
+          },
+          {
+            "name": "Darken - 40%",
+            "value": "darken-40"
+          },
+          {
+            "name": "Lighten - 20%",
+            "value": "lighten-20"
+          },
+          {
+            "name": "Lighten - 40%",
+            "value": "lighten-40"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "linearGradient",
+        "label": "Linear Gradient",
+        "options": [
+          {
+            "name": "None",
+            "value": ""
+          },
+          {
+            "name": "Bottom to Top",
+            "value": "bottom-to-top"
+          },
+          {
+            "name": "Top to Bottom",
+            "value": "top-to-bottom"
+          },
+          {
+            "name": "Left to Right",
+            "value": "left-to-right"
+          },
+          {
+            "name": "Right to Left",
+            "value": "right-to-left"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "number",
+        "name": "gradientStartOpacity",
+        "label": "Starting Opacity",
+        "description": "Gradient starting opacity (0-100)",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "number",
+        "name": "gradientEndOpacity",
+        "label": "Ending Opacity",
+        "description": "Gradient ending opacity (0-100)",
+        "value": ""
+      },
+      {
+        "component": "select",
+        "name": "sectionTheme",
+        "label": "Section Theme Style",
+        "description": "Controls color styling applied to components in this Section",
+        "options": [
+          {
+            "name": "Dark",
+            "value": "theme-dark"
+          },
+          {
+            "name": "Light",
+            "value": "theme-light"
+          },
+          {
+            "name": "Light 2",
+            "value": "theme-light-2"
+          },
+          {
+            "name": "Brand",
+            "value": "theme-brand"
+          },
+          {
+            "name": "Tertiary",
+            "value": "theme-tertiary"
+          }
+        ]
       },
       {
         "component": "multiselect",
@@ -203,6 +407,27 @@
         "value": "",
         "label": "Text",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "breadcrumbs",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "breadcrumb-label-override",
+        "label": "Current Page Label Override",
+        "description": "Custom label for the current page (overrides og:title)",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "breadcrumb-parent-override",
+        "label": "Parent Page URL Override",
+        "description": "Custom URL for the immediate parent breadcrumb (must be same domain)",
+        "value": ""
       }
     ]
   },
@@ -910,14 +1135,6 @@
           {
             "name": "H4",
             "value": "h4"
-          },
-          {
-            "name": "H5",
-            "value": "h5"
-          },
-          {
-            "name": "H6",
-            "value": "h6"
           }
         ]
       },
@@ -944,7 +1161,9 @@
         "component": "aem-content",
         "valueType": "string",
         "name": "uri",
-        "label": "Video"
+        "label": "Video Source",
+        "required": true,
+        "description": "Select MP4 from DAM or enter URL for YouTube/Vimeo"
       },
       {
         "component": "multiselect",
@@ -968,7 +1187,8 @@
         "component": "reference",
         "valueType": "string",
         "name": "placeholderImage",
-        "label": "Placeholder Image",
+        "label": "Poster Image Override",
+        "description": "Select poster image to override the default first-frame poster image",
         "multi": true
       },
       {
@@ -977,6 +1197,30 @@
         "name": "placeholderImageAlt",
         "value": "",
         "label": "Placeholder Image Alt Text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "videoDescription",
+        "value": "",
+        "label": "Video Description",
+        "description": "Text description of video content"
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "fullWidth",
+        "label": "Full-width Video",
+        "value": false,
+        "description": "Expand video to full container width"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "captionsTrack",
+        "label": "Captions Track",
+        "description": "WebVTT file for MP4 video captions (MP4 source only)",
+        "multi": false
       }
     ]
   }

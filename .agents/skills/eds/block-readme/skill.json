@@ -1,0 +1,6 @@
+{
+  "name": "eds/block-readme",
+  "description": "Create or update a block README.md following the conventions. Covers description, variants, UE fields, lifecycle hooks, events, CSS classes, and related blocks.",
+  "when_to_use": "after implementing a new block or making significant changes to an existing block",
+  "version": "1.0.0"
+}
