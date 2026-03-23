@@ -4,7 +4,7 @@
 
 This document covers block rendering, build pipeline, and deployment. For related topics, see:
 
-- **[FED-SOLUTION-DESIGN.md](FED-SOLUTION-DESIGN.md)** - Design token system architecture, App Builder integration, brand governance
+- **[FED-SOLUTION-DESIGN.md](in-progress/FED-SOLUTION-DESIGN.md)** - Design token system architecture, App Builder integration, brand governance
 - **[BLOCK-EXTENSIBILITY-GUIDE.md](BLOCK-EXTENSIBILITY-GUIDE.md)** - Practical patterns for creating and extending blocks
 - **[BRAND-SETUP-GUIDE.md](BRAND-SETUP-GUIDE.md)** - Complete process for launching new brand sites
 - **[PROJECT-README.md](PROJECT-README.md)** - Project overview, quick start, and available blocks
@@ -169,7 +169,7 @@ This pattern:
 
 ## Design Token Architecture
 
-> See [FED-SOLUTION-DESIGN.md](FED-SOLUTION-DESIGN.md) for complete token authoring workflow, App Builder integration, and governance model.
+> See [FED-SOLUTION-DESIGN.md](in-progress/FED-SOLUTION-DESIGN.md) for complete token authoring workflow, App Builder integration, and governance model.
 
 ### Token Layer System
 
@@ -710,16 +710,16 @@ The following App Builder capabilities are referenced throughout this architectu
 - Deployment process for App Builder updates
 - SLA expectations
 
-**Status**: These details must be specified before production deployment. See [FED-SOLUTION-DESIGN.md](FED-SOLUTION-DESIGN.md) for current partial specification.
+**Status**: These details must be specified before production deployment. See [FED-SOLUTION-DESIGN.md](in-progress/FED-SOLUTION-DESIGN.md) for current partial specification.
 
 ---
 
 ## Unknowns & TODOs
 
 - `buildAutoBlocks()` auto-wraps bare YouTube/Vimeo links as `embed` blocks; expand for additional patterns as needed
-- `lazy-styles.css` is empty — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #6
-- Zero test files exist (Jest + Playwright installed but unused) — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #15
-- `--nav-height` not in design token system — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #4
-- Font sizes not in design token system — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #5
-- Browser support matrix needs formal documentation — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #19
-- CSP headers need review for third-party integrations — see [ARCHITECTURE-TODO.md](ARCHITECTURE-TODO.md) #28
+- `lazy-styles.css` is empty — see [TODOS.md](project/TODOS.md) #6
+- Zero test files exist (Jest + Playwright installed but unused) — see [TODOS.md](project/TODOS.md) #15
+- `--nav-height` not in design token system — see [TODOS.md](project/TODOS.md) #4
+- Font sizes not in design token system — see [TODOS.md](project/TODOS.md) #5
+- Browser support matrix needs formal documentation — see [TODOS.md](project/TODOS.md) #19
+- CSP headers need review for third-party integrations — see [TODOS.md](project/TODOS.md) #28

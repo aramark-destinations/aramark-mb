@@ -95,7 +95,7 @@ export function decorate(block, options = {}) {
 
   // Lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('embed:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('embed:before', { detail: ctx, bubbles: true }));
 
   readVariant(block);
 
@@ -139,7 +139,7 @@ export function decorate(block, options = {}) {
 
   // Lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('embed:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('embed:after', { detail: ctx, bubbles: true }));
 }
 
 /**

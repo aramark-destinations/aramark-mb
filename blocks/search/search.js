@@ -30,7 +30,7 @@ function findNextHeading(el) {
   return h;
 }
 
-function highlightTextElements(terms, elements) {
+export function highlightTextElements(terms, elements) {
   elements.forEach((element) => {
     if (!element || !element.textContent) return;
 
@@ -160,7 +160,7 @@ function compareFound(hit1, hit2) {
   return hit1.minIdx - hit2.minIdx;
 }
 
-function filterData(searchTerms, data) {
+export function filterData(searchTerms, data) {
   const foundInHeader = [];
   const foundInMeta = [];
 
@@ -263,7 +263,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('search:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('search:before', { detail: ctx, bubbles: true }));
 
   // === SEARCH BLOCK LOGIC ===
   readVariant(block);
@@ -285,7 +285,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('search:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('search:after', { detail: ctx, bubbles: true }));
 }
 
 export default (block) => decorate(block, window.Search?.hooks);

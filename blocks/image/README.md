@@ -88,6 +88,16 @@ Create `/brands/{property}/blocks/image/image.js` to:
 - Implement lightbox/modal behaviour
 - Add zoom interactions
 
+## Accessibility
+
+- Alt text applied from authored `imageAlt` field for screen readers
+- Image renders as `display: block` to prevent inline spacing issues
+- Responsive width (100%) ensures proper scaling across viewports
+
+## Token Dependencies
+
+No custom tokens currently used. Base styles use standard CSS properties.
+
 ## See Also
 
 - [Hero Block](../hero/README.md) — Full-width image with text overlay

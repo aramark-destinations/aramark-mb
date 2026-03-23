@@ -76,6 +76,22 @@ Create `/brands/{property}/blocks/section/section.js` to:
 - Implement full-width or constrained layout modes
 - Add background image or video support
 
+## Variants
+
+- **highlight** — Applies branded background color
+
+## Accessibility
+
+- Acts as a structural container grouping related blocks
+- Section Name provides a label in the UE content tree for author orientation
+
+## Token Dependencies
+
+| Token | Purpose |
+|-------|---------|
+| `--color-highlight` | Highlight variant background color |
+| `--color-brand-light` | Highlight fallback background |
+
 ## See Also
 
 - [Columns Block](../columns/README.md) - Multi-column layout within a section

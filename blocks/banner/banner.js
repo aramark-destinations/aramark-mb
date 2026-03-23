@@ -21,7 +21,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('banner:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('banner:before', { detail: ctx, bubbles: true }));
 
   // === BANNER BLOCK LOGIC ===
   readVariant(block);
@@ -31,7 +31,7 @@ export async function decorate(block, options = {}) {
   if (sessionStorage.getItem(storageKey)) {
     block.closest('.section')?.remove();
     options.onAfter?.(ctx);
-    block.dispatchEvent(new CustomEvent('banner:after', { detail: ctx }));
+    block.dispatchEvent(new CustomEvent('banner:after', { detail: ctx, bubbles: true }));
     return;
   }
 
@@ -81,11 +81,12 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('banner:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('banner:after', { detail: ctx, bubbles: true }));
 }
 
 /**
  * Default export
- * Allows the base implementation to be used directly or with hooks
+ * - Calls decorate()
+ * - Allows global hook injection via window.Banner?.hooks
  */
-export default decorate;
+export default (block) => decorate(block, window.Banner?.hooks);

@@ -1,0 +1,6 @@
+{
+  "name": "eds/e2e-testing",
+  "description": "Playwright E2E testing patterns for EDS blocks with interactive behavior. Covers test infrastructure bootstrapping, test structure, and deciding what belongs in E2E vs unit tests.",
+  "when_to_use": "when a block has user interactions (navigation, form submission, accordions, carousels) that require browser-level testing",
+  "version": "1.0.0"
+}

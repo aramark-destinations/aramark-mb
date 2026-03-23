@@ -131,6 +131,18 @@ onAfter: (ctx) => {
 - `.columns-{n}-cols` - Number of columns (e.g., `columns-3-cols`)
 - `.columns-img-col` - Applied to image-only columns
 
+## Accessibility
+
+- Stacks to single column on mobile for readability
+- Image columns are reordered first on mobile for visual hierarchy
+- Semantic structure preserved through column wrapper divs
+
+## Token Dependencies
+
+| Token | Purpose |
+|-------|---------|
+| `--spacing-024` | Column gap at desktop breakpoint |
+
 ## See Also
 
 - [Cards Block](../cards/README.md) - Similar grid layout

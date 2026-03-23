@@ -81,6 +81,40 @@ Create `/brands/{property}/blocks/accordion/accordion.js` to:
 - Add custom animations
 - Implement expand-all/collapse-all controls
 
+## Variants
+
+- **collapsed-by-default** — Per-item boolean controlling initial open/closed state (default: true/collapsed)
+- **no-motion** — Automatically applied when `prefers-reduced-motion: reduce` is detected
+
+## Accessibility
+
+- Uses native `<details>`/`<summary>` elements for built-in keyboard and screen reader support
+- Home/End keyboard navigation between accordion summaries
+- Respects `prefers-reduced-motion` (disables CSS transitions)
+- Focus outline meets WCAG 2.4.7 via `.keyfocus` selector
+- Minimum 48px touch target height for summary elements
+
+## Token Dependencies
+
+| Token | Purpose |
+|-------|---------|
+| `--accordion-title-color` | Title text color |
+| `--accordion-title-padding` | Title container padding |
+| `--accordion-title-font` | Title font shorthand |
+| `--accordion-title-text-transform` | Title text transform |
+| `--accordion-title-letter-spacing` | Title letter spacing |
+| `--accordion-subtitle-font` | Subtitle font shorthand |
+| `--accordion-border` | Item border style |
+| `--accordion-open-background-color` | Open item summary background |
+| `--accordion-open-body-background-color` | Open item body background |
+| `--accordion-body-padding` | Body content padding |
+| `--accordion-body-color` | Body text color |
+| `--color-text-primary` | Base text color reference |
+| `--font-family-display` | Display font family |
+| `--color-neutral-400` | Border color reference |
+| `--focus-outline` | Focus ring style |
+| `--color-brand-primary` | Focus ring color fallback |
+
 ## See Also
 
 - [Tabs Block](../tabs/README.md) - Tabbed content interface

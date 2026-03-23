@@ -78,10 +78,13 @@ eds/
 ├── docs/                     # Documentation
 │   ├── BLOCK-EXTENSIBILITY-GUIDE.md  # Framework architecture & patterns
 │   ├── BLOCK-RENDERING-BUILD-CONFIG.md # Build pipeline & deployment
-│   ├── FED-SOLUTION-DESIGN.md        # Design token system architecture
 │   ├── BRAND-SETUP-GUIDE.md          # Adding new brand sites
-│   ├── ARCHITECTURE-TODO.md          # Tracked TODOs and open decisions
-│   └── PROJECT-README.md             # This file
+│   ├── MULTI-BRAND-SUPPORT-OVERVIEW.md # Token system & repoless architecture overview
+│   ├── PROJECT-README.md             # This file
+│   ├── project/
+│   │   └── TODOS.md                  # Consolidated open to-do items
+│   └── in-progress/                  # Working docs, specs, open trackers
+│       └── FED-SOLUTION-DESIGN.md    # Design token system architecture
 │
 └── tools/
     └── sidekick/
@@ -192,19 +195,32 @@ See: `docs/BRAND-SETUP-GUIDE.md` for the complete process.
 |-------|---------|
 | [Block Extensibility Guide](docs/BLOCK-EXTENSIBILITY-GUIDE.md) | Framework architecture, patterns, best practices |
 | [Block Rendering & Build Config](docs/BLOCK-RENDERING-BUILD-CONFIG.md) | Build pipeline, deployment, token architecture |
-| [FED Solution Design](docs/FED-SOLUTION-DESIGN.md) | Design token system, App Builder, governance |
+| [Multi-Brand Support Overview](docs/MULTI-BRAND-SUPPORT-OVERVIEW.md) | Repoless architecture, token system, brand detection |
 | [Brand Setup Guide](docs/BRAND-SETUP-GUIDE.md) | Complete process for launching new brand sites |
-| [Architecture TODO](docs/ARCHITECTURE-TODO.md) | Open technical decisions and tracked items |
+| [FED Solution Design](docs/in-progress/FED-SOLUTION-DESIGN.md) | Design token system, App Builder, governance |
+| [Open To-Dos](docs/project/TODOS.md) | All open work items — blocks, architecture, testing, security |
 
 ## AI Automation
 
 This project includes AI skills for common tasks:
 
-### Active Skills
+### Active Skills (in `.agents/skills/eds/`)
 
-- **@site-spinup** - Set up new brand site structure
-
-> **Note:** `block-creation` and `block-extension` skills are archived (in `.agents/_archive/`). Only `site-spinup` is currently active in `.agents/skills/eds/`.
+| Skill | Purpose |
+|-------|---------|
+| `site-spinup` | Set up new brand site structure |
+| `block-development` | Scaffold and develop blocks to spec |
+| `block-audit` | Audit a block against solution design requirements |
+| `block-testing` | Generate unit tests for blocks |
+| `block-readme` | Generate/update block README documentation |
+| `block-research` | Research block requirements and patterns |
+| `scaffold-cf-model` | Scaffold a Content Fragment model |
+| `pre-merge-check` | Comprehensive pre-merge compliance checks |
+| `quality-audit` | Broad quality audit across blocks |
+| `validate-third-party` | Verify third-party integration compliance |
+| `authoring-guide` | Generate authoring guidance for blocks |
+| `create-brand-tokens` | Create brand token overrides for a new property |
+| `e2e-testing` | End-to-end testing workflows |
 
 ## Technologies
 
@@ -298,19 +314,20 @@ See troubleshooting sections in documentation guides.
 - AI automation skills
 - Comprehensive documentation
 
-### Phase 2: Block Library
-- Migrate remaining blocks (columns, footer, header, fragment)
-- Create new brand-specific blocks
-- Build test suite for base blocks
+### Phase 2: Block Library (In Progress)
+- Block audit remediation — 21 of 28 blocks are NO-GO (see [docs/audits/SUMMARY.md](docs/audits/SUMMARY.md))
+- Content Fragment integration for Cards and Carousel
+- Test suite implementation (Jest/Playwright configured but unused)
 - Performance optimization
 
 ### Phase 3: Integration
-- Advanced Universal Editor features
-- Analytics dashboard
-- A/B testing framework
+- Advanced Universal Editor features (scroll states, mega menu, booking modal)
+- CTA block (4 variants: medialeft, mediaright, buttons, iconleft)
+- Section model expansion (backgroundImage, backgroundVideo, overlay)
+- Analytics and A/B testing framework
 
 ### Phase 4: Expansion
-- Launch additional brand sites
+- Launch additional brand sites (30+ properties planned)
 
 ---
 

@@ -25,7 +25,9 @@
           "component": "aem-content",
           "valueType": "string",
           "name": "uri",
-          "label": "Video"
+          "label": "Video Source",
+          "required": true,
+          "description": "Select MP4 from DAM or enter URL for YouTube/Vimeo"
         },
         {
           "component": "multiselect",
@@ -49,7 +51,8 @@
           "component": "reference",
           "valueType": "string",
           "name": "placeholderImage",
-          "label": "Placeholder Image",
+          "label": "Poster Image Override",
+          "description": "Select poster image to override the default first-frame poster image",
           "multi": true
         },
         {
@@ -58,6 +61,30 @@
           "name": "placeholderImageAlt",
           "value": "",
           "label": "Placeholder Image Alt Text"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "videoDescription",
+          "value": "",
+          "label": "Video Description",
+          "description": "Text description of video content"
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "fullWidth",
+          "label": "Full-width Video",
+          "value": false,
+          "description": "Expand video to full container width"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "captionsTrack",
+          "label": "Captions Track",
+          "description": "WebVTT file for MP4 video captions (MP4 source only)",
+          "multi": false
         }
       ]
     }

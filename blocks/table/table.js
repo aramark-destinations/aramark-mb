@@ -13,7 +13,7 @@ const copyAttributes = (source, target, attributes) => {
   });
 };
 
-const normaliseText = (value = '') => value.replace(/\u00a0/g, ' ').trim();
+export const normaliseText = (value = '') => value.replace(/\u00a0/g, ' ').trim();
 
 const hasMeaningfulChild = (element) => Boolean(
   element.querySelector(MEANINGFUL_CONTENT_SELECTORS),
@@ -21,7 +21,7 @@ const hasMeaningfulChild = (element) => Boolean(
 
 const isCaptionRow = (row) => row.classList.contains('table-caption') || row.dataset.tableCaption === 'true' || row.dataset.caption === 'true';
 
-const shouldRenderRowHeader = (cell, index) => {
+export const shouldRenderRowHeader = (cell, index) => {
   if (index !== 0) return false;
   if (cell.hasAttribute('colspan') || cell.dataset.rowHeader === 'false') return false;
   if (cell.dataset.rowHeader === 'true') return true;
@@ -48,7 +48,7 @@ const createPlaceholderContent = () => {
   return fragment;
 };
 
-const isNumericContent = (textContent) => {
+export const isNumericContent = (textContent) => {
   const normalized = normaliseText(textContent);
   if (!normalized) return false;
 
@@ -226,7 +226,22 @@ const createScrollWrapper = (table) => {
   return { wrapper, updateOverflowIndicators, cleanup };
 };
 
-export default async function decorate(block) {
+/**
+ * Decorates the table block
+ * @param {Element} block The table block element
+ * @param {Object} options Configuration options
+ * @param {Function} options.onBefore Lifecycle hook called before decoration
+ * @param {Function} options.onAfter Lifecycle hook called after decoration
+ * @returns {Promise<void>}
+ */
+export async function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('table:before', { detail: ctx, bubbles: true }));
+
+  // === TABLE BLOCK LOGIC ===
   const config = readBlockConfig(block) || {};
 
   if (config.classes) {
@@ -242,7 +257,11 @@ export default async function decorate(block) {
     captionOverride: captionFromConfig || captionFromDataset,
     hasHeaderRow: headerRowSetting,
   });
-  if (!structure) return;
+  if (!structure) {
+    options.onAfter?.(ctx);
+    block.dispatchEvent(new CustomEvent('table:after', { detail: ctx, bubbles: true }));
+    return;
+  }
 
   const { table, captionText } = structure;
   const { wrapper } = createScrollWrapper(table);
@@ -251,4 +270,15 @@ export default async function decorate(block) {
   else block.dataset.tableMissingCaption = 'true';
 
   block.replaceChildren(wrapper);
+
+  // lifecycle hook + event (after)
+  options.onAfter?.(ctx);
+  block.dispatchEvent(new CustomEvent('table:after', { detail: ctx, bubbles: true }));
 }
+
+/**
+ * Default export
+ * - Calls decorate()
+ * - Allows global hook injection via window.Table?.hooks
+ */
+export default (block) => decorate(block, window.Table?.hooks);

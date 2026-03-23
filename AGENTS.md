@@ -63,11 +63,113 @@ Skills encode proven techniques that prevent mistakes. Not using them means repe
 
 <!-- SUPERPOWERS_SKILLS_END -->
 
+## PROJECT RULES
+
+Project-specific conventions all AI tools must follow when working in this repository.
+
+### Architecture
+
+This is an **Adobe Edge Delivery Services (EDS) multi-brand repoless platform** built on `@adobe/aem-boilerplate`.
+
+- **Blocks:** 27 shared blocks in `/blocks/`. Each brand (`brands/{name}/`) can override via `tokens.css`.
+- **Brand customization = CSS tokens only** (for the foreseeable future). JS-level brand hook overrides are future-proofing — do not build toward them unless explicitly asked.
+- **Authoring backend:** AEM Universal Editor. Block schemas define the authoring contract.
+
+### Block Development Rules
+
+**All new blocks MUST use Pattern A:**
+
+```js
+export function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('{block-name}:before', { detail: ctx, bubbles: true }));
+
+  // block logic here
+
+  options.onAfter?.(ctx);
+  block.dispatchEvent(new CustomEvent('{block-name}:after', { detail: ctx, bubbles: true }));
+}
+
+export default (block) => decorate(block, window.{BlockName}?.hooks);
+```
+
+- **NEVER hardcode** colors, fonts, or spacing — always use CSS custom properties from the token system
+- CSS classes follow `.{blockname}-{element}` pattern (e.g., `.cards-card-image`)
+- Use `readVariant(block)` from `scripts.js` for variant detection
+- Co-locate block files: `{name}.js`, `{name}.scss`, `_{name}.json` (UE schema), `README.md`
+- **When modifying an existing block that uses an older pattern, migrate it to Pattern A**
+
+### Key Import Sources
+
+Blocks import from these modules via relative `../../scripts/` paths:
+
+| Module | Key exports |
+|--------|-------------|
+| `aem.js` | `createOptimizedPicture`, `readBlockConfig`, `loadCSS`, `loadScript`, `toClassName`, `toCamelCase`, `extractAueConfig` |
+| `scripts.js` | `moveInstrumentation`, `readVariant`, `moveAttributes` |
+| `baici/utils/config.js` | `readConfig`, `readKeyValueConfig`, `readUeConfig`, `getColValue` |
+| `baici/utils/utils.js` | `fetchSvg`, `injectSvg`, `debounce`, `getBrandCode` |
+| `analytics.js` | Consent-gated ACDL event pushing |
+| `placeholders.js` | i18n/placeholder text |
+| `editor-support.js` | UE WYSIWYG re-decoration support |
+
+### Build Commands
+
+| Command | What it does |
+|---------|-------------|
+| `pnpm build:css` | Compile SCSS. Block CSS compiles **in-place** (`hero.scss` → `hero.css`). Global CSS → `dist/styles/`. |
+| `pnpm build:json` | Aggregate UE JSON schemas into root `component-*.json` files. **Required after creating/modifying any `_{name}.json` schema.** |
+| `pnpm lint` | ESLint + Stylelint (also enforced by Husky pre-commit) |
+| `pnpm test` | Jest with jsdom |
+| `pnpm scaffold:block {name}` | Scaffold a new block directory with Pattern A boilerplate |
+
+### UE JSON Schema Locations
+
+- **Content blocks** (most blocks): co-located as `blocks/{name}/_{name}.json`
+- **Default content blocks** (button, image, page, section, text, title): schemas in `models/` directory
+- All schemas aggregated by `pnpm build:json` — **always run after schema changes**
+
+### Token System
+
+| File | Purpose |
+|------|---------|
+| `styles/root-tokens.scss` | Configurable base values (colors, spacing, radii) — edit per brand needs |
+| `styles/fixed-tokens.scss` | Derived values via `color-mix()` — **do NOT edit manually** |
+| `brands/{brand}/tokens.css` | Runtime overrides — only for brand-specific adjustments |
+
+### Conventions
+
+- Create `ticket-details.md` in the block directory when starting block work (source of truth for requirements)
+- Check existing `/blocks/` and `docs/` before building anything new
+- Reference block for Pattern A: `blocks/cards/cards.js`
+- Architecture reference: `docs/BLOCK-EXTENSIBILITY-GUIDE.md`
+- Token/build reference: `docs/BLOCK-RENDERING-BUILD-CONFIG.md`
+
+---
+
 ## PROJECT SKILLS
 
-> **Note:** It's important that you install the BAiCi Skills Repository to get access to the skills listed below.  It is also recommend to regularly update the skills to make sure you have the latest versions.
+### Self-Contained Project Skills
 
-### AEM / EDS Skills
+These skills live in `.agents/skills/eds/` and are always available — no external installation required.
+
+| Skill | Purpose |
+| ----- | ------- |
+| `eds/site-spinup` | Scaffold a new brand site in the multi-brand framework |
+| `eds/block-development` | Full TDD workflow for building/modifying blocks in this repo |
+| `eds/block-research` | Research existing blocks before building new ones |
+| `eds/block-testing` | Jest unit testing patterns for blocks; includes test infrastructure bootstrapping |
+| `eds/block-readme` | Create/update block README.md files |
+| `eds/authoring-guide` | Create author-facing (CMS) documentation for blocks |
+| `eds/e2e-testing` | Playwright E2E testing patterns for interactive blocks |
+
+### BAiCi AEM / EDS Skills
+
+> **Note:** Install the BAiCi Skills Repository to get access to the skills listed below. Recommended to keep updated.
+
+#### AEM / EDS Skills
 
 | Skill | Purpose |
 | ----- | ------- |

@@ -73,8 +73,8 @@
 .table.block caption {
   caption-side: top;
   text-align: left;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-012);
   color: var(--body-text-color, inherit);
 }
 
@@ -88,18 +88,18 @@
 }
 
 .table.block table th {
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 .table.block table th,
 .table.block table td {
-  padding: 0.75rem;
+  padding: var(--spacing-012);
   text-align: left;
   vertical-align: top;
 }
 
 .table.block table tbody th {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .table.block table td.table-cell--numeric {
