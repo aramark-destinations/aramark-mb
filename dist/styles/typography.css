@@ -225,6 +225,7 @@ a:any-link {
   color: var(--link-color);
   text-decoration: underline;
   letter-spacing: var(--link-letter-spacing);
+  line-height: var(--link-line-height);
   overflow-wrap: break-word;
 }
 
@@ -317,7 +318,9 @@ button:disabled,
 button:disabled:hover,
 fieldset[disabled] button,
 button.primary:disabled,
-button.primary:disabled:hover {
+button.primary:disabled:hover,
+button.secondary:disabled,
+button.secondary:disabled:hover {
   opacity: 0.5;
   cursor: default;
   pointer-events: none;
