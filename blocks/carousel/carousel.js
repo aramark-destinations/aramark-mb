@@ -97,7 +97,7 @@ function bindEvents(block) {
   });
 }
 
-function createSlide(row, slideIndex, carouselId) {
+export function createSlide(row, slideIndex, carouselId) {
   const slide = document.createElement('li');
   slide.dataset.slideIndex = slideIndex;
   slide.setAttribute('id', `carousel-${carouselId}-slide-${slideIndex}`);
@@ -131,7 +131,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('carousel:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('carousel:before', { detail: ctx, bubbles: true }));
 
   // === CAROUSEL BLOCK LOGIC ===
   readVariant(block);
@@ -195,7 +195,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('carousel:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('carousel:after', { detail: ctx, bubbles: true }));
 }
 
 /**

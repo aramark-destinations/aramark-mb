@@ -1,6 +1,6 @@
 ---
 name: eds/block-readme
-description: Create or update a block README.md following the aramark-mb conventions.
+description: Create or update a block README.md following the conventions.
 when_to_use: after implementing a new block or making significant changes to an existing block
 version: 1.0.0
 ---

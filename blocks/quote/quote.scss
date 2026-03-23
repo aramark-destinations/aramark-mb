@@ -1,3 +1,7 @@
+:root {
+  --quote-highlight-font-size: 120%;
+}
+
 /* 
  * Quote Block - Base Styles
  */
@@ -15,7 +19,7 @@
 }
 
 .quote blockquote .quote-quotation {
-  font-size: 120%;
+  font-size: var(--quote-highlight-font-size);
 }
 
 .quote blockquote .quote-quotation > :first-child {

@@ -69,7 +69,7 @@ WebFetch: `https://www.aem.live/developer/block-collection`
 Adobe maintains reference implementations for common EDS patterns. These are production-quality and EDS-idiomatic.
 
 **When to use an Adobe block:**
-- The capability is generic and not Aramark-specific
+- The capability is generic and not project-specific
 - The Adobe implementation follows EDS conventions (it will)
 - The block can be adapted to use this repo's Pattern A and token system
 

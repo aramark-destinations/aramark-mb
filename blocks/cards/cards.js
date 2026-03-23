@@ -14,7 +14,7 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 import { pushAnalyticsEvent } from '../../scripts/analytics.js';
 
-function sanitizeCSSClass(className) {
+export function sanitizeCSSClass(className) {
   if (!className) return '';
   return className
     .split(' ')
@@ -23,7 +23,7 @@ function sanitizeCSSClass(className) {
     .join(' ');
 }
 
-function isLikelyURL(text) {
+export function isLikelyURL(text) {
   if (!text || typeof text !== 'string') return false;
   const trimmed = text.trim();
   if (trimmed.length < 2) return false;
@@ -203,7 +203,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('cards:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('cards:before', { detail: ctx, bubbles: true }));
 
   // === CARDS BLOCK LOGIC ===
   readVariant(block);
@@ -358,7 +358,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('cards:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('cards:after', { detail: ctx, bubbles: true }));
 }
 
 /**

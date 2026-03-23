@@ -1,3 +1,7 @@
+:root {
+  --hero-min-height: 300px;
+}
+
 .hero-container .hero-wrapper {
   max-width: unset;
   padding: 0;
@@ -6,7 +10,7 @@
 .hero {
   position: relative;
   padding: var(--spacing-040) var(--spacing-024);
-  min-height: 300px;
+  min-height: var(--hero-min-height);
 }
 
 .hero h1 {

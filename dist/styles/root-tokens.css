@@ -124,4 +124,47 @@
   --button-line-height: var(--line-height-snug);
   --button-transition: var(--transition-duration-fast);
   --button-touch-target: var(--sizing-048);
+  /* ========================================================================
+     Semantic Aliases & Compatibility Tokens
+     Convenience bridge tokens mapping conceptual names (used by blocks) to
+     the project's canonical token system. Add brand-color concepts here;
+     do NOT add raw hex values.
+     ======================================================================== */
+  /* Brand color shortcuts */
+  --color-brand-primary: var(--color-primary);
+  --color-brand-primary-500: var(--color-primary);
+  --color-brand-secondary: var(--color-secondary);
+  --color-brand-secondary-500: var(--color-secondary);
+  --color-brand-tertiary: var(--color-secondary); /* Override per brand */
+  --color-brand-tertiary-500: var(--color-brand-tertiary);
+  --color-brand-light: var(--color-primary-100);
+  --color-brand-500: var(--color-primary);
+  /* Typography color shortcuts */
+  --color-text-primary: var(--text-dark-1);
+  /* Neutral-scale aliases — --color-neutral-* → --color-grey-* */
+  /* Blocks may reference --color-neutral-* tokens from prior design systems. */
+  /* These aliases ensure those references resolve to the project's grey scale. */
+  --color-neutral-50: var(--color-grey-50);
+  --color-neutral-100: var(--color-grey-100);
+  --color-neutral-200: var(--color-grey-200);
+  --color-neutral-300: var(--color-grey-300);
+  --color-neutral-400: var(--color-grey-400);
+  --color-neutral-500: var(--color-grey-500);
+  --color-neutral-800: var(--color-grey-800);
+  --color-neutral-900: var(--color-grey-900);
+  /* UI element semantic colors */
+  --color-border: var(--color-grey-300);
+  --color-error: var(--color-alerts-error);
+  --color-highlight: var(--color-primary-100);
+  /* Focus styling */
+  --focus-ring-color: var(--link-color);
+  --focus-outline: 3px solid var(--color-brand-primary);
+  /* Shadows */
+  --dropdown-box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 7.5%);
+  /* Transparent utility */
+  --transparent: transparent;
+  /* Spacing — legacy rem/ch-based aliases */
+  --spacing-small: var(--spacing-008);
+  --spacing-xsmall: var(--spacing-004);
+  --spacing-xxsmall: var(--spacing-002);
 }

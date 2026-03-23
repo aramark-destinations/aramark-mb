@@ -4,7 +4,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
   gap: var(--spacing-024);
 }
 
@@ -24,7 +24,7 @@
 }
 
 .cards > ul > a:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--card-shadow);
 }
 
 .cards > ul > a:focus {

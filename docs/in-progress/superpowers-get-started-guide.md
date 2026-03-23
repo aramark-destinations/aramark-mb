@@ -1,409 +1,231 @@
-# Superpowers Get Started Guide
-## Project onboarding for developers
+# AI-Assisted Development Guide
 
-This guide is meant to help you start using **Superpowers** on a real project without needing to absorb the whole repository first.
-
----
-
-## 1. What Superpowers is
-
-Superpowers is a **shared workflow/skills layer** for AI coding tools.
-
-Think of it like this:
-
-- **Claude Code / Cursor / Copilot / Codex** = the engine
-- **Superpowers** = the repeatable playbook
-
-Instead of relying on ad hoc prompting every time, Superpowers gives the agent named workflows for planning, debugging, verification, review, and more.
+How to use Claude Code effectively on this project. This is the shared operating model for AI-assisted development across the team.
 
 ---
 
-## 2. What this means on our project
+## 1. The setup
 
-On this project, Superpowers should be treated as:
+This project uses **Claude Code** as the AI coding tool. Claude Code runs in the terminal inside your editor (VS Code, Cursor, etc.) and has full access to the repo.
 
-- a **structured way to use AI**
-- a **shared set of workflows**
-- a way to make agent output more consistent across developers
+The project extends Claude Code with **project-level skills** — named workflows in `.agents/skills/eds/` that encode how work should be done here: what patterns to follow, what files to touch, what to check, and what "done" means for each type of task.
 
-The goal is not to replace your judgment.
-The goal is to make AI assistance less sloppy, less random, and more repeatable.
+Think of skills as structured task templates that keep Claude Code on-rail and consistent across the team.
 
----
-
-## 3. The basic mental model
-
-### Without Superpowers
-You might say:
-
-> Fix this issue  
-> Build this component  
-> Why is this broken
-
-That can work, but the agent may:
-- jump to coding too fast
-- skip planning
-- guess at root causes
-- claim success before real validation
-
-### With Superpowers
-The expected behavior is more like:
-
-1. clarify the problem
-2. choose the right workflow
-3. plan or debug systematically
-4. implement
-5. verify before calling it done
+**There is no separate installation.** Claude Code + the skills in this repo is the entire setup.
 
 ---
 
-## 4. First-time setup
-
-## Install
+## 2. First-time setup
 
 ```bash
-npm install -g @complexthings/superpowers-agent
+# Install Claude Code (if not already installed)
+npm install -g @anthropic-ai/claude-code
+
+# Run inside the repo
+cd eds
+claude
 ```
 
-## Bootstrap
+That's it. Claude Code picks up the skills and solution design context from `.agents/skills/eds/` and `.claude/solution-design/` automatically.
 
-```bash
-superpowers-agent bootstrap
+**Verify it's working:** Ask Claude Code what skills are available. It will list the project skills and explain what each one does.
+
+---
+
+## 3. The solution design
+
+Before writing any code, Claude Code reads the solution design documents in `.claude/solution-design/`. These are the authoritative requirements for the platform:
+
+- `overview.md` — project goals, architecture, technology stack
+- `blocks-and-components.md` — component inventory, authoring contracts, CF integration
+- `technical-requirements.md` — performance targets, testing requirements, browser support
+- `developer-alignment.md` — coding conventions, Pattern A, token rules
+
+**You do not need to pass these to Claude Code manually.** They are automatically loaded as context. If Claude Code produces something that doesn't match what you expect, check the solution design first — the answer is usually there.
+
+---
+
+## 4. Project skills
+
+Skills are invoked in Claude Code by describing what you want to do, or by referencing the skill name directly. Skills are located in `.agents/skills/eds/`.
+
+### Block development workflow
+
+| Skill | When to use |
+|---|---|
+| `eds/block-research` | Before building anything — checks existing blocks, Adobe Block Collection, and Block Party to avoid duplicate work |
+| `eds/block-development` | Building a new block or making non-trivial changes to an existing one. Full TDD workflow: schema → Pattern A → CSS tokens → tests → audit |
+| `eds/block-audit` | After implementing a block. Validates Pattern A compliance, spec alignment, and CSS token usage |
+| `eds/block-readme` | Creating or updating a block's `README.md` following project conventions |
+| `eds/block-testing` | Writing Jest unit tests for block logic |
+| `eds/e2e-testing` | Writing Playwright E2E tests for blocks with interactive behavior |
+| `eds/authoring-guide` | Creating author-facing documentation (separate from developer README) |
+
+### Platform & quality
+
+| Skill | When to use |
+|---|---|
+| `eds/pre-merge-check` | Final quality gate before any PR is merged — orchestrates block-audit and quality-audit |
+| `eds/quality-audit` | Lighthouse, SEO, and WCAG 2.1 accessibility audit against solution design targets |
+| `eds/validate-third-party` | Verifying third-party integrations meet async loading, consent, environment config, and performance requirements |
+
+### Brand & content
+
+| Skill | When to use |
+|---|---|
+| `eds/site-spinup` | Launching a new brand/property site — scaffolds the brand directory, token file, and admin API registration |
+| `eds/create-brand-tokens` | Creating or updating a brand's `tokens.css` — ensures only root token overrides, no hard-coded values |
+| `eds/scaffold-cf-model` | Designing and scaffolding a Content Fragment model following the platform's shared field naming conventions |
+
+---
+
+## 5. Standard workflows
+
+### Building a new block
+
+Always follow this order:
+
+```
+1. eds/block-research     — confirm no existing block covers it
+2. eds/block-development  — build it (schema → JS → CSS → tests)
+3. eds/block-audit        — validate before pushing
+4. eds/pre-merge-check    — final gate before PR
 ```
 
-## Set up skills in the project
+Example prompt:
 
-```bash
-superpowers setup-skills
+```
+I need to build the CTA block per the ticket-details.md.
+Start with eds/block-research to check for existing implementations,
+then proceed with eds/block-development.
 ```
 
-### What these do
+### Fixing a bug in a block
 
-- `install`: installs the CLI globally
-- `bootstrap`: wires Superpowers into supported AI tools
-- `setup-skills`: prepares project-level skill usage
-
----
-
-## 5. The 5 skills you should care about first
-
-These are the best starting point for day-to-day development.
-
-## 5.1 Brainstorming
-
-Use when:
-- requirements are fuzzy
-- you are shaping an approach
-- you want options before implementation
-
-Good for:
-- feature ideation
-- architecture choices
-- deciding between implementation paths
-
----
-
-## 5.2 Writing plans
-
-Use when:
-- you already know what needs to be built
-- you want a clean implementation map
-- the work spans multiple files or steps
-
-Good for:
-- breaking work into tasks
-- identifying files to touch
-- defining validation steps before coding
-
----
-
-## 5.3 Systematic debugging
-
-Use when:
-- something is broken
-- symptoms are unclear
-- you do not trust first-glance assumptions
-
-Good for:
-- isolating root cause
-- avoiding guess-and-check debugging
-- reducing wasted cycles
-
----
-
-## 5.4 Verification before completion
-
-Use when:
-- the change seems done
-- the fix looks right but is not yet proven
-- you want to prevent false confidence
-
-Good for:
-- checking assumptions
-- confirming the real behavior
-- making sure “done” actually means done
-
----
-
-## 5.5 Requesting code review
-
-Use when:
-- implementation is complete
-- you want a structured review pass
-- you want another layer of sanity checking before merge
-
-Good for:
-- catching missed issues
-- comparing implementation against plan
-- improving consistency across the team
-
----
-
-## 6. Recommended workflow on this project
-
-Use this as the default pattern unless the task is truly tiny.
-
-## For new work
-
-1. **Brainstorming**  
-   clarify the request and shape the solution
-
-2. **Writing plans**  
-   turn the agreed direction into implementation steps
-
-3. implement the work
-
-4. **Requesting code review**  
-   review the change against the plan
-
-5. **Verification before completion**  
-   confirm the change actually works
-
----
-
-## For bug fixing
-
-1. **Systematic debugging**  
-   identify real root cause
-
-2. implement the smallest correct fix
-
-3. **Verification before completion**  
-   validate the fix with evidence
-
-4. **Requesting code review**  
-   optionally run a final review pass for larger changes
-
----
-
-## 7. How to use this on an actual task
-
-## Example: new feature
-
-Instead of starting with:
-
-> Build this feature
-
-Use a flow like:
-
-> Use brainstorming to help shape the approach for this feature.  
-> Once the direction is clear, use writing-plans to break implementation into steps.  
-> After implementation, use requesting-code-review and verification-before-completion.
-
----
-
-## Example: bug
-
-Instead of:
-
-> Fix this bug
-
-Use a flow like:
-
-> Use systematic-debugging to identify the root cause of this issue.  
-> After proposing the fix, use verification-before-completion before calling the task done.
-
----
-
-## 8. Suggested prompts developers can reuse
-
-## Planning prompt
-
-```text
-Use brainstorming to help define the best implementation approach for this task.
-
-Context:
-- [describe task]
-- [list important constraints]
-- [list relevant files or systems]
-
-Output:
-- recommended approach
-- tradeoffs
-- risks
-- assumptions that need validation
+```
+1. Describe the symptom clearly
+2. Let Claude Code diagnose — it will read the block, audit file, and relevant docs
+3. Implement the smallest correct fix
+4. eds/block-audit — confirm no regressions
 ```
 
-## Implementation plan prompt
+Example prompt:
 
-```text
-Use writing-plans for this approved approach.
-
-Context:
-- [describe approved solution]
-- [list files/components involved]
-
-Output:
-- ordered implementation steps
-- files likely to change
-- validation steps
-- edge cases to watch for
+```
+The carousel block isn't advancing slides on mobile.
+Read blocks/carousel/carousel.js and diagnose the root cause
+before proposing a fix.
 ```
 
-## Debugging prompt
+### Adding a new brand
 
-```text
-Use systematic-debugging for this issue.
-
-Symptoms:
-- [describe visible behavior]
-- [when it happens]
-- [what is already ruled out]
-
-Need:
-- root cause
-- smallest correct fix
-- verification steps
+```
+1. eds/site-spinup        — scaffolds brand directory, tokens.css, registers the EDS site
+2. eds/create-brand-tokens — if token values need refinement afterward
 ```
 
-## Verification prompt
+### Before merging a PR
 
-```text
-Use verification-before-completion for this change.
+Always run:
 
-Please confirm:
-- the original issue is resolved
-- no obvious regressions were introduced
-- the result is supported by evidence, not assumption
+```
+eds/pre-merge-check
 ```
 
-## Review prompt
+This validates any modified blocks and runs quality checks. Do not skip it.
 
-```text
-Use requesting-code-review on this completed change.
+---
 
-Please review:
-- correctness
-- alignment with the plan
-- missed edge cases
-- unnecessary complexity
-- follow-up concerns
+## 6. How to get good output
+
+### Be specific about requirements
+
+Claude Code reads `ticket-details.md` in each block directory as the source of requirements. If a ticket doesn't have one, tell Claude Code what the requirements are explicitly upfront.
+
+```
+# Good
+Build the hero block to spec. ticket-details.md has the full requirements.
+
+# Also good
+Build a hero block that supports: background image, H1 heading,
+optional eyebrow text, optional description, up to 2 CTA buttons,
+and includes breadcrumbs. Refer to docs/audits/hero-audit.md for known gaps.
+
+# Too vague
+Make the hero block better
+```
+
+### Use plan mode for non-trivial work
+
+For anything that touches multiple files or has unclear scope, start with a plan before implementation:
+
+```
+Plan how to add Content Fragment integration to the cards block.
+Don't write any code yet — just show me the approach.
+```
+
+Claude Code will enter plan mode, explore the codebase, and present a plan for your approval before touching anything.
+
+### Point to the audit files
+
+The `docs/audits/{block}-audit.md` files contain detailed findings per block. Referencing them gets you targeted fixes faster:
+
+```
+Fix the Priority 1 issues in the button block.
+See docs/audits/button-audit.md for the specific findings.
+```
+
+### Reference the solution design
+
+When building features, referencing the solution design explicitly produces output that matches the platform requirements:
+
+```
+Implement the Section model expansion per
+docs/in-progress/ADOPTION-PLAN.md section 1.
+Follow the token rules in docs/BLOCK-RENDERING-BUILD-CONFIG.md.
 ```
 
 ---
 
-## 9. Project structure and overrides
+## 7. What not to do
 
-Superpowers supports project-level configuration and skills.
+**Don't ask for large implementations without a plan.** Claude Code will jump into code and may miss requirements, skip tests, or make wrong assumptions. Use plan mode first.
 
-The important concept is:
+**Don't skip the audit after building.** `eds/block-audit` catches things that are easy to miss: missing `bubbles: true`, hard-coded hex fallbacks, spec gaps. It takes seconds and saves review cycles.
 
-- **project-level skills/config** can override broader defaults
-- this allows teams to standardize how AI is used in a specific repository
+**Don't trust "done" without evidence.** Ask Claude Code to show you the specific lines it changed and why. If it claims a spec requirement is met, ask it to show you the code that implements it.
 
-### Practical takeaway
+**Don't ask Claude Code to skip the token rules.** If it produces CSS with hard-coded values, push back. The rule is: every visual value references a token. No exceptions.
 
-If this project adds custom skill guidance, developers should follow the project version first.
-
-Think of the priority model like:
-
-1. project/repo-specific behavior
-2. personal/home behavior
-3. global/default behavior
-
-That means the project can define “how we want AI to work here” without depending on every individual developer using the exact same prompting habits.
+**Don't let Claude Code modify multiple unrelated things in one pass.** Scope each task narrowly. One block, one issue, one skill at a time.
 
 ---
 
-## 10. Team conventions for this project
+## 8. Team conventions
 
-Recommended team conventions:
-
-- use **brainstorming** before large or ambiguous implementation work
-- use **writing-plans** before coding non-trivial changes
-- use **systematic-debugging** instead of guess-based debugging
-- use **verification-before-completion** before saying a task is finished
-- use **requesting-code-review** before merging meaningful changes
-- prefer small, evidence-based iterations over big speculative AI output
+- Run `eds/block-research` before building anything new
+- Run `eds/block-audit` after every block change, before pushing
+- Run `eds/pre-merge-check` before every PR — no exceptions
+- Use plan mode for anything that touches more than 2–3 files
+- Reference `ticket-details.md` or provide explicit requirements before implementation
+- Keep tasks scoped: one block per session when possible
 
 ---
 
-## 11. What not to do
+## 9. Key files to know
 
-Avoid using Superpowers like this:
-
-- asking for a huge implementation with no planning
-- trusting “done” without verification
-- debugging by repeatedly trying random fixes
-- skipping review because the agent sounds confident
-
-The value comes from following the workflow, not just invoking the tool name.
-
----
-
-## 12. Quick start checklist
-
-For a new developer joining the project:
-
-- install Superpowers
-- run bootstrap
-- run `superpowers setup-skills`
-- learn the 5 core skills
-- use planning for new work
-- use systematic debugging for bugs
-- use verification before calling changes done
-- use code review before merge
+| Path | What it is |
+|---|---|
+| `.claude/solution-design/` | Platform requirements — Claude Code reads these automatically |
+| `.agents/skills/eds/` | Project-level skills — one directory per skill |
+| `docs/project/TODOS.md` | All open work items — check here before starting any remediation task |
+| `docs/audits/SUMMARY.md` | Block audit results — GO/NO-GO status for all 28 blocks |
+| `docs/audits/{block}-audit.md` | Per-block findings — detailed issues and remediation notes |
+| `blocks/{block}/ticket-details.md` | ADO requirements for the block — Claude Code's primary spec source |
 
 ---
 
-## 13. One-line explanation you can reuse
+## 10. One-line explanation for the team
 
-> Superpowers is the shared workflow layer we use to make AI-assisted development more structured, consistent, and verifiable on this project.
-
----
-
-## 14. Suggested rollout approach for the team
-
-If we are adopting this incrementally:
-
-### Phase 1
-Use only:
-- brainstorming
-- writing-plans
-- systematic-debugging
-- verification-before-completion
-
-### Phase 2
-Add:
-- requesting-code-review
-
-### Phase 3
-Add project-specific conventions or custom skills if needed
-
-This keeps the learning curve small and avoids overwhelming the team.
-
----
-
-## 15. Final takeaway
-
-Do not think of Superpowers as “another AI tool to learn.”
-
-Think of it as:
-
-- a **shared operating model**
-- a **repeatable set of AI workflows**
-- a way to improve quality and consistency across developers
-
-Start small.
-Use the core skills.
-Let the workflow do the heavy lifting.
+> Claude Code + project skills is the shared operating model for AI-assisted development. The skills encode how work gets done here. Use them.

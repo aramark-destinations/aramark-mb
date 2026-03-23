@@ -1,6 +1,6 @@
 ---
 name: eds/block-development
-description: Full TDD workflow for building or modifying EDS blocks in the aramark-mb repo. Covers UE JSON schema, Pattern A boilerplate, CSS tokens, build commands, testing, and verification.
+description: Full TDD workflow for building or modifying EDS blocks in the repo. Covers UE JSON schema, Pattern A boilerplate, CSS tokens, build commands, testing, and verification.
 when_to_use: when creating a new block or making non-trivial changes to an existing block in /blocks/
 version: 1.0.0
 ---
@@ -9,7 +9,7 @@ version: 1.0.0
 
 ## Overview
 
-This skill covers the full workflow for creating or modifying a block in the aramark-mb EDS codebase. Follow these steps in order. Do not skip steps.
+This skill covers the full workflow for creating or modifying a block in the EDS codebase. Follow these steps in order. Do not skip steps.
 
 **Before starting:** Run `eds/block-research` first to check whether an existing block or external implementation should be used instead.
 

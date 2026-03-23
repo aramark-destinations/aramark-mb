@@ -1,3 +1,8 @@
+:root {
+  --embed-play-icon-border-v: 5px;
+  --embed-play-icon-border-h: 6px;
+}
+
 /* 
  * Embed Block - Base Styles
  */
@@ -57,9 +62,9 @@
   position: absolute;
   width: 0;
   height: var(--sizing-010);
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 6px solid;
+  border-top: var(--embed-play-icon-border-v) solid transparent;
+  border-bottom: var(--embed-play-icon-border-v) solid transparent;
+  border-left: var(--embed-play-icon-border-h) solid;
   top: 4px;
   left: 7px;
 }

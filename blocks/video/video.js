@@ -8,14 +8,6 @@
 
 import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
 
-const _loadScript = (url) => {
-  const head = document.querySelector('head');
-  const script = document.createElement('script');
-  script.src = url;
-  head.append(script);
-  return script;
-};
-
 // Constants
 const PROGRESS_CHECK_INTERVAL = 1000; // milliseconds
 
@@ -29,7 +21,7 @@ let youtubeAPILoading = false;
  * @param {string} eventName - snake_case event name (video_started, video_paused, etc.)
  * @param {object} videoInteraction - Video interaction data for pageContext
  */
-function pushVideoEvent(eventName, videoInteraction) {
+export function pushVideoEvent(eventName, videoInteraction) {
   if (!window.adobeDataLayer) {
     // eslint-disable-next-line no-console
     console.warn('ACDL not initialized. Video event not tracked:', eventName);
@@ -49,7 +41,7 @@ function pushVideoEvent(eventName, videoInteraction) {
  * @param {URL} url - YouTube URL
  * @returns {string} Video ID
  */
-function getYouTubeVideoId(url) {
+export function getYouTubeVideoId(url) {
   const usp = new URLSearchParams(url.search);
   let vid = usp.get('v') ? encodeURIComponent(usp.get('v')) : '';
   if (url.origin.includes('youtu.be')) {
@@ -117,7 +109,7 @@ function embedVimeo(url) {
  * @param {string} title - Optional video title for aria-label
  * @returns {HTMLVideoElement} Video element with controls
  */
-function getVideoElement(source, poster = null, captions = null, title = '') {
+export function getVideoElement(source, poster = null, captions = null, title = '') {
   const video = document.createElement('video');
   video.setAttribute('controls', '');
   video.setAttribute('preload', 'metadata');
