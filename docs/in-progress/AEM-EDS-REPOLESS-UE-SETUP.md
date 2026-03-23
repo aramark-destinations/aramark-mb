@@ -40,7 +40,7 @@ Before running any commands, replace these tokens throughout:
 
 ### Why we are migrating
 
-The current repository lives in the `blueacorninc` GitHub org. AEM Code Sync ties a GitHub org to an Adobe org at installation time. Because the `blueacorninc` org is associated with the wrong Adobe org, code sync sends the wrong credentials when attempting to sync code to AEM — breaking deployment entirely.
+The current repository lives in the `aramark-destinations` GitHub org. AEM Code Sync ties a GitHub org to an Adobe org at installation time. Because the `aramark-destinations` org is associated with the wrong Adobe org, code sync sends the wrong credentials when attempting to sync code to AEM — breaking deployment entirely.
 
 **Fix**: move the repository to a new GitHub org that aligns with the correct Adobe org, then reconfigure AEM Code Sync and the Admin API site configs against that org.
 

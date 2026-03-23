@@ -6,12 +6,12 @@ A multi-brand Adobe Edge Delivery Services (EDS) website platform for Aramark MB
 
 Each brand is a separate repoless EDS site with its own preview/live URLs:
 
-- **Preview:** `https://main--{brand}--blueacorninc.aem.page/`
-- **Live:** `https://main--{brand}--blueacorninc.aem.live/`
+- **Preview:** `https://main--{brand}--aramark-destinations.aem.page/`
+- **Live:** `https://main--{brand}--aramark-destinations.aem.live/`
 
 Example (Lake Powell):
-- **Preview:** https://main--lake-powell--blueacorninc.aem.page/
-- **Live:** https://main--lake-powell--blueacorninc.aem.live/
+- **Preview:** https://main--lake-powell--aramark-destinations.aem.page/
+- **Live:** https://main--lake-powell--aramark-destinations.aem.live/
 
 ## Project Structure
 

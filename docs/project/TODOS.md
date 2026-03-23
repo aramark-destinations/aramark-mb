@@ -71,29 +71,14 @@ Full details in individual audit files under `docs/audits/`.
 
 ## 3. Feature Work
 
-### Section Model Expansion *(ADOPTION-PLAN.md #1)*
+### Section Model Expansion
 
-Required for page composition patterns involving background images/videos.
+Required for page composition patterns involving background images/videos. `component-models.json` fields (`backgroundImage`, `backgroundAlt`, `fullOverlay`, `linearGradient`, `sectionType`, etc.) are **done**. Remaining work:
 
 | File | Change |
 |---|---|
-| `models/component-models.json` | Add `backgroundImage`, `backgroundImageAlt`, `backgroundVideo`, `backgroundVideoFallback`, `backgroundOverlay`, `contentWidth`, `contentAlign` fields to section model |
 | `scripts/scripts.js` | Add `decorateSectionBackgrounds()` function; call from `decorateMain()` after `decorateSections(main)` |
-| `styles/styles.css` | Add `.section-bg`, `.section--overlay-*`, `.section--width-*`, `.section--align-*` CSS rules (all values must reference custom properties) |
-
-### CTA Block (New) *(ADOPTION-PLAN.md #2)*
-
-**Status:** Blocked on design sign-off for variant layouts.
-**Dependencies:** Section model expansion (needed for `bgimage` composition pattern), `readVariant` (done).
-
-| Variant | Layout |
-|---|---|
-| `cta--medialeft` | Image left (~50%), text + buttons right; stacks on mobile |
-| `cta--mediaright` | Image right, text + buttons left |
-| `cta--buttons` | Centered text block with button row, no image |
-| `cta--iconleft` | Fixed-width icon left of text content |
-
-Files needed: `blocks/cta/cta.js`, `blocks/cta/cta.css`, updates to `component-models.json`, `component-definition.json`, `component-filters.json`.
+| `styles/styles.scss` | Add `.section-bg`, `.section--overlay-*`, `.section--width-*`, `.section--align-*` rules (all values must reference custom properties) |
 
 ### Side-by-Side Block (New)
 
@@ -149,6 +134,10 @@ App Builder is referenced throughout the architecture for automated token PR cre
 - Document how authors discover available variants when authoring blocks
 - Clarify metadata validation timing (authoring time vs runtime)
 - Document UE form setup for token authoring
+
+### Block Pattern Documentation
+
+- **Document `onBefore`/`onAfter` lifecycle hooks** — Explain what the hooks are, why they exist, and why they should rarely be used in practice. Brands should extend via `/brands/{property}/blocks/` overrides, not hook into base block internals. The hooks are an escape hatch, not a standard authoring pattern.
 
 ### CSS Nesting Migration *(ARCHITECTURE-TODO #38)*
 

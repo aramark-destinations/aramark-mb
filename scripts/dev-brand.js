@@ -33,8 +33,8 @@ const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
  * Update this map when adding a new brand.
  */
 const BRAND_URLS = {
-  'lake-powell': 'https://main--lake-powell--blueacorninc.aem.page',
-  unbranded: 'https://main--unbranded--blueacorninc.aem.page',
+  'lake-powell': 'https://main--lake-powell--aramark-destinations.aem.page',
+  unbranded: 'https://main--unbranded--aramark-destinations.aem.page',
 };
 
 // Allow overrides via a local config file (not committed)

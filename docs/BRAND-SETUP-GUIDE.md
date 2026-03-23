@@ -5,7 +5,7 @@ How to add a new brand site to the multi-brand EDS platform.
 ## Prerequisites
 
 - AEM Cloud author access (`author-p179307-e1885056.adobeaemcloud.com`)
-- GitHub repo write access (current temporary repo: `BlueAcornInc/aramark-mb`)
+- GitHub repo write access (current temporary repo: `aramark-destinations/aramark-mb`)
 - Auth token from `admin.hlx.page/login` (GitHub identity linked to the org)
 - EDS/Helix Admin access for custom domain configuration
 
