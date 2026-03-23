@@ -10,12 +10,20 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+/* ============================================================
+   Import order:
+   1. fixed-tokens.css  — all CSS custom properties (derived + configured)
+   2. typography.css    — all element-level base styles (headings, body, lists, links, forms)
+   ============================================================ */
 @import url("fixed-tokens.css");
 @import url("typography.css");
+/* ============================================================
+   CSS Custom Properties — Token Definitions
+   All design tokens live here. Element rules live in typography.scss.
+   ============================================================ */
 :root {
-  /* Legacy aliases → design token system.
-     These map old token names (used by blocks) to the new semantic/design tokens.
-     Brand overrides to root-tokens.css values will automatically flow through. */
+  /* Legacy aliases — map old block token names to new semantic design tokens.
+     Brand overrides to root-tokens.css values flow through automatically. */
   --background-color: var(--surface-light-0);
   --light-color: var(--surface-light-1);
   --dark-color: var(--color-grey-500);
@@ -29,22 +37,50 @@
   --body-font-size-m: 22px;
   --body-font-size-s: 19px;
   --body-font-size-xs: 17px;
-  /* heading sizes — Figma-aligned (mobile first) */
+  --body-font-size-xxs: 12px;
+  /* body line-height */
+  --body-line-height-m: 1.6;
+  /* TODO: remove legacy heading sizes and update blocks to use Figma-aligned heading sizes */
+  --heading-font-size-xxl: 55px;
+  --heading-font-size-xl: 44px;
+  --heading-font-size-l: 34px;
+  --heading-font-size-m: 27px;
+  --heading-font-size-s: 24px;
+  --heading-font-size-xs: 22px;
+  /* heading sizes — Figma-aligned (mobile first)
+     Mobile: H1=28px, H2=24px, H3=22px, H4=20px
+     Source: Figma node 48-124 styles qxyei6 / bzoiyn / pexfs6 / t23uce */
   --heading-font-size-h1: 28px;
   --heading-font-size-h2: 24px;
   --heading-font-size-h3: 22px;
   --heading-font-size-h4: 20px;
-  /* heading shared typography tokens */
+  /* heading shared typography tokens — Figma-aligned
+     All headings: Montserrat 700, line-height 1.3em, letter-spacing -3%
+     Source: Figma node 48-124 */
   --heading-line-height: 1.3em;
   --heading-letter-spacing: -0.03em;
   --heading-font-weight: var(--font-weight-bold);
   --heading-margin-top: 0.8em;
   --heading-margin-bottom: 0.25em;
+  /* link tokens — Figma inline link spec (node 5366-7069, style-yn409d)
+     Inter 400 / 16px / 1.5em / -2% letter-spacing / underline */
+  --link-letter-spacing: -0.02em;
+  --link-line-height: 1.5em;
+  /* list tokens — Figma "Listed Items" = Body 2 Light (node 8720-19764, style-gc72zn)
+     Inter 300 / 16px / 1.5em / -2% letter-spacing */
+  --list-font-size: var(--body-font-size-s);
+  --list-line-height: 1.5em;
+  --list-letter-spacing: -0.02em;
+  --list-padding-left: 1.5em;
   /* nav height */
   --nav-height: 64px;
 }
 
-/* fallback fonts */
+/* ============================================================
+   @font-face — Fallback fonts for CLS prevention
+   Self-hosted brand fonts are in styles/fonts.scss.
+   Brand-specific Google Fonts are imported in brands/<brand>/tokens.css.
+   ============================================================ */
 @font-face {
   font-family: roboto-condensed-fallback;
   size-adjust: 88.82%;
@@ -55,19 +91,35 @@
   size-adjust: 99.529%;
   src: local("Arial");
 }
+/* ============================================================
+   Responsive token overrides
+   ============================================================ */
 @media (width >= 900px) {
   :root {
-    /* body sizes */
+    /* body sizes — desktop */
     --body-font-size-m: 18px;
     --body-font-size-s: 16px;
     --body-font-size-xs: 14px;
-    /* heading sizes — Figma-aligned (desktop override) */
+    /* TODO: remove legacy heading sizes and update blocks to use Figma-aligned heading sizes */
+    --heading-font-size-xxl: 45px;
+    --heading-font-size-xl: 36px;
+    --heading-font-size-l: 28px;
+    --heading-font-size-m: 22px;
+    --heading-font-size-s: 20px;
+    --heading-font-size-xs: 18px;
+    /* heading sizes — Figma-aligned desktop
+       Desktop: H1=40px, H2=32px, H3=24px, H4=20px
+       Source: Figma node 48-124 styles a9apv0 / zcml4i / bzoiyn / t23uce */
     --heading-font-size-h1: 40px;
     --heading-font-size-h2: 32px;
     --heading-font-size-h3: 24px;
     --heading-font-size-h4: 20px;
   }
 }
+/* ============================================================
+   Page-level layout & display rules
+   All typography element rules live in typography.scss.
+   ============================================================ */
 body {
   display: none;
   margin: 0;
@@ -75,7 +127,7 @@ body {
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
-  line-height: 1.6;
+  line-height: var(--body-line-height-m);
 }
 
 body.appear {
@@ -96,112 +148,8 @@ footer .footer[data-block-status=loaded] {
   visibility: visible;
 }
 
-p,
-dl,
-ol,
-ul,
-pre,
-blockquote {
-  margin-top: 0.8em;
-  margin-bottom: 0.25em;
-}
-
-code,
-pre {
-  font-size: var(--body-font-size-s);
-}
-
-pre {
-  padding: var(--spacing-016);
-  border-radius: var(--radius-s);
-  background-color: var(--light-color);
-  overflow-x: auto;
-  white-space: pre;
-}
-
 main > div {
   margin: var(--spacing-040) var(--spacing-016);
-}
-
-input,
-textarea,
-select,
-button {
-  font: inherit;
-}
-
-/* links */
-a:any-link {
-  color: var(--link-color);
-  text-decoration: none;
-  overflow-wrap: break-word;
-}
-
-a:hover {
-  color: var(--link-hover-color);
-  text-decoration: underline;
-}
-
-/* buttons */
-a.button:any-link,
-button {
-  box-sizing: border-box;
-  display: inline-block;
-  max-width: 100%;
-  margin: var(--spacing-012) 0;
-  border: var(--button-border-width) solid transparent;
-  border-radius: var(--button-border-radius);
-  padding: var(--button-padding-vertical) var(--button-padding-horizontal);
-  font-family: var(--body-font-family);
-  font-style: normal;
-  font-weight: var(--button-font-weight);
-  line-height: var(--button-line-height);
-  text-align: center;
-  text-decoration: none;
-  background-color: var(--link-color);
-  color: var(--background-color);
-  cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-a.button:hover,
-a.button:focus,
-button:hover,
-button:focus {
-  background-color: var(--link-hover-color);
-  cursor: pointer;
-}
-
-button:disabled,
-button:disabled:hover {
-  background-color: var(--light-color);
-  cursor: unset;
-}
-
-a.button.secondary,
-button.secondary {
-  background-color: unset;
-  border: var(--button-border-width) solid currentcolor;
-  color: var(--text-color);
-}
-
-main img {
-  max-width: 100%;
-  width: auto;
-  height: auto;
-}
-
-.icon {
-  display: inline-block;
-  height: var(--sizing-024);
-  width: var(--sizing-024);
-}
-
-.icon img {
-  height: 100%;
-  width: 100%;
 }
 
 /* sections */

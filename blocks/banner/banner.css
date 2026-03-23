@@ -43,7 +43,7 @@
   color: inherit;
   padding: var(--spacing-004) var(--spacing-008);
   line-height: 1;
-  font-size: var(--heading-font-size-s);
+  font-size: var(--heading-font-size-h4);
   opacity: 0.8;
 }
 .banner .banner-close:hover {
