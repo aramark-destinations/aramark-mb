@@ -83,6 +83,13 @@
         "component": "text",
         "name": "imageAlt",
         "label": "Alt Text"
+      },
+      {
+        "component": "boolean",
+        "name": "imageAltFromDam",
+        "label": "Get Alternative Text from DAM",
+        "valueType": "boolean",
+        "value": true
       }
     ]
   },

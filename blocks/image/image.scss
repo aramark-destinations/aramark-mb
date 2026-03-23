@@ -1,4 +1,11 @@
 .image {
+  overflow: hidden;
+  border-radius: var(--radius-s);
+
+  picture {
+    display: block;
+  }
+
   img {
     display: block;
     width: 100%;
