@@ -96,7 +96,7 @@ Always follow this order:
 Example prompt:
 
 ```
-I need to build the CTA block per the ticket-details.md.
+I need to build the side-by-side block per the ticket-details.md.
 Start with eds/block-research to check for existing implementations,
 then proceed with eds/block-development.
 ```
@@ -181,8 +181,8 @@ See docs/audits/button-audit.md for the specific findings.
 When building features, referencing the solution design explicitly produces output that matches the platform requirements:
 
 ```
-Implement the Section model expansion per
-docs/in-progress/ADOPTION-PLAN.md section 1.
+Implement the Section model background wiring per
+docs/project/TODOS.md — see "Section Model Expansion" under Feature Work.
 Follow the token rules in docs/BLOCK-RENDERING-BUILD-CONFIG.md.
 ```
 

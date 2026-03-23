@@ -190,20 +190,8 @@ Because layout, accessibility, typography, and component logic remain centralize
 - Regression risk is reduced
 - Design fragmentation is prevented
 
-## Open Items
-
-- Final Brand token whitelist must be documented and approved
-- Tonal variant generation algorithm requires final specification and documentation
-- Permission model governing Root vs Brand authoring requires governance alignment
-- App Builder authentication, permission mapping, and error handling must be fully defined in the technical architecture documentation
-
 ## Resolved Items
 
 - ~~Runtime scoping mechanism for Brand CSS must be formally confirmed~~ — RESOLVED: `site-resolver.js` detects brand via AEM page metadata (production) or URL path fallback (local dev). `loadEager()` in `scripts.js` calls `loadCSS()` to inject brand tokens before first paint.
 - ~~Determine whether import order alone satisfies all use cases~~ — RESOLVED: Static `@import` chain handles root tokens (`styles.css` → `fixed-tokens.css` → `root-tokens.css`). Runtime JS `loadCSS()` handles brand tokens. This hybrid approach covers all cases.
 
-## TODOs
-
-- Font families and responsive font sizes live in `styles.css`, not in the design token system — see [TODOS.md](../project/TODOS.md) #5
-- `--nav-height` is not part of the token system — see [TODOS.md](../project/TODOS.md) #4
-- No test files exist for any of this logic — see [TODOS.md](../project/TODOS.md) #15
