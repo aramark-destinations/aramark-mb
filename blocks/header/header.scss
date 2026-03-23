@@ -139,7 +139,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
 header .nav-brand {
   grid-area: brand;
   flex-basis: var(--spacing-120);
-  font-size: var(--heading-font-size-s);
+  font-size: var(--heading-font-size-h4);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
 }

@@ -93,7 +93,7 @@ function wrapCardWithLink(card, link, linkLabel) {
 }
 
 function getCardTitle(card) {
-  return card.querySelector('h1, h2, h3, h4, h5, h6')?.textContent.trim() || 'Untitled';
+  return card.querySelector('h1, h2, h3, h4')?.textContent.trim() || 'Untitled';
 }
 
 function getCardLink(card) {
@@ -226,7 +226,7 @@ export function decorate(block, options = {}) {
     const cols = Array.from(row.children);
     if (cols.length >= 2) return true;
     if (cols.length === 1) {
-      return cols[0].querySelector('picture, img, h1, h2, h3, h4, h5, h6, p:not(:empty), ul, ol') !== null;
+      return cols[0].querySelector('picture, img, h1, h2, h3, h4, p:not(:empty), ul, ol') !== null;
     }
     return false;
   });
@@ -299,7 +299,7 @@ export function decorate(block, options = {}) {
       }
 
       if (child.querySelector('picture, img')) return;
-      if (child.querySelector('h1, h2, h3, h4, h5, h6, ul, ol, table, blockquote')) return;
+      if (child.querySelector('h1, h2, h3, h4, ul, ol, table, blockquote')) return;
 
       const matchesConfigValue = textContent === orientation
         || textContent === cssClass
