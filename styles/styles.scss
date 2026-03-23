@@ -40,7 +40,7 @@
   --body-font-size-m: 22px;
   --body-font-size-s: 19px;
   --body-font-size-xs: 17px;
-  --body-font-size-xxs: 12px;
+  --body-font-size-xxs: 12px; /* intentionally the same on desktop — used only for micro-text (blockquote small, badges) */
 
   /* body line-height */
   --body-line-height-m: 1.6;
