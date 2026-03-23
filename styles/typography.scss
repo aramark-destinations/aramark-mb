@@ -1,199 +1,14 @@
+/* ==========================================================================
+   Typography & Base Reset — Single Source of Truth
+   All element-level styles live here.
+   Token values (--heading-*, --body-*, --link-*, --list-*) are defined
+   in styles/styles.scss (:root) and loaded before this file via
+   @import url('typography.css') in styles/styles.scss.
+   ========================================================================== */
 $breakpoint-tablet: 768px;
-
-main {
-    font-size: var(--body-font-size-m);
-    line-height: var(--body-line-height-m);
-}
-
-h1 {
-    font-size: var(--heading-font-size-h1);
-    line-height: var(--heading-line-height);
-}
-
-h2 {
-    font-size: var(--heading-font-size-h2);
-    line-height: var(--heading-line-height);
-}
-
-h3 {
-    font-size: var(--heading-font-size-h3);
-    line-height: var(--heading-line-height);
-}
-
-h4 {
-    font-size: var(--heading-font-size-h4);
-    line-height: var(--heading-line-height);
-}
-
-h1,
-h2,
-h3,
-h4 {
-    margin-top: var(--heading-margin-top);
-    margin-bottom: var(--heading-margin-bottom);
-    letter-spacing: var(--heading-letter-spacing);
-    overflow-wrap: anywhere;
-    font-weight: var(--heading-font-weight);
-    font-family: var(--heading-font-family);
-    scroll-margin: var(--spacing-040);
-
-    &:first-child {
-        margin-top: 0;
-    }
-
-    .icon {
-        height: auto;
-        vertical-align: middle;
-        width: 75px;
-
-        @media (width >= #{$breakpoint-tablet}) {
-            width: 103px;
-        }
-    }
-}
-
-h4 {
-    & + h1,
-    & + h2,
-    & + h3 {
-        margin-top: -0.3em;
-    }
-}
-
-dl,
-pre {
-    margin-top: 1em;
-    margin-bottom: 1em;
-}
-
-ol,
-ul {
-    margin-top: 0;
-    margin-bottom: 2.5rem;
-
-    > li {
-        margin-top: 0;
-        margin-bottom: 1rem;
-    }
-
-    ol,
-    ul {
-        margin-bottom: 0;
-    }
-}
-
-b,
-strong {
-    font-weight: 700;
-}
-
-em,
-i {
-    font-style: italic;
-}
-
-p {
-    font-size: var(--body-font-size-m);
-    line-height: var(--body-line-height-m);
-    margin-top: 0;
-    margin-bottom: 2.5rem;
-
-    strong {
-        font-size: var(--body-font-size-m);
-        line-height: var(--body-line-height-m);
-    }
-}
-
-q {
-    quotes: none;
-
-    &::after,
-    &::before {
-        content: none;
-    }
-}
-
-dl {
-    margin-top: 0;
-    margin-bottom: 2rem;
-}
-
-dt {
-    font-weight: 700;
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-}
-
-dd {
-    margin-bottom: 1rem;
-    margin-top: 0;
-    margin-left: 0;
-}
-
-a:any-link {
-    color: var(--link-color);
-    text-decoration: underline;
-}
-
-code,
-kbd,
-pre,
-samp {
-    font-family: var(--fixed-font-family);
-}
-
-code {
-    background: var(--light-color);
-    color: var(--c-color-grey-8);
-    padding: 0.2rem 0.4rem;
-    font-size: 1.2rem;
-    white-space: nowrap;
-}
-
-kbd {
-    background: var(--light-color);
-    color: var(--c-color-grey-8);
-    padding: 0.2rem 0.4rem;
-    font-size: 1.2rem;
-}
-
-pre {
-    display: block;
-    background: var(--light-color);
-    border: 1px solid var(--c-color-grey-1);
-    color: var(--c-color-grey-8);
-    line-height: 1.4286;
-    margin: 0 0 1rem;
-    padding: 1rem;
-    font-size: 1.2rem;
-    overflow-wrap: break-word;
-    overflow: scroll;
-
-    code {
-        background-color: transparent;
-        border-radius: 0;
-        color: inherit;
-        font-size: inherit;
-        padding: 0;
-        white-space: pre-wrap;
-    }
-}
-
-main pre {
-    background-color: var(--light-color);
-    padding: 1em;
-    border-radius: 0.25em;
-    overflow-x: auto;
-    white-space: pre;
-}
-
-fieldset {
-    display: block;
-    margin: 0;
-    padding: 0;
-    border: 0;
-}
-
+/* ============================================================
+   Semantic HTML — display roles
+   ============================================================ */
 article,
 aside,
 details,
@@ -219,21 +34,304 @@ audio:not([controls]) {
     height: 0;
 }
 
+/* ============================================================
+   Headings — Figma-aligned (node 48-124)
+   Font:        var(--heading-font-family) — Montserrat 700 for Lake Powell
+   Mobile:      H1=28px, H2=24px, H3=22px, H4=20px
+   Desktop:     H1=40px, H2=32px, H3=24px, H4=20px
+                (responsive token values set via @media in styles.scss)
+   Line-height: 1.3em  | Letter-spacing: -3%
+   ============================================================ */
+h1,
+h2,
+h3,
+h4 {
+    margin-top: var(--heading-margin-top);
+    margin-bottom: var(--heading-margin-bottom);
+    font-family: var(--heading-font-family);
+    font-weight: var(--heading-font-weight);
+    line-height: var(--heading-line-height);
+    letter-spacing: var(--heading-letter-spacing);
+    overflow-wrap: anywhere;
+    scroll-margin: var(--spacing-040);
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    .icon {
+        height: auto;
+        vertical-align: middle;
+        width: 75px;
+
+        @media (width >= #{$breakpoint-tablet}) {
+            width: 103px;
+        }
+    }
+}
+
+h1 {
+    font-size: var(--heading-font-size-h1);
+}
+
+h2 {
+    font-size: var(--heading-font-size-h2);
+}
+
+h3 {
+    font-size: var(--heading-font-size-h3);
+}
+
+h4 {
+    font-size: var(--heading-font-size-h4);
+}
+
+/* TODO: remove legacy heading sizes and update blocks to use Figma-aligned heading sizes */
+h5,
+h6 {
+    margin-top: var(--heading-margin-top);
+    margin-bottom: var(--heading-margin-bottom);
+    font-family: var(--heading-font-family);
+    font-weight: var(--heading-font-weight);
+    line-height: var(--heading-line-height);
+    letter-spacing: var(--heading-letter-spacing);
+    overflow-wrap: anywhere;
+    scroll-margin: var(--spacing-040);
+}
+
+h5 {
+    font-size: var(--heading-font-size-s);
+}
+
+h6 {
+    font-size: var(--heading-font-size-xs);
+}
+
+/* Negative margin — eyebrow label + heading combos */
+h4,
+h5,
+h6 {
+    & + h1,
+    & + h2,
+    & + h3 {
+        margin-top: -0.3em;
+    }
+}
+
+/* ============================================================
+   Body text
+   Font: var(--body-font-family) — Inter for Lake Powell
+   Body 1 (m): 22px / 1.6  | Body 2 (s): 19px
+   ============================================================ */
+main {
+    font-size: var(--body-font-size-m);
+    line-height: var(--body-line-height-m);
+}
+
+p {
+    font-size: var(--body-font-size-m);
+    line-height: var(--body-line-height-m);
+    margin-top: 0;
+    margin-bottom: 2.5rem;
+
+    strong {
+        font-size: var(--body-font-size-m);
+        line-height: var(--body-line-height-m);
+    }
+}
+
+b,
+strong {
+    font-weight: 700;
+}
+
+em,
+i {
+    font-style: italic;
+}
+
+/* ============================================================
+   Lists — Figma-aligned (node 8720-19764, style-gc72zn)
+   "Listed Items" = Body 2 Light: Inter 300 / 16px / 1.5em / -2% letter-spacing
+   ============================================================ */
+ul,
+ol {
+    margin-top: 0;
+    margin-bottom: 2.5rem;
+    padding-left: var(--list-padding-left);
+    font-size: var(--list-font-size);
+    line-height: var(--list-line-height);
+    letter-spacing: var(--list-letter-spacing);
+
+    >li {
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    ul,
+    ol {
+        margin-bottom: 0;
+    }
+}
+
+ul {
+    list-style-type: disc;
+}
+
+ol {
+    list-style-type: decimal;
+}
+
+/* Nav lists — no bullets in navigation */
 nav ol,
 nav ul {
     list-style: none;
 }
 
+/* ============================================================
+   Definition Lists
+   ============================================================ */
+dl {
+    margin-top: 1em;
+    margin-bottom: 2rem;
+}
+
+dt {
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+dd {
+    margin-bottom: 1rem;
+    margin-top: 0;
+    margin-left: 0;
+}
+
+/* ============================================================
+   Links — Figma-aligned (node 5366-7069, style-yn409d)
+   Inline Link:      Inter 400 / 16px / 1.5em / -2% letter-spacing / underline
+   Independent Link: Inter 700 / 16px / 1.5em / -2% letter-spacing
+   ============================================================ */
+a:any-link {
+    color: var(--link-color);
+    text-decoration: underline;
+    letter-spacing: var(--link-letter-spacing);
+    line-height: var(--link-line-height);
+    overflow-wrap: break-word;
+}
+
+a:hover {
+    color: var(--link-hover-color);
+    text-decoration: underline;
+}
+
+/* ============================================================
+   Buttons — token-based
+   Resets link underline & letter-spacing on button-styled anchors.
+   ============================================================ */
+
+/* UE dropdown option - default */
+a.button:any-link,
+button {
+    font-family: var(--body-font-family);
+    display: inline-block;
+    vertical-align: middle;
+    box-sizing: border-box;
+    max-width: 100%;
+    margin: var(--spacing-012) 0;
+    border: var(--button-border-width) solid transparent;
+    border-radius: var(--button-border-radius);
+    padding: var(--button-padding-vertical) var(--button-padding-horizontal);
+    font-style: normal;
+    font-weight: var(--button-font-weight);
+    line-height: var(--button-line-height);
+    text-align: center;
+    text-decoration: none;
+    letter-spacing: normal;
+    background-color: var(--link-color);
+    color: var(--background-color);
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+a.button:hover,
+a.button:focus,
+a.button:active,
+button:hover,
+button:focus {
+    background-color: var(--link-hover-color);
+    border-color: transparent;
+    cursor: pointer;
+}
+
+/* UE dropdown option - primary */
+a.button.primary,
+button.primary {
+    border: var(--button-border-width) solid var(--link-color);
+    color: var(--link-color);
+    background-color: var(--background-color);
+}
+
+a.button.primary:hover,
+a.button.primary:focus,
+a.button.primary:active,
+button.primary:hover,
+button.primary:focus,
+button.primary:active {
+    background-color: var(--background-color);
+    border-color: var(--link-hover-color);
+    color: var(--link-hover-color);
+    cursor: pointer;
+}
+
+/* UE dropdown option - secondary */
+a.button.secondary,
+button.secondary {
+    background-color: unset;
+    border: var(--button-border-width) solid currentcolor;
+    color: var(--text-color);
+}
+
+a.button.secondary:hover,
+a.button.secondary:focus,
+a.button.secondary:active,
+button.secondary:hover,
+button.secondary:focus,
+button.secondary:active {
+    background-color: var(--link-hover-color);
+    border-color: transparent;
+    color: var(--background-color);
+    cursor: pointer;
+}
+
+button:disabled,
+button:disabled:hover,
+fieldset[disabled] button,
+button.primary:disabled,
+button.primary:disabled:hover,
+button.secondary:disabled,
+button.secondary:disabled:hover {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* ============================================================
+   Blockquote
+   ============================================================ */
 blockquote {
-    border-left: 0 solid var(--c-color-grey-1);
+    border-left: 0 solid var(--stroke-light-2);
     margin: 0 0 2rem 4rem;
     padding: 0;
     color: var(--text-color);
     font-family: var(--body-font-family);
     font-style: italic;
-    font-weight: var(--c-font-weight-regular);
+    font-weight: var(--font-weight-normal);
     line-height: 1.4286;
-    font-size: 1.4rem;
+    font-size: var(--body-font-size-xs);
 
     ol,
     p,
@@ -244,7 +342,7 @@ blockquote {
     }
 
     small {
-        font-size: 12px;
+        font-size: var(--body-font-size-xxs);
     }
 
     footer,
@@ -265,10 +363,83 @@ blockquote {
     }
 }
 
+q {
+    quotes: none;
+
+    &::after,
+    &::before {
+        content: none;
+    }
+}
+
+/* ============================================================
+   Code & Pre
+   ============================================================ */
+code,
+kbd,
+pre,
+samp {
+    font-family: var(--fixed-font-family, monospace);
+}
+
+code {
+    background: var(--light-color);
+    color: var(--text-color);
+    padding: 0.2rem 0.4rem;
+    font-size: var(--body-font-size-xs);
+    white-space: nowrap;
+}
+
+kbd {
+    background: var(--light-color);
+    color: var(--text-color);
+    padding: 0.2rem 0.4rem;
+    font-size: var(--body-font-size-xs);
+}
+
+pre {
+    display: block;
+    background: var(--light-color);
+    border: 1px solid var(--stroke-light-2);
+    line-height: 1.4286;
+    margin: 0 0 1rem;
+    padding: var(--spacing-016);
+    font-size: var(--body-font-size-xs);
+    overflow-wrap: break-word;
+    overflow: scroll;
+    border-radius: var(--radius-s);
+
+    code {
+        background-color: transparent;
+        border-radius: 0;
+        color: inherit;
+        font-size: inherit;
+        padding: 0;
+        white-space: pre-wrap;
+    }
+}
+
+main pre {
+    background-color: var(--light-color);
+    padding: 1em;
+    border-radius: var(--radius-s);
+    overflow-x: auto;
+    white-space: pre;
+}
+
+/* ============================================================
+   Media
+   ============================================================ */
 img {
     max-width: 100%;
     height: auto;
     border: 0;
+}
+
+main img {
+    max-width: 100%;
+    width: auto;
+    height: auto;
 }
 
 embed,
@@ -277,6 +448,31 @@ video {
     max-width: 100%;
 }
 
+svg:not(:root) {
+    overflow: hidden;
+}
+
+figure {
+    margin: 0;
+}
+
+/* ============================================================
+   Icons
+   ============================================================ */
+.icon {
+    display: inline-block;
+    height: var(--sizing-024);
+    width: var(--sizing-024);
+}
+
+.icon img {
+    height: 100%;
+    width: 100%;
+}
+
+/* ============================================================
+   Form Elements
+   ============================================================ */
 button,
 select,
 input {
@@ -309,12 +505,12 @@ input {
     &[type*='text'],
     &[type*='url'] {
         background: padding-box var(--light-color);
-        border: 1px solid var(--c-color-grey-1);
-        border-radius: 0;
-        font-size: 1.4rem;
+        border: 1px solid var(--stroke-light-2);
+        border-radius: var(--radius-s);
+        font-size: var(--body-font-size-xs);
         height: 4rem;
         line-height: 1.4286;
-        padding: 0 0.9rem;
+        padding: 0 var(--spacing-016);
         vertical-align: baseline;
         width: 100%;
         box-sizing: border-box;
@@ -341,9 +537,9 @@ input {
 select {
     background: var(--light-color);
     border: 1px solid var(--light-color);
-    border-radius: 0;
+    border-radius: var(--radius-s);
     color: var(--dark-color);
-    font-size: 1.4rem;
+    font-size: var(--body-font-size-xs);
     height: 4rem;
     line-height: 1.4286;
     padding: 0.4rem 2.5rem 0.5rem 1rem;
@@ -369,31 +565,11 @@ select {
     }
 }
 
-del {
-    &::after,
-    &::before {
-        overflow: hidden;
-        position: absolute;
-        white-space: nowrap;
-        clip-path: inset(100%);
-        height: 1px;
-        width: 1px;
-    }
-
-    &::before {
-        content: ' [deletion start] ';
-    }
-
-    &::after {
-        content: ' [deletion end] ';
-    }
-}
-
 textarea {
-    background: padding-box var(--c-color-white);
+    background: padding-box var(--background-color);
     border: 1px solid var(--light-color);
-    border-radius: 0;
-    font-size: 1.4rem;
+    border-radius: var(--radius-s);
+    font-size: var(--body-font-size-xs);
     height: auto;
     line-height: 1.4286;
     margin: 0;
@@ -403,6 +579,13 @@ textarea {
     box-sizing: border-box;
     /* stylelint-disable-next-line plugin/use-baseline */
     resize: none;
+}
+
+fieldset {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
 }
 
 input[type='checkbox'] {
@@ -434,7 +617,7 @@ input::-moz-focus-inner {
 input:not([disabled]):focus,
 select:not([disabled]):focus,
 textarea:not([disabled]):focus {
-    box-shadow: 0 0 0.3rem 0.1rem var(--c-color-blue-green-1);
+    box-shadow: 0 0 0.3rem 0.1rem var(--surface-utility-focus);
 }
 
 form {
@@ -449,14 +632,9 @@ button {
     text-align: center;
 }
 
-figure {
-    margin: 0;
-}
-
-svg:not(:root) {
-    overflow: hidden;
-}
-
+/* ============================================================
+   Tables
+   ============================================================ */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -509,20 +687,22 @@ table {
     }
 }
 
-/* links */
+/* ============================================================
+   Miscellaneous inline & text elements
+   ============================================================ */
 abbr[title] {
-    border-bottom: 1px dotted var(--c-color-grey-1);
+    border-bottom: 1px dotted var(--stroke-light-4);
     cursor: help;
 }
 
 mark {
     background: var(--light-color);
-    color: var(--c-color-black);
+    color: var(--text-dark-1);
 }
 
 hr {
     border: 0;
-    border-top: 1px solid var(--c-color-grey-1);
+    border-top: 1px solid var(--stroke-light-2);
     margin-bottom: 20px;
     margin-top: 20px;
 }
@@ -547,101 +727,25 @@ dfn {
     font-style: italic;
 }
 
-/* buttons */
+del {
 
-/* UE dropdown option - default */
-a.button:any-link {
-    font-family: var(--body-font-family);
-    display: inline-block;
-    vertical-align: middle;
-    box-sizing: border-box;
-    text-decoration: none;
-    border: 1px solid transparent;
-    padding: 1.3rem 3.2rem;
-    font-size: 1.4rem;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 2rem;
-    letter-spacing: 1px;
-    cursor: pointer;
-    text-transform: uppercase;
-    color: var(--background-color);
-    background-color: var(--c-color-blue-green-2);
-}
+    &::after,
+    &::before {
+        overflow: hidden;
+        position: absolute;
+        white-space: nowrap;
+        clip-path: inset(100%);
+        height: 1px;
+        width: 1px;
+    }
 
-/* UE dropdown option - primary */
-a.button.primary,
-button.primary {
-    border: 1px solid var(--c-color-blue-green-2);
-    color: var(--c-color-blue-green-2);
-    background-color: var(--background-color);
-}
+    &::before {
+        content: ' [deletion start] ';
+    }
 
-/* UE dropdown option - secondary */
-a.button.secondary,
-button.secondary {
-    border: 1px solid currentcolor;
-    color: var(--text-color);
-    background-color: unset;
-}
-
-a.button:hover,
-a.button:focus,
-a.button:active {
-    background-color: var(--c-color-blue-green-3);
-    border: 1px solid transparent;
-    color: var(--c-color-white);
-    cursor: pointer;
-}
-
-a.button.primary:hover,
-a.button.primary:focus,
-a.button.primary:active,
-button.primary:hover,
-button.primary:focus,
-button.primary:active {
-    background-color: var(--c-color-white);
-    border: 1px solid var(--primary-button-hover);
-    color: var(--c-color-blue-green-2);
-    cursor: pointer;
-}
-
-a.button.secondary:hover,
-a.button.secondary:focus,
-a.button.secondary:active,
-button.secondary:hover,
-button.secondary:focus,
-button.secondary:active {
-    background-color: var(--link-hover-color);
-    border: 1px solid var(--c-color-white);
-    color: var(--c-color-white);
-    cursor: pointer;
-}
-
-button[disabled],
-fieldset[disabled] button,
-button.primary:disabled,
-button.primary:disabled:hover {
-    opacity: 0.5;
-    cursor: default;
-    pointer-events: none;
-}
-
-main img {
-    max-width: 100%;
-    width: auto;
-    height: auto;
-}
-
-.icon {
-    display: inline-block;
-    height: 24px;
-    width: 24px;
-}
-
-.icon img {
-    height: 100%;
-    width: 100%;
+    &::after {
+        content: ' [deletion end] ';
+    }
 }
 
 div:empty {
