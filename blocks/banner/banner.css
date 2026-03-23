@@ -1,6 +1,10 @@
+:root {
+  --banner-z-index: var(--z-index-dropdown);
+}
+
 .banner-wrapper {
   position: relative;
-  z-index: 10;
+  z-index: var(--banner-z-index);
 }
 
 .banner {
@@ -11,30 +15,24 @@
   padding: var(--spacing-008) var(--spacing-048) var(--spacing-008) var(--spacing-016);
   font-size: var(--body-font-size-xs);
 }
-
-.banner-slides {
+.banner .banner-slides {
   position: relative;
 }
-
-.banner-slide {
+.banner .banner-slide {
   display: none;
 }
-
-.banner-slide.banner-slide-active {
+.banner .banner-slide.banner-slide-active {
   display: block;
 }
-
-.banner-slide p {
+.banner .banner-slide p {
   margin: 0;
   line-height: var(--line-height-normal);
 }
-
-.banner-slide a {
+.banner .banner-slide a {
   color: inherit;
   text-decoration: underline;
 }
-
-.banner-close {
+.banner .banner-close {
   position: absolute;
   right: var(--spacing-016);
   top: 50%;
@@ -45,10 +43,9 @@
   color: inherit;
   padding: var(--spacing-004) var(--spacing-008);
   line-height: 1;
-  font-size: var(--heading-font-size-h4);
+  font-size: var(--heading-font-size-s);
   opacity: 0.8;
 }
-
-.banner-close:hover {
+.banner .banner-close:hover {
   opacity: 1;
 }

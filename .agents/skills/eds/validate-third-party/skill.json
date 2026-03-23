@@ -1,0 +1,7 @@
+{
+  "name": "eds/validate-third-party",
+  "description": "Validate third-party integrations follow solution design requirements: async loading, consent awareness (OneTrust), environment-specific config, and no Lighthouse score degradation.",
+  "when_to_use": "when adding or reviewing third-party integrations (OneTrust, HotJar, Elastic Search, Fleeknote, YouTube, Emplifi, Google Maps, chatbot)",
+  "version": "1.0.0",
+  "aliases": ["third-party-check", "integration-check"]
+}

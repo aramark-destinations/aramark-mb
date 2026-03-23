@@ -1,0 +1,7 @@
+{
+  "name": "eds/quality-audit",
+  "description": "Run Lighthouse audit, SEO checks, and WCAG 2.1 accessibility audit on a page or set of pages. Reports scores against solution design targets (90+ for all categories) and flags specific issues with remediation guidance.",
+  "when_to_use": "for periodic quality audits, before major releases, when investigating performance/accessibility/SEO issues, or when validating a new page template",
+  "version": "1.0.0",
+  "aliases": ["lighthouse", "seo-audit", "accessibility-audit", "a11y-audit", "perf-audit"]
+}

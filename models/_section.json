@@ -26,6 +26,164 @@
           "description": "The label shown for this section in the Content Tree"
         },
         {
+          "component": "select",
+          "name": "sectionType",
+          "label": "Section Type",
+          "description": "Controls the width of the Section and the content inside the Section",
+          "options": [
+            {
+              "name": "Full-width",
+              "value": "full-width"
+            },
+            {
+              "name": "Contained",
+              "value": "contained"
+            },
+            {
+              "name": "Full-Bleed",
+              "value": "full-bleed"
+            }
+          ]
+        },
+        {
+          "component": "reference",
+          "name": "backgroundImage",
+          "label": "Background Image",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "name": "backgroundAlt",
+          "label": "Background Alt",
+          "description": "Alt text for background image"
+        },
+        {
+          "component": "select",
+          "name": "backgroundColor",
+          "label": "Background Color",
+          "options": [
+            {
+              "name": "Dark",
+              "value": "dark"
+            },
+            {
+              "name": "Light",
+              "value": "light"
+            },
+            {
+              "name": "Light 2",
+              "value": "light-2"
+            },
+            {
+              "name": "Brand",
+              "value": "brand"
+            },
+            {
+              "name": "Tertiary",
+              "value": "tertiary"
+            }
+          ]
+        },
+        {
+          "component": "select",
+          "name": "fullOverlay",
+          "label": "Full Overlay",
+          "description": "Overlay applied over background",
+          "options": [
+            {
+              "name": "None",
+              "value": ""
+            },
+            {
+              "name": "Darken - 20%",
+              "value": "darken-20"
+            },
+            {
+              "name": "Darken - 40%",
+              "value": "darken-40"
+            },
+            {
+              "name": "Lighten - 20%",
+              "value": "lighten-20"
+            },
+            {
+              "name": "Lighten - 40%",
+              "value": "lighten-40"
+            }
+          ]
+        },
+        {
+          "component": "select",
+          "name": "linearGradient",
+          "label": "Linear Gradient",
+          "options": [
+            {
+              "name": "None",
+              "value": ""
+            },
+            {
+              "name": "Bottom to Top",
+              "value": "bottom-to-top"
+            },
+            {
+              "name": "Top to Bottom",
+              "value": "top-to-bottom"
+            },
+            {
+              "name": "Left to Right",
+              "value": "left-to-right"
+            },
+            {
+              "name": "Right to Left",
+              "value": "right-to-left"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "valueType": "number",
+          "name": "gradientStartOpacity",
+          "label": "Starting Opacity",
+          "description": "Gradient starting opacity (0-100)",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "valueType": "number",
+          "name": "gradientEndOpacity",
+          "label": "Ending Opacity",
+          "description": "Gradient ending opacity (0-100)",
+          "value": ""
+        },
+        {
+          "component": "select",
+          "name": "sectionTheme",
+          "label": "Section Theme Style",
+          "description": "Controls color styling applied to components in this Section",
+          "options": [
+            {
+              "name": "Dark",
+              "value": "theme-dark"
+            },
+            {
+              "name": "Light",
+              "value": "theme-light"
+            },
+            {
+              "name": "Light 2",
+              "value": "theme-light-2"
+            },
+            {
+              "name": "Brand",
+              "value": "theme-brand"
+            },
+            {
+              "name": "Tertiary",
+              "value": "theme-tertiary"
+            }
+          ]
+        },
+        {
           "component": "multiselect",
           "name": "style",
           "label": "Style",

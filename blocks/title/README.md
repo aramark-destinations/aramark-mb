@@ -4,9 +4,11 @@ Base implementation of the title/heading block with extensibility support.
 
 ## Features
 
-- **Semantic headings** — h1 through h4 selectable by authors
+- **Semantic headings** — h1 through h6 selectable by authors
+- **Section theme support** — heading color automatically adapts to parent section theme
+- **Variant support** — author-assigned variant classes set via `readVariant` (e.g., `title title-centered`)
 - **Lifecycle hooks** for customization (onBefore/onAfter)
-- **Events** dispatched before and after decoration
+- **Events** dispatched before and after decoration (bubble up the DOM)
 
 ## Authoring Fields
 
@@ -71,6 +73,21 @@ Create `/brands/{property}/blocks/title/title.js` to:
 - Add decorative underlines or icons
 - Implement animated reveal effects
 - Add table-of-contents anchor support
+
+## Section Themes
+
+Heading color responds to the parent section's theme class:
+
+| Section theme | Heading color token |
+|---------------|---------------------|
+| (default)     | `--text-dark-1` (inherited from body) |
+| `light`       | `--text-dark-1` (inherited from body) |
+| `light2`      | `--text-dark-1` (inherited from body) |
+| `dark`        | `--text-light-1` |
+| `brand`       | `--text-light-1` |
+| `tertiary`    | `--text-light-1` |
+
+Themes are applied by AEM via section metadata. No block-level configuration needed.
 
 ## See Also
 

@@ -100,11 +100,11 @@ header nav[aria-expanded='false'] .nav-hamburger-icon::after {
 }
 
 header nav[aria-expanded='false'] .nav-hamburger-icon::before {
-  top: -6px;
+  top: calc(-1 * var(--spacing-006));
 }
 
 header nav[aria-expanded='false'] .nav-hamburger-icon::after {
-  top: 6px;
+  top: var(--spacing-006);
 }
 
 header nav[aria-expanded='true'] .nav-hamburger-icon {

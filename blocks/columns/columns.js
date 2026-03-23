@@ -20,7 +20,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('columns:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('columns:before', { detail: ctx, bubbles: true }));
 
   // === COLUMNS BLOCK LOGIC ===
   readVariant(block);
@@ -44,11 +44,12 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('columns:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('columns:after', { detail: ctx, bubbles: true }));
 }
 
 /**
  * Default export
- * Allows the base implementation to be used directly or with hooks
+ * - Calls decorate()
+ * - Allows global hook injection via window.Columns?.hooks
  */
-export default decorate;
+export default (block) => decorate(block, window.Columns?.hooks);

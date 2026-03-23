@@ -1,0 +1,6 @@
+{
+  "name": "eds/authoring-guide",
+  "description": "Create author-facing documentation for EDS blocks. Covers what content authors need to know to use a block in Universal Editor — field descriptions, examples, and constraints. Strictly separated from developer documentation.",
+  "when_to_use": "when a block needs author-facing documentation (separate from the developer README.md)",
+  "version": "1.0.0"
+}

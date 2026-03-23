@@ -25,7 +25,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('accordion:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('accordion:before', { detail: ctx, bubbles: true }));
 
   // === ACCORDION BLOCK LOGIC ===
   readVariant(block);
@@ -151,7 +151,7 @@ export function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('accordion:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('accordion:after', { detail: ctx, bubbles: true }));
 }
 
 /**

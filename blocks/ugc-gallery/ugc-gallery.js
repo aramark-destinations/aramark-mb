@@ -4,13 +4,25 @@ let ugcNumber = 1;
 
 /**
  * @param {HTMLElement} block
+ * @param {Object} options Configuration options
+ * @param {Function} options.onBefore Lifecycle hook called before decoration
+ * @param {Function} options.onAfter Lifecycle hook called after decoration
  * @returns {void}
  */
-export default function decorate(block) {
+export function decorate(block, options = {}) {
+  const ctx = { block, options };
+
+  // lifecycle hook + event (before)
+  options.onBefore?.(ctx);
+  block.dispatchEvent(new CustomEvent('ugc-gallery:before', { detail: ctx, bubbles: true }));
+
+  // === UGC-GALLERY BLOCK LOGIC ===
   const config = readBlockConfig(block);
   const { widgetId, pixleeApiKey, pixleeScript } = config;
 
   if (!widgetId) {
+    options.onAfter?.(ctx);
+    block.dispatchEvent(new CustomEvent('ugc-gallery:after', { detail: ctx, bubbles: true }));
     return;
   }
 
@@ -20,7 +32,18 @@ export default function decorate(block) {
   ugcNumber += 1;
 
   loadDelayed(block, String(widgetId), pixleeApiKey, pixleeScript);
+
+  // lifecycle hook + event (after)
+  options.onAfter?.(ctx);
+  block.dispatchEvent(new CustomEvent('ugc-gallery:after', { detail: ctx, bubbles: true }));
 }
+
+/**
+ * Default export
+ * - Calls decorate()
+ * - Allows global hook injection via window.UgcGallery?.hooks
+ */
+export default (block) => decorate(block, window.UgcGallery?.hooks);
 
 /**
  * @param {HTMLElement} block

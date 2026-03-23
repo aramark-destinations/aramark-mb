@@ -1,6 +1,20 @@
-.title h1,
-.title h2,
-.title h3,
-.title h4 {
+.title h1, .title h2, .title h3, .title h4, .title h5, .title h6 {
   margin-top: 0;
+}
+
+/* Section theme: dark/brand/tertiary backgrounds use light text */
+.section.dark .title h1, .section.dark .title h2, .section.dark .title h3, .section.dark .title h4, .section.dark .title h5, .section.dark .title h6,
+.section.brand .title h1,
+.section.brand .title h2,
+.section.brand .title h3,
+.section.brand .title h4,
+.section.brand .title h5,
+.section.brand .title h6,
+.section.tertiary .title h1,
+.section.tertiary .title h2,
+.section.tertiary .title h3,
+.section.tertiary .title h4,
+.section.tertiary .title h5,
+.section.tertiary .title h6 {
+  color: var(--text-light-1);
 }

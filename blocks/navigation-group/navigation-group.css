@@ -37,7 +37,7 @@
   min-height: 0;
   overflow: hidden;
   will-change: max-height, min-height;
-  transition: max-height 0.3s ease, min-height 0.3s ease;
+  transition: max-height var(--transition-duration-normal) ease, min-height var(--transition-duration-normal) ease;
 }
 
 .navigation-group-item {

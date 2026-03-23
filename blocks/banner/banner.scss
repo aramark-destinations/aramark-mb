@@ -1,6 +1,10 @@
+:root {
+  --banner-z-index: var(--z-index-dropdown);
+}
+
 .banner-wrapper {
   position: relative;
-  z-index: 10;
+  z-index: var(--banner-z-index);
 }
 
 .banner {
@@ -10,45 +14,45 @@
   text-align: center;
   padding: var(--spacing-008) var(--spacing-048) var(--spacing-008) var(--spacing-016);
   font-size: var(--body-font-size-xs);
-}
 
-.banner-slides {
-  position: relative;
-}
+  .banner-slides {
+    position: relative;
+  }
 
-.banner-slide {
-  display: none;
-}
+  .banner-slide {
+    display: none;
 
-.banner-slide.banner-slide-active {
-  display: block;
-}
+    &.banner-slide-active {
+      display: block;
+    }
 
-.banner-slide p {
-  margin: 0;
-  line-height: var(--line-height-normal);
-}
+    p {
+      margin: 0;
+      line-height: var(--line-height-normal);
+    }
 
-.banner-slide a {
-  color: inherit;
-  text-decoration: underline;
-}
+    a {
+      color: inherit;
+      text-decoration: underline;
+    }
+  }
 
-.banner-close {
-  position: absolute;
-  right: var(--spacing-016);
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: inherit;
-  padding: var(--spacing-004) var(--spacing-008);
-  line-height: 1;
-  font-size: var(--heading-font-size-h4);
-  opacity: 0.8;
-}
+  .banner-close {
+    position: absolute;
+    right: var(--spacing-016);
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    padding: var(--spacing-004) var(--spacing-008);
+    line-height: 1;
+    font-size: var(--heading-font-size-s);
+    opacity: 0.8;
 
-.banner-close:hover {
-  opacity: 1;
+    &:hover {
+      opacity: 1;
+    }
+  }
 }

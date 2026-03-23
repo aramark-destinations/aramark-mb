@@ -65,7 +65,15 @@
       "text",
       "image",
       "button",
-      "title"
+      "title",
+      "table",
+      "video"
+    ]
+  },
+  {
+    "id": "hero",
+    "components": [
+      "breadcrumbs"
     ]
   },
   {

@@ -36,6 +36,7 @@
     --nav-section-active-overlay: var(--transparent);
     --nav-wrapper-padding: var(--spacing-small);
     --nav-wrapper-padding-desktop: 0;
+    --nav-submenu-offset: -35px;
   }
 }
 
@@ -58,7 +59,7 @@ a.navigation-section-link:not(.dropin-design a) {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: var(--spacing-008);
     padding: 0;
     color: var(--nav-section-color);
     letter-spacing: var(--nav-dropdown-letter-spacing, 1px);
@@ -73,7 +74,7 @@ a.navigation-section-link:not(.dropin-design a) {
 .navigation-section-submenu {
     margin: 0;
     list-style: none;
-    background: var(--nav-dropdown-bg, #fff);
+    background: var(--nav-dropdown-bg);
     display: flex;
     flex-direction: column;
     padding: var(--nav-dropdown-padding, 0);
@@ -83,7 +84,7 @@ a.navigation-section-link:not(.dropin-design a) {
     min-height: 0;
     overflow: hidden;
     will-change: max-height, min-height;
-    transition: max-height 0.3s ease, min-height 0.3s ease;
+    transition: max-height var(--transition-duration-normal) ease, min-height var(--transition-duration-normal) ease;
 }
 
 .navigation-section-button[aria-expanded='true'] {
@@ -102,7 +103,7 @@ a.navigation-section-link:not(.dropin-design a) {
 }
 
 .navigation-overlay {
-    background: var(--nav-section-active-overlay, rgb(222 0 0 / 25%));
+    background: var(--nav-section-active-overlay);
     position: fixed;
     width: 100vw;
     height: 100vh;
@@ -156,7 +157,7 @@ a.navigation-section-link:not(.dropin-design a) {
         --row-template: auto 1fr;
 
         position: absolute;
-        top: 64px;
+        top: var(--spacing-064);
         padding: var(--nav-dropdown-padding-desktop, 11px 22px);
         width: max-content;
         grid-template-columns: auto;
@@ -164,8 +165,8 @@ a.navigation-section-link:not(.dropin-design a) {
         grid-auto-flow: column dense;
         grid-template-rows: var(--row-template, auto 1fr);
         align-items: start;
-        transform: translate(-35px, 0);
-        box-shadow: var(--nav-dropdown-box-shadow, 0 0.2rem 0.4rem rgb(0 0 0 / 7.5%));
+        transform: translate(var(--nav-submenu-offset), 0);
+        box-shadow: var(--nav-dropdown-box-shadow);
         border: 0;
     }
 

@@ -190,7 +190,7 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('header:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('header:before', { detail: ctx, bubbles: true }));
 
   // === HEADER BLOCK LOGIC ===
   // load nav as fragment
@@ -267,11 +267,12 @@ export async function decorate(block, options = {}) {
 
   // lifecycle hook + event (after)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('header:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('header:after', { detail: ctx, bubbles: true }));
 }
 
 /**
  * Default export
- * Allows the base implementation to be used directly or with hooks
+ * - Calls decorate()
+ * - Allows global hook injection via window.Header?.hooks
  */
-export default decorate;
+export default (block) => decorate(block, window.Header?.hooks);

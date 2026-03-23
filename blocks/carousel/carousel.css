@@ -1,3 +1,7 @@
+:root {
+  --carousel-slide-margin: 68px;
+}
+
 .carousel .carousel-slides-container {
   position: relative;
 }
@@ -55,9 +59,9 @@
 
 .carousel .carousel-slide .carousel-slide-content {
   z-index: var(--z-index-base);
-  margin: 68px;
+  margin: var(--carousel-slide-margin);
   padding: var(--spacing-016);
-  color: white;
+  color: var(--color-base-white);
   background-color: color-mix(in srgb, var(--color-grey-900) 75%, transparent);
   position: relative;
   width: var(--slide-content-width, auto);
@@ -143,8 +147,9 @@
     right: var(--spacing-024);
   }
   .carousel .carousel-slide .carousel-slide-content {
-    --slide-content-width: calc((100% - 184px) / 2);
-    margin: 92px;
+    --carousel-slide-margin: 92px;
+    --slide-content-width: calc((100% - 2 * var(--carousel-slide-margin)) / 2);
+    margin: var(--carousel-slide-margin);
   }
   .carousel .carousel-slide .carousel-slide-content[data-align=justify] {
     --slide-content-width: auto;

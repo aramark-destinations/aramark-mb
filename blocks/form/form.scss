@@ -19,13 +19,13 @@
 
 .form form > .selection-wrapper + .selection-wrapper,
 .form form fieldset .selection-wrapper + .selection-wrapper {
-  margin-top: 0.25em;
+  margin-top: var(--spacing-004);
 }
 
 @media (width >= 600px) {
   .form fieldset {
     grid-template-columns: repeat(2, auto);
-    gap: 0.25em var(--spacing-024);
+    gap: var(--spacing-004) var(--spacing-024);
   }
 
   .form form > .selection-wrapper + .selection-wrapper,
@@ -43,7 +43,7 @@
 
 .form label,
 .form fieldset > legend {
-  margin-bottom: 0.25em;
+  margin-bottom: var(--spacing-004);
   font-size: var(--body-font-size-s);
   font-weight: var(--font-weight-bold);
 }
@@ -119,7 +119,7 @@
 
 .form label[data-required]::after {
   content: '*';
-  color: firebrick;
+  color: var(--color-error);
   margin-inline-start: 1ch;
 }
 
