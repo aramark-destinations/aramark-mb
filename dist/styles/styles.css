@@ -82,13 +82,13 @@
    Brand-specific Google Fonts are imported in brands/<brand>/tokens.css.
    ============================================================ */
 @font-face {
-  font-family: montserrat-fallback;
-  size-adjust: 89%;
+  font-family: roboto-condensed-fallback;
+  size-adjust: 88.82%;
   src: local("Arial");
 }
 @font-face {
-  font-family: inter-fallback;
-  size-adjust: 107%;
+  font-family: roboto-fallback;
+  size-adjust: 99.529%;
   src: local("Arial");
 }
 /* ============================================================
