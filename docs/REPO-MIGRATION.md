@@ -153,7 +153,7 @@ curl -X PUT \
     "code": { "owner": "aramark", "repo": "{repo}" },
     "content": {
       "source": {
-        "url": "https://author-p179307-e1885056.adobeaemcloud.com",
+        "url": "https://author-p179307-e1885056.adobeaemcloud.com/bin/franklin.delivery/aramark/{brand-name}/main",
         "type": "markup",
         "suffix": ".html"
       }
@@ -166,16 +166,12 @@ The site becomes immediately available at `https://main--{brand-name}--aramark.a
 **Apply access config** ([source](https://www.aem.live/docs/config-service-setup#access-control)):
 ```bash
 curl -X POST \
-  "https://admin.hlx.page/config/aramark/sites/{brand-name}/access.json" \
+  "https://admin.hlx.page/config/aramark/sites/{brand-name}/access/admin.json" \
   -H "x-auth-token: <ADMIN_TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{
-    "admin": {
-      "role": {
-        "admin": ["<admin-email>"],
-        "config_admin": ["<tech-account>@techacct.adobe.com"]
-      },
-      "requireAuth": "auto"
+    "role": {
+      "config": ["<tech-account>@techacct.adobe.com"]
     }
   }'
 ```
