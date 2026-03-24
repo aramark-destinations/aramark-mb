@@ -123,11 +123,19 @@ async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
 
-  // Load brand-specific design tokens before first paint
-  const { getCurrentBrand } = await import('./site-resolver.js');
+  // Load brand-specific design tokens and JS override registry before first paint
+  const { getCurrentBrand, setBrandOverrides } = await import('./site-resolver.js');
   const brand = getCurrentBrand();
   if (brand) {
     await loadCSS(`${window.hlx.codeBasePath}/brands/${brand}/tokens.css`);
+    try {
+      const { default: overrides } = await import(
+        `${window.hlx.codeBasePath}/brands/${brand}/overrides.js`
+      );
+      setBrandOverrides(overrides);
+    } catch {
+      setBrandOverrides([]);
+    }
   }
 
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
