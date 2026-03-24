@@ -26,8 +26,20 @@ export function getCurrentBrand() {
   return brandMatch ? brandMatch[1] : null;
 }
 
+let brandOverrides = null;
+
 /**
- * Gets the block resolution paths in priority order
+ * Sets the list of block names that have brand-specific JS overrides.
+ * Call this once at startup after loading brands/{brand}/overrides.js.
+ * @param {string[]} overrides Array of block names with brand overrides
+ */
+export function setBrandOverrides(overrides) {
+  brandOverrides = overrides;
+}
+
+/**
+ * Gets the block resolution paths in priority order.
+ * Brand-specific JS path is only included if the block is listed in overrides.js.
  * @param {string} blockName The name of the block
  * @returns {string[]} Array of paths to try, in order
  */
@@ -35,33 +47,13 @@ export function getBlockPaths(blockName) {
   const brand = getCurrentBrand();
   const paths = [];
 
-  // 1. Brand-specific block (highest priority)
-  if (brand) {
+  // Brand-specific block only if explicitly declared in overrides.js
+  if (brand && Array.isArray(brandOverrides) && brandOverrides.includes(blockName)) {
     paths.push(`/brands/${brand}/blocks/${blockName}/${blockName}`);
   }
 
-  // 2. Shared blocks (root/project-level)
+  // Shared blocks (root/project-level)
   paths.push(`/blocks/${blockName}/${blockName}`);
-
-  return paths;
-}
-
-/**
- * Resolves the CSS path for a block following the same resolution order
- * @param {string} blockName The name of the block
- * @returns {string[]} Array of CSS paths to try, in order
- */
-export function getBlockCssPaths(blockName) {
-  const brand = getCurrentBrand();
-  const paths = [];
-
-  // 1. Brand-specific CSS
-  if (brand) {
-    paths.push(`/brands/${brand}/blocks/${blockName}/${blockName}.css`);
-  }
-
-  // 2. Shared CSS (root/project-level)
-  paths.push(`/blocks/${blockName}/${blockName}.css`);
 
   return paths;
 }
@@ -73,38 +65,6 @@ export function getBlockCssPaths(blockName) {
 export function getBrandBasePath() {
   const brand = getCurrentBrand();
   return brand ? `/brands/${brand}` : '';
-}
-
-/**
- * Checks if a resource exists by attempting to fetch it
- * @param {string} url The URL to check
- * @returns {Promise<boolean>} True if the resource exists
- */
-export async function resourceExists(url) {
-  try {
-    const response = await fetch(url, { method: 'HEAD' });
-    return response.ok;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Resolves the actual block path by checking existence
- * @param {string} blockName The name of the block
- * @returns {Promise<string|null>} The resolved path or null if not found
- */
-export async function resolveBlockPath(blockName) {
-  const paths = getBlockPaths(blockName);
-
-  for (const path of paths) {
-    const jsPath = `${window.hlx.codeBasePath}${path}.js`;
-    if (await resourceExists(jsPath)) {
-      return path;
-    }
-  }
-
-  return null;
 }
 
 // Backward compatibility aliases (deprecated)
