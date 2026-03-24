@@ -596,17 +596,18 @@ async function loadBlock(block) {
 
     try {
       // Import site resolver dynamically
-      const { getBlockPaths, getBlockCssPaths } = await import('./site-resolver.js');
+      const { getBlockPaths, getCurrentBrand } = await import('./site-resolver.js');
 
-      // Get resolution paths
+      // Get JS resolution paths (brand-specific only if declared in overrides.js)
       const jsPaths = getBlockPaths(blockName);
-      const cssPaths = getBlockCssPaths(blockName);
 
-      // Try to load CSS from resolution paths
-      const cssLoaded = loadFromPaths(
-        cssPaths,
-        (path) => loadCSS(`${window.hlx.codeBasePath}${path}`),
-      );
+      // Load CSS in parallel: shared first (guaranteed), brand second (overrides via DOM order)
+      const brand = getCurrentBrand();
+      const sharedCss = loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`).catch(() => {});
+      const brandCss = brand
+        ? loadCSS(`${window.hlx.codeBasePath}/brands/${brand}/blocks/${blockName}/${blockName}.css`).catch(() => {})
+        : Promise.resolve();
+      const cssLoaded = Promise.all([sharedCss, brandCss]);
 
       // Try to load JS from resolution paths
       const decorationComplete = new Promise((resolve) => {

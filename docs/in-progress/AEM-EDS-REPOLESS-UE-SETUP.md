@@ -253,24 +253,18 @@ curl --request POST \
   }'
 ```
 
-### F3. Configure access (access.json)
+### F3. Configure access (access/admin.json)
 
-Grants the technical account publish/write access and `config_admin` role.
+Grants the technical account the `config` role for publishing and configuration access.
 
 ```bash
 curl --request POST \
-  https://admin.hlx.page/config/<NEW_GITHUB_ORG>/sites/unbranded/access.json \
+  https://admin.hlx.page/config/<NEW_GITHUB_ORG>/sites/unbranded/access/admin.json \
   -H 'x-auth-token: <TOKEN>' \
   -H 'content-type: application/json' \
   --data '{
-    "admin": {
-      "require": {
-        "read": [],
-        "write": ["<TECH_ACCOUNT_ID>@techacct.adobe.com"]
-      },
-      "allow": {
-        "config_admin": ["<TECH_ACCOUNT_ID>@techacct.adobe.com"]
-      }
+    "role": {
+      "config": ["<TECH_ACCOUNT_ID>@techacct.adobe.com"]
     }
   }'
 ```
@@ -326,22 +320,16 @@ curl --request POST \
   }'
 ```
 
-### G3. Configure access (access.json)
+### G3. Configure access (access/admin.json)
 
 ```bash
 curl --request POST \
-  https://admin.hlx.page/config/<NEW_GITHUB_ORG>/sites/lake-powell/access.json \
+  https://admin.hlx.page/config/<NEW_GITHUB_ORG>/sites/lake-powell/access/admin.json \
   -H 'x-auth-token: <TOKEN>' \
   -H 'content-type: application/json' \
   --data '{
-    "admin": {
-      "require": {
-        "read": [],
-        "write": ["<TECH_ACCOUNT_ID>@techacct.adobe.com"]
-      },
-      "allow": {
-        "config_admin": ["<TECH_ACCOUNT_ID>@techacct.adobe.com"]
-      }
+    "role": {
+      "config": ["<TECH_ACCOUNT_ID>@techacct.adobe.com"]
     }
   }'
 ```
