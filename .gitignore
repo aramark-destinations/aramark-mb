@@ -42,3 +42,4 @@ docs/plans/*
 # Ignore user IDE configuration files
 .editorconfig
 .claude/*
+.mcp.json
