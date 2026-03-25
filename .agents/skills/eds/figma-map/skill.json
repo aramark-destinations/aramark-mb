@@ -1,0 +1,7 @@
+{
+  "name": "eds/figma-map",
+  "description": "Map a Figma design section to a local EDS block. Fetches design data via the Figma MCP, maps styles to CSS tokens, creates a figma-audit.md, updates the block SCSS with token usage and gap candidates, and produces an analysis report.",
+  "when_to_use": "when a developer wants to audit a Figma design node against a block's CSS token usage, or when starting block implementation from a Figma spec",
+  "version": "1.0.0",
+  "aliases": ["figma-map", "figma-audit", "map-figma"]
+}
