@@ -15,8 +15,7 @@
   - Live preview — https://font-update--unbranded--aramark-destinations.aem.live/testing/blocks/title/devtest
 - 🔄 In Progress: ADO 89
 - 🚧 Blockers: None
-- **Handoff Notes:** Need Figma DEV access — current Standard access cannot fetch styles from Figma. Please help escalate.
-
+- **Handoff Notes:** Need Figma DEV access — current Standard access cannot fetch styles from Figma.
 ---
 
 _[Teammate entries go below this line for the same day]_
