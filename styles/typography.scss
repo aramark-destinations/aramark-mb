@@ -131,6 +131,7 @@ main {
 p {
     font-size: var(--body-font-size-m);
     line-height: var(--body-line-height-m);
+    letter-spacing: var(--body-letter-spacing);
     margin-top: 0;
     margin-bottom: 2.5rem;
 
@@ -161,7 +162,7 @@ ol {
     padding-left: var(--list-padding-left);
     font-size: var(--list-font-size);
     line-height: var(--list-line-height);
-    letter-spacing: var(--list-letter-spacing);
+    letter-spacing: var(--list-letter-spacing); /* = var(--body-letter-spacing) = -0.02em */
 
     >li {
         margin-top: 0;
@@ -206,6 +207,90 @@ dd {
     margin-bottom: 1rem;
     margin-top: 0;
     margin-left: 0;
+}
+
+/* ============================================================
+   Display / Hero heading — Figma-aligned (node 48-127 style-6pqczy / style-qe69jc)
+   Montserrat 700 / Mobile: 32px / Desktop: 56px / lh=1.2 / -3% ls
+   Use class .text-display on an element or heading to apply.
+   ============================================================ */
+.text-display {
+    font-family: var(--heading-font-family);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--display-font-size);
+    line-height: var(--display-line-height);
+    letter-spacing: var(--display-letter-spacing);
+    overflow-wrap: anywhere;
+}
+
+/* ============================================================
+   Eyebrow labels — Figma-aligned (node 142-269)
+   Inter 500 / UPPERCASE / +10% letter-spacing / lh=1.0
+   Small=10px | Medium=14px | Large=16px
+   Use class .eyebrow or .eyebrow-s / .eyebrow-m / .eyebrow-l
+   ============================================================ */
+.eyebrow,
+.eyebrow-m {
+    font-family: var(--eyebrow-font-family);
+    font-weight: var(--eyebrow-font-weight);
+    font-size: var(--eyebrow-font-size-m);
+    line-height: var(--eyebrow-line-height);
+    letter-spacing: var(--eyebrow-letter-spacing);
+    text-transform: var(--eyebrow-text-transform);
+}
+
+.eyebrow-s {
+    font-family: var(--eyebrow-font-family);
+    font-weight: var(--eyebrow-font-weight);
+    font-size: var(--eyebrow-font-size-s);
+    line-height: var(--eyebrow-line-height);
+    letter-spacing: var(--eyebrow-letter-spacing);
+    text-transform: var(--eyebrow-text-transform);
+}
+
+.eyebrow-l {
+    font-family: var(--eyebrow-font-family);
+    font-weight: var(--eyebrow-font-weight);
+    font-size: var(--eyebrow-font-size-l);
+    line-height: var(--eyebrow-line-height);
+    letter-spacing: var(--eyebrow-letter-spacing);
+    text-transform: var(--eyebrow-text-transform);
+}
+
+/* ============================================================
+   Details / Micro-text — Figma-aligned (node 4428-10016)
+   Inter / 10px / lh=1.3
+   Light=weight 500 | Dark=weight 700
+   Use class .text-details or .text-details-dark
+   ============================================================ */
+.text-details {
+    font-family: var(--body-font-family);
+    font-weight: var(--details-font-weight-light);
+    font-size: var(--details-font-size);
+    line-height: var(--details-line-height);
+}
+
+.text-details-dark {
+    font-family: var(--body-font-family);
+    font-weight: var(--details-font-weight-dark);
+    font-size: var(--details-font-size);
+    line-height: var(--details-line-height);
+}
+
+/* ============================================================
+   Testimonial / Quote — Figma-aligned (node 5217-3113/3114)
+   Montserrat ultra-thin / no letter-spacing
+   Mobile: weight=250, 24px, lh=1.333 | Desktop: weight=100, 32px, lh=1.25
+   Use class .text-testimonial on blockquote or p elements.
+   NOTE: requires Montserrat 100–300 weight range woff2 (see fonts.scss)
+   ============================================================ */
+.text-testimonial {
+    font-family: var(--testimonial-font-family);
+    font-weight: var(--testimonial-font-weight);
+    font-size: var(--testimonial-font-size);
+    line-height: var(--testimonial-line-height);
+    letter-spacing: normal;
+    font-style: normal;
 }
 
 /* ============================================================
