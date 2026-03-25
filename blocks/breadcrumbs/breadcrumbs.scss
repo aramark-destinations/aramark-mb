@@ -1,33 +1,5 @@
 /* Breadcrumbs Block Styles */
 
-
-.section.breadcrumbs-container {
-  overflow: hidden;
-}
-
-/* Container - Semantic navigation element */
-.breadcrumbs-wrapper {
-  position: relative;
-}
-
-.breadcrumbs {
-  width: 100%;
-  padding: var(--spacing-small) 0;
-  text-transform: uppercase;
-}
-
-.breadcrumbs-wrapper::before {
-  content: '';
-  display: block;
-  width: 100vw;
-  height: 100%;
-  background-color: var(--color-neutral-100);
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: -1;
-}
-
 /* Breadcrumb list - Horizontal layout */
 .breadcrumbs-list {
   display: flex;
@@ -36,43 +8,57 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: var(--spacing-xsmall);
+  gap: var(--spacing-008);
 }
 
 /* Individual breadcrumb items */
 .breadcrumbs-item {
   display: flex;
   align-items: center;
+  font-size: 12px; /* --font-size-xs candidate */
+  font-weight: var(--font-weight-light); /* 300 — candidate token */
+  line-height: 1.5em;
+  letter-spacing: -0.02em; /* --letter-spacing-tight candidate */
+}
+
+/* Current page (last item) — bold */
+.breadcrumbs-item:last-child {
+  font-weight: var(--font-weight-bold);
 }
 
 /* Add separator between items (not after last item) */
 .breadcrumbs-item:not(:last-child)::after {
   content: '/';
-  margin: 0 var(--spacing-xsmall);
-  color: var(--color-neutral-500);
+  margin: 0 var(--spacing-008);
+  color: currentcolor;
   pointer-events: none;
 }
 
-/* Breadcrumb links - Ancestors */
+/* Breadcrumb links — use theme text color, not brand link color */
 .breadcrumbs-link {
-  color: var(--link-color);
+  color: var(--text-dark-1);
   text-decoration: none;
-  transition: color 0.2s ease, text-decoration 0.2s ease;
+  transition: opacity var(--transition-duration-fast) ease;
 }
 
 .breadcrumbs-link:hover {
-  color: var(--link-hover-color);
   text-decoration: underline;
 }
 
 .breadcrumbs-link:focus {
-  outline: 2px solid var(--focus-ring-color);
+  outline: 2px solid currentcolor;
   outline-offset: 2px;
   border-radius: 2px;
 }
 
+/* Mode=Dark — white text (hero over image/dark background) */
+.hero .breadcrumbs-link,
+[data-theme='dark'] .breadcrumbs-link {
+  color: var(--text-light-1);
+}
+
 /* ARIA live region for dynamic updates (visually hidden) */
-.breadcrumbs[aria-live="polite"]:empty::before {
+.breadcrumbs[aria-live='polite']:empty::before {
   content: 'Breadcrumb navigation loading...';
   position: absolute;
   left: -10000px;
@@ -85,23 +71,17 @@
 
 /* Small screens (< 600px) - Compact spacing */
 @media (width < 600px) {
-  /* Reduce gap on mobile for tighter layout */
   .breadcrumbs-list {
-    gap: var(--spacing-xxsmall);
+    gap: var(--spacing-004);
   }
 
   .breadcrumbs-item:not(:last-child)::after {
-    margin: 0 var(--spacing-xxsmall);
+    margin: 0 var(--spacing-004);
   }
 }
 
 /* Print styles - Show full breadcrumb trail */
 @media print {
-  .breadcrumbs {
-    margin: 0.5rem 0;
-    padding: 0;
-  }
-
   .breadcrumbs-link {
     color: #000;
     text-decoration: none;
@@ -130,3 +110,10 @@
     transition: none;
   }
 }
+
+// ============================================================
+// Token candidates — consider migrating to root-tokens.scss
+// ============================================================
+// --font-weight-light: 300;        /* from Figma: Body/4/Light fontWeight */
+// --font-size-xs: 12px;            /* from Figma: Body/4 fontSize */
+// --letter-spacing-tight: -0.02em; /* from Figma: Body/4 letterSpacing -2% */
