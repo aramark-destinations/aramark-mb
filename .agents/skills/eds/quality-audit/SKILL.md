@@ -1,8 +1,6 @@
 ---
-name: eds/quality-audit
-description: Lighthouse audit, SEO checks, and WCAG 2.1 accessibility audit against solution design targets.
-when_to_use: for periodic quality audits, before major releases, or when investigating performance/accessibility/SEO issues
-version: 1.0.0
+name: quality-audit
+description: Lighthouse audit, SEO checks, and WCAG 2.1 accessibility audit against solution design targets. Use for periodic quality audits, before major releases, or when investigating performance/accessibility/SEO issues.
 ---
 
 # Quality Audit

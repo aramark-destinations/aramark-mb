@@ -1,6 +1,6 @@
 {
   "name": "collab/update-status",
-  "description": "Append a daily EOD status entry to docs/collaboration/daily-status.md for async team visibility across time zones.",
-  "when_to_use": "at the end of the workday to log completed work, in-progress items, blockers, and handoff notes",
-  "version": "1.0.0"
+  "description": "Append a daily EOD status entry to the team collaboration log. When a Block is specified (e.g. after a PR review on a block), also writes a block-scoped entry to blocks/{blockname}/daily-status.md. Use when: end of day status update, logging block work, logging PR review activity.",
+  "when_to_use": "at the end of the workday to log completed work, in-progress items, blockers, and handoff notes for teammates in other time zones",
+  "version": "1.1.0"
 }

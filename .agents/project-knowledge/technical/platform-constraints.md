@@ -39,7 +39,7 @@ This project has **no shopping cart, no product catalog, no checkout, no Adobe C
 
 This project uses **Azure DevOps (ADO)**, not Jira.
 
-- Branch naming convention: `ADO-{ticket}-{type}` (e.g., `ADO-94-feat`, `ADO-120-fix`)
+- Branch naming convention: `ADO-{ticket}-{block/element/feature}` (e.g., `ADO-94-cards`, `ADO-120-carousel-scroll`)
 - `ticket-details.md` files reference ADO ticket IDs
 - Any reference to Jira tickets or Jira-based workflows should be treated as wrong
 

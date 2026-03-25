@@ -1,8 +1,6 @@
 ---
-name: eds/block-audit
-description: Validate a block against solution design requirements, compare implementation to spec, and audit CSS for proper token usage.
-when_to_use: after implementing or modifying a block, before creating a PR, or when reviewing someone else's block implementation
-version: 1.0.0
+name: block-audit
+description: Validate a block against solution design requirements, compare implementation to spec, and audit CSS for proper token usage. Use after implementing or modifying a block, before creating a PR, or when reviewing someone else's block implementation.
 ---
 
 # EDS Block Audit

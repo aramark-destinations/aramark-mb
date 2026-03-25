@@ -19,17 +19,36 @@ This project uses **Azure DevOps (ADO)** for issue tracking. There is no Jira.
 ## Branch Naming Convention
 
 ```
-ADO-{ticket}-{type}
+ADO-{ticket}-{block/element/feature}
 ```
 
 Examples:
-- `ADO-94-feat` — new feature for ticket 94
-- `ADO-120-fix` — bug fix for ticket 120
-- `ADO-87-chore` — chore/refactor for ticket 87
+- `ADO-94-cards` — work on the cards block for ticket 94
+- `ADO-120-carousel-scroll` — carousel scroll fix for ticket 120
+- `ADO-87-brand-tokens` — brand token work for ticket 87
+
+The third segment describes **what** is being changed (block name, element, or feature), not the commit type.
+
+Branches that don't follow this convention will be flagged by `eds/pre-merge-check`.
+
+## Commit Message Convention
+
+Commit messages use conventional commits format:
+
+```
+{type}({scope}): {description}
+```
 
 Valid types: `feat`, `fix`, `chore`, `docs`, `test`, `refactor`
 
-Branches that don't follow this convention will be flagged by `eds/pre-merge-check`.
+Examples:
+- `feat(cards): add image overlay variant`
+- `fix(carousel): correct scroll position on mobile`
+- `chore(tokens): update Lake Powell brand colors`
+
+Additional rules:
+- Do not add `Co-Authored-By:` lines referencing AI tools
+- Keep commit messages factual and technical — do not reference client names from other projects
 
 ## Block Status Tracking
 
@@ -38,12 +57,6 @@ Block remediation status is tracked in `docs/audits/SUMMARY.md`:
 - **NO-GO** — Block has issues requiring remediation (21 blocks as of 2026-03-25)
 
 Bug categories in NO-GO blocks include: schema/implementation mismatches, missing lifecycle hooks, broken event delegation, and wrong localStorage namespace.
-
-## Commit Guidelines
-
-- Commit messages use conventional commits format: `type(scope): description`
-- Do not add `Co-Authored-By:` lines referencing AI tools
-- Keep commit messages factual and technical — do not reference client names from other projects
 
 ## Open Questions
 

@@ -1,8 +1,6 @@
 ---
-name: eds/authoring-guide
-description: Create author-facing documentation for EDS blocks. Strictly separated from developer documentation.
-when_to_use: when a block needs author-facing documentation (separate from the developer README.md)
-version: 1.0.0
+name: authoring-guide
+description: Create author-facing documentation for EDS blocks. Strictly separated from developer documentation. Use when a block needs author-facing documentation (separate from the developer README.md).
 ---
 
 # EDS Authoring Guide Creation

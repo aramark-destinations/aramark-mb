@@ -155,7 +155,7 @@ Skills derived from the Solution Design document. Organized by category, with re
 - Check block naming conventions
 - Verify no hard-coded token values
 - Check for accessibility basics
-- Verify branch naming convention (ADO-{ticket}-{type})
+- Verify branch naming convention (ADO-{ticket}-{block/element/feature})
 - Ensure README is updated if block was modified
 
 ---

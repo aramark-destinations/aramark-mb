@@ -1,0 +1,7 @@
+{
+  "name": "collab/pr-review",
+  "description": "Analyze an open GitHub PR locally — syncs branches, diffs changes, audits against project conventions, pulls developer notes from the PR description and comments, then produces a structured review doc. Use when reviewing a PR or preparing for a code review session.",
+  "when_to_use": "when you want a full local code review of an open GitHub PR without relying on GitHub Copilot",
+  "version": "1.0.0",
+  "aliases": ["pr-review", "review-pr", "code-review"]
+}

@@ -1,8 +1,6 @@
 ---
-name: eds/create-brand-tokens
-description: Create or update a brand token CSS file for a property site. Only override what differs from root.
-when_to_use: when creating tokens for a new brand or updating an existing brand's visual identity without full site spinup
-version: 1.0.0
+name: create-brand-tokens
+description: Create or update a brand token CSS file for a property site. Only override what differs from root. Use when creating tokens for a new brand or updating an existing brand's visual identity without full site spinup.
 ---
 
 # Create Brand Tokens
