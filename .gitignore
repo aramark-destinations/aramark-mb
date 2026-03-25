@@ -28,6 +28,18 @@ test-results
 # Ignore agent plans but keep shared templates tracked
 .agents/plans/*
 .agents/tasks/*
+
+# Ignore project-knowledge content — sensitive (client arch, integrations, vendors)
+# Distribute via internal channels only. Keep meta files (AGENTS.md, INDEX.md, README.md) tracked.
+.agents/project-knowledge/overview.md
+.agents/project-knowledge/blocks-and-components.md
+.agents/project-knowledge/developer-alignment.md
+.agents/project-knowledge/responsive.md
+.agents/project-knowledge/skills-to-build.md
+.agents/project-knowledge/technical-requirements.md
+.agents/project-knowledge/governance/
+.agents/project-knowledge/technical/
+.agents/project-knowledge/design/
 .ralphy/*
 .chrome/playwright/*
 docs/plans/*
