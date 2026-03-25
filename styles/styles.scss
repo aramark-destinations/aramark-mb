@@ -32,7 +32,12 @@
   --link-color: var(--color-primary);
   --link-hover-color: var(--color-primary-700);
 
-  /* fonts */
+  /* fonts removed to match Figma spec
+  --body-font-family: roboto, roboto-fallback, sans-serif;
+  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif;
+    */
+    
+   /* Assuming same font family for all brands */
   --body-font-family: inter, inter-fallback, sans-serif;
   --heading-font-family: montserrat, montserrat-fallback, sans-serif;
 
@@ -92,14 +97,14 @@
    Brand-specific Google Fonts are imported in brands/<brand>/tokens.css.
    ============================================================ */
 @font-face {
-  font-family: roboto-condensed-fallback;
-  size-adjust: 88.82%;
+  font-family: montserrat-fallback;
+  size-adjust: 100%;
   src: local('Arial');
 }
 
 @font-face {
-  font-family: roboto-fallback;
-  size-adjust: 99.529%;
+  font-family: inter-fallback;
+  size-adjust: 100%;
   src: local('Arial');
 }
 
