@@ -4,9 +4,16 @@
   gap: var(--spacing-008);
 
   a {
-    display: inline-block;
-    padding: var(--spacing-008) var(--spacing-024);
+    --btn-pad-h: var(--spacing-024);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-008);
+    padding: var(--spacing-008) var(--btn-pad-h);
+    min-height: var(--spacing-056);
     border-radius: var(--radius-s);
+    font-size: 16px; // Body/2/Bold — see token candidate: --font-size-body-2
+    line-height: 1.5;
     text-decoration: none;
     font-weight: var(--font-weight-bold);
     cursor: pointer;
@@ -17,6 +24,34 @@
 
     &:hover {
       background-color: var(--button-bg-hover, var(--link-hover-color));
+    }
+
+    // Size: Medium
+    &.size-medium {
+      --btn-pad-h: var(--spacing-016);
+      min-height: var(--spacing-040);
+      font-size: 14px; // Body/3/Bold — see token candidate: --font-size-body-3
+    }
+
+    // Size: Small
+    &.size-small {
+      --btn-pad-h: var(--spacing-012);
+      min-height: var(--spacing-032);
+      font-size: 12px; // Body/4/Bold — see token candidate: --font-size-body-4
+    }
+
+    // Shape: Pill — overrides border-radius and increases horizontal padding per size
+    &.shape-pill {
+      --btn-pad-h: var(--spacing-032);
+      border-radius: var(--radius-full);
+    }
+
+    &.size-medium.shape-pill {
+      --btn-pad-h: var(--spacing-024);
+    }
+
+    &.size-small.shape-pill {
+      --btn-pad-h: var(--spacing-016);
     }
 
     // Outlined variant
@@ -84,7 +119,7 @@
       --button-bg-hover: var(--color-neutral-200, #e5e5e5);
       --button-text: var(--color-grey-900);
       --button-border: var(--color-base-white);
-      --button-text-link: var(--color-neutral-50, #fff);
+      --button-text-link: var(--color-base-white);
     }
   }
 }
@@ -95,3 +130,6 @@
 // --color-primary: #B04C1A;    // from Figma: Primary fill (Lake Powell brand)
 // --color-secondary: #174355;  // from Figma: Secondary fill (Lake Powell brand)
 // --letter-spacing-tight: -2%; // from Figma: letterSpacing on all button text
+// --font-size-body-2: 16px;    // from Figma: Body/2/Bold — Large button text
+// --font-size-body-3: 14px;    // from Figma: Body/3/Bold — Medium button text
+// --font-size-body-4: 12px;    // from Figma: Body/4/Bold — Small button text

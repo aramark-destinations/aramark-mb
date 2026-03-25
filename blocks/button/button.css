@@ -4,9 +4,16 @@
   gap: var(--spacing-008);
 }
 .button a {
-  display: inline-block;
-  padding: var(--spacing-008) var(--spacing-024);
+  --btn-pad-h: var(--spacing-024);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-008);
+  padding: var(--spacing-008) var(--btn-pad-h);
+  min-height: var(--spacing-056);
   border-radius: var(--radius-s);
+  font-size: 16px;
+  line-height: 1.5;
   text-decoration: none;
   font-weight: var(--font-weight-bold);
   cursor: pointer;
@@ -17,6 +24,26 @@
 }
 .button a:hover {
   background-color: var(--button-bg-hover, var(--link-hover-color));
+}
+.button a.size-medium {
+  --btn-pad-h: var(--spacing-016);
+  min-height: var(--spacing-040);
+  font-size: 14px;
+}
+.button a.size-small {
+  --btn-pad-h: var(--spacing-012);
+  min-height: var(--spacing-032);
+  font-size: 12px;
+}
+.button a.shape-pill {
+  --btn-pad-h: var(--spacing-032);
+  border-radius: var(--radius-full);
+}
+.button a.size-medium.shape-pill {
+  --btn-pad-h: var(--spacing-024);
+}
+.button a.size-small.shape-pill {
+  --btn-pad-h: var(--spacing-016);
 }
 .button a.outlined {
   background-color: transparent;
@@ -68,5 +95,5 @@
   --button-bg-hover: var(--color-neutral-200, #e5e5e5);
   --button-text: var(--color-grey-900);
   --button-border: var(--color-base-white);
-  --button-text-link: var(--color-neutral-50, #fff);
+  --button-text-link: var(--color-base-white);
 }
