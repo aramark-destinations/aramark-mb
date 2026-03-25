@@ -31,6 +31,7 @@ test-results
 .ralphy/*
 .chrome/playwright/*
 docs/plans/*
+docs/project-knowledge/
 !.agents/plans/shared/
 !.agents/plans/shared/**
 .agents/skills/research/docs-search/.cache/*

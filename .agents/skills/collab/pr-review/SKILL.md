@@ -158,9 +158,9 @@ Read these files in full:
 
 | File | What it governs |
 |---|---|
-| `.agents/project-knowledge/technical/technical-standards.md` | Block Pattern A definition, WCAG requirements, code style, testing state |
-| `.agents/project-knowledge/technical/platform-constraints.md` | No MSM, no Google Docs, ADO (not Jira), CI runs lint only |
-| `.agents/project-knowledge/governance/business-rules.md` | ADO branch naming, `ticket-details.md` convention, commit rules |
+| `docs/project-knowledge/technical/technical-standards.md` | Block Pattern A definition, WCAG requirements, code style, testing state |
+| `docs/project-knowledge/technical/platform-constraints.md` | No MSM, no Google Docs, ADO (not Jira), CI runs lint only |
+| `docs/project-knowledge/governance/business-rules.md` | ADO branch naming, `ticket-details.md` convention, commit rules |
 | `docs/BLOCK-EXTENSIBILITY-GUIDE.md` | Hook architecture, Pattern A deep-dive, lifecycle events |
 | `docs/BLOCK-RENDERING-BUILD-CONFIG.md` | Token cascade, build pipeline, SCSS/CSS expectations |
 
@@ -168,8 +168,8 @@ Read these files in full:
 
 | File | What it governs |
 |---|---|
-| `.agents/project-knowledge/design/design-standards.md` | Breakpoints, token cascade rules, multi-brand constraints |
-| `.agents/project-knowledge/technical/performance-targets.md` | CWV thresholds, image breakpoints, component budgets, third-party loading rules |
+| `docs/project-knowledge/design/design-standards.md` | Breakpoints, token cascade rules, multi-brand constraints |
+| `docs/project-knowledge/technical/performance-targets.md` | CWV thresholds, image breakpoints, component budgets, third-party loading rules |
 
 ### 6c. Load if a specific block was changed
 
@@ -190,7 +190,7 @@ For **each file** in the diff, read it in full. Apply the relevant checklist, cr
 
 ### 7a. JavaScript files (`*.js` in `blocks/`)
 
-**Pattern A** (authoritative definition: `.agents/project-knowledge/technical/technical-standards.md`):
+**Pattern A** (authoritative definition: `docs/project-knowledge/technical/technical-standards.md`):
 
 - [ ] Export signature: `export default function decorate(block, options = {})` (note: **named function**, not arrow)
 - [ ] `window.{BlockName}?.hooks?.onBefore?.(block, options)` called **before** block logic
@@ -355,11 +355,11 @@ Use this template:
 ## Audit Sources
 
 This review was conducted against:
-- `.agents/project-knowledge/technical/technical-standards.md`
-- `.agents/project-knowledge/technical/platform-constraints.md`
-- `.agents/project-knowledge/governance/business-rules.md`
-- `.agents/project-knowledge/design/design-standards.md` *(if styles changed)*
-- `.agents/project-knowledge/technical/performance-targets.md` *(if blocks/styles changed)*
+- `docs/project-knowledge/technical/technical-standards.md`
+- `docs/project-knowledge/technical/platform-constraints.md`
+- `docs/project-knowledge/governance/business-rules.md`
+- `docs/project-knowledge/design/design-standards.md` *(if styles changed)*
+- `docs/project-knowledge/technical/performance-targets.md` *(if blocks/styles changed)*
 - `docs/BLOCK-EXTENSIBILITY-GUIDE.md`
 - `docs/BLOCK-RENDERING-BUILD-CONFIG.md`
 - `blocks/{blockname}/ticket-details.md` *(if block work)*
