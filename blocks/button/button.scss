@@ -2,97 +2,96 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-008);
-}
 
-/* Base button styles */
-.button a {
-  display: inline-block;
-  padding: var(--spacing-008) var(--spacing-024);
-  border-radius: var(--radius-s);
-  text-decoration: none;
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  transition: background-color var(--button-transition) ease, color var(--button-transition) ease, border-color var(--button-transition) ease;
-  background-color: var(--button-bg, var(--link-color));
-  color: var(--button-text, var(--background-color));
-  border: 2px solid transparent;
-}
+  a {
+    display: inline-block;
+    padding: var(--spacing-008) var(--spacing-024);
+    border-radius: var(--radius-s);
+    text-decoration: none;
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: background-color var(--button-transition) ease, color var(--button-transition) ease, border-color var(--button-transition) ease;
+    background-color: var(--button-bg, var(--link-color));
+    color: var(--button-text, var(--background-color));
+    border: 2px solid transparent;
 
-.button a:hover {
-  background-color: var(--button-bg-hover, var(--link-hover-color));
-}
+    &:hover {
+      background-color: var(--button-bg-hover, var(--link-hover-color));
+    }
 
-/* Outlined variant */
-.button a.outlined {
-  background-color: transparent;
-  border: 2px solid var(--button-border, var(--link-color));
-  color: var(--button-border, var(--link-color));
-}
+    // Outlined variant
+    &.outlined {
+      background-color: transparent;
+      border: 2px solid var(--button-border, var(--link-color));
+      color: var(--button-border, var(--link-color));
 
-.button a.outlined:hover {
-  background-color: var(--button-border, var(--link-color));
-  color: var(--background-color);
-}
+      &:hover {
+        background-color: var(--button-border, var(--link-color));
+        color: var(--background-color);
+      }
+    }
 
-/* Text-only variant */
-.button a.text-only {
-  background-color: transparent;
-  border: 2px solid transparent;
-  color: var(--button-text-link, var(--link-color));
-  padding-left: 0;
-  padding-right: 0;
-}
+    // Text-only variant
+    &.text-only {
+      background-color: transparent;
+      border: 2px solid transparent;
+      color: var(--button-text-link, var(--link-color));
+      padding-left: 0;
+      padding-right: 0;
 
-.button a.text-only:hover {
-  color: var(--button-text-link-hover, var(--link-hover-color));
-  text-decoration: underline;
-}
+      &:hover {
+        color: var(--button-text-link-hover, var(--link-hover-color));
+        text-decoration: underline;
+      }
+    }
 
-/* Color: Primary */
-.button a.color-primary {
-  --button-bg: var(--color-brand-primary);
-  --button-bg-hover: var(--color-brand-primary-dark, var(--link-hover-color));
-  --button-border: var(--color-brand-primary);
-  --button-text-link: var(--color-brand-primary);
-}
+    // Color: Primary
+    &.color-primary {
+      --button-bg: var(--color-brand-primary);
+      --button-bg-hover: var(--color-brand-primary-dark, var(--link-hover-color));
+      --button-border: var(--color-brand-primary);
+      --button-text-link: var(--color-brand-primary);
+    }
 
-/* Color: Secondary */
-.button a.color-secondary {
-  --button-bg: var(--color-brand-secondary);
-  --button-bg-hover: var(--color-brand-secondary-dark, var(--link-hover-color));
-  --button-border: var(--color-brand-secondary);
-  --button-text-link: var(--color-brand-secondary);
-}
+    // Color: Secondary
+    &.color-secondary {
+      --button-bg: var(--color-brand-secondary);
+      --button-bg-hover: var(--color-brand-secondary-dark, var(--link-hover-color));
+      --button-border: var(--color-brand-secondary);
+      --button-text-link: var(--color-brand-secondary);
+    }
 
-/* Color: Tertiary */
-.button a.color-tertiary {
-  --button-bg: var(--color-brand-tertiary);
-  --button-bg-hover: var(--color-brand-tertiary-dark, var(--link-hover-color));
-  --button-border: var(--color-brand-tertiary);
-  --button-text-link: var(--color-brand-tertiary);
-}
+    // Color: Tertiary
+    &.color-tertiary {
+      --button-bg: var(--color-brand-tertiary);
+      --button-bg-hover: var(--color-brand-tertiary-dark, var(--link-hover-color));
+      --button-border: var(--color-brand-tertiary);
+      --button-text-link: var(--color-brand-tertiary);
+    }
 
-/* Color: Black */
-.button a.color-black {
-  --button-bg: var(--color-neutral-900, #000);
-  --button-bg-hover: var(--color-neutral-800, #333);
-  --button-text: var(--color-base-white);
-  --button-border: var(--color-neutral-900, #000);
-  --button-text-link: var(--color-neutral-900, #000);
-}
+    // Color: Black
+    &.color-black {
+      --button-bg: var(--color-neutral-900, #000);
+      --button-bg-hover: var(--color-neutral-800, #333);
+      --button-text: var(--color-base-white);
+      --button-border: var(--color-neutral-900, #000);
+      --button-text-link: var(--color-neutral-900, #000);
+    }
 
-/* Color: White */
-.button a.color-white {
-  --button-bg: var(--color-base-white);
-  --button-bg-hover: var(--color-neutral-200, #e5e5e5);
-  --button-text: var(--color-grey-900);
-  --button-border: var(--color-base-white);
-  --button-text-link: var(--color-neutral-50, #fff);
+    // Color: White
+    &.color-white {
+      --button-bg: var(--color-base-white);
+      --button-bg-hover: var(--color-neutral-200, #e5e5e5);
+      --button-text: var(--color-grey-900);
+      --button-border: var(--color-base-white);
+      --button-text-link: var(--color-neutral-50, #fff);
+    }
+  }
 }
 
 // ============================================================
 // Token candidates — consider migrating to root-tokens.scss
 // ============================================================
-// --color-primary: #B04C1A;    /* from Figma: Primary fill (Lake Powell brand) */
-// --color-secondary: #174355;  /* from Figma: Secondary fill (Lake Powell brand) */
-// --letter-spacing-tight: -2%; /* from Figma: letterSpacing on all button text */
+// --color-primary: #B04C1A;    // from Figma: Primary fill (Lake Powell brand)
+// --color-secondary: #174355;  // from Figma: Secondary fill (Lake Powell brand)
+// --letter-spacing-tight: -2%; // from Figma: letterSpacing on all button text

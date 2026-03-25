@@ -6,17 +6,12 @@
  * - Supports multiple buttons with style and color variants
  */
 
-import { readVariant } from '../../scripts/scripts.js';
-
 export function decorate(block, options = {}) {
   const ctx = { block, options };
 
   // lifecycle hook + event (before)
   options.onBefore?.(ctx);
   block.dispatchEvent(new CustomEvent('button:before', { detail: ctx, bubbles: true }));
-
-  // === BUTTON BLOCK LOGIC ===
-  readVariant(block);
 
   const links = block.querySelectorAll('a');
   links.forEach((link) => {
@@ -29,6 +24,14 @@ export function decorate(block, options = {}) {
     // Read color (primary/secondary/tertiary/black/white) from data attribute
     const linkColor = wrapper?.dataset.linkcolor || block.dataset.linkcolor || 'primary';
     if (linkColor) link.classList.add(`color-${linkColor}`);
+
+    // Read size (large/medium/small) from data attribute
+    const linkSize = wrapper?.dataset.linksize || block.dataset.linksize || 'large';
+    if (linkSize) link.classList.add(`size-${linkSize}`);
+
+    // Read shape (rectangular/pill) from data attribute
+    const linkShape = wrapper?.dataset.linkshape || block.dataset.linkshape;
+    if (linkShape === 'pill') link.classList.add('shape-pill');
   });
 
   // lifecycle hook + event (after)
