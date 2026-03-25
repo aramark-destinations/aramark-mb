@@ -160,6 +160,42 @@
             "value": "white"
           }
         ]
+      },
+      {
+        "component": "select",
+        "name": "linkSize",
+        "label": "Button Size",
+        "description": "Size of the button",
+        "options": [
+          {
+            "name": "Large",
+            "value": "large"
+          },
+          {
+            "name": "Medium",
+            "value": "medium"
+          },
+          {
+            "name": "Small",
+            "value": "small"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "linkShape",
+        "label": "Button Shape",
+        "description": "Shape of the button corners",
+        "options": [
+          {
+            "name": "Rectangular",
+            "value": "rectangular"
+          },
+          {
+            "name": "Pill",
+            "value": "pill"
+          }
+        ]
       }
     ]
   },
