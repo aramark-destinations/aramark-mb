@@ -14,6 +14,7 @@
     border-radius: var(--radius-s);
     font-size: 16px; // Body/2/Bold — see token candidate: --font-size-body-2
     line-height: 1.5;
+    letter-spacing: -0.02em; // Figma: -2% — see token candidate: --letter-spacing-tight
     text-decoration: none;
     font-weight: var(--font-weight-bold);
     cursor: pointer;
@@ -127,9 +128,11 @@
 // ============================================================
 // Token candidates — consider migrating to root-tokens.scss
 // ============================================================
-// --color-primary: #B04C1A;    // from Figma: Primary fill (Lake Powell brand)
-// --color-secondary: #174355;  // from Figma: Secondary fill (Lake Powell brand)
-// --letter-spacing-tight: -2%; // from Figma: letterSpacing on all button text
-// --font-size-body-2: 16px;    // from Figma: Body/2/Bold — Large button text
-// --font-size-body-3: 14px;    // from Figma: Body/3/Bold — Medium button text
-// --font-size-body-4: 12px;    // from Figma: Body/4/Bold — Small button text
+// --letter-spacing-tight: -0.02em; // from Figma: -2% letterSpacing on all button text
+// --font-size-body-2: 16px;        // from Figma: Body/2/Bold — Large button text
+// --font-size-body-3: 14px;        // from Figma: Body/3/Bold — Medium button text
+// --font-size-body-4: 12px;        // from Figma: Body/4/Bold — Small button text
+//
+// Brand color gaps (update in brands/lake-powell/tokens.css, not here):
+// --color-primary: #B04C1A;    // Figma Primary — current brand value: #0066cc
+// --color-secondary: #174355;  // Figma Secondary — current brand value: #1a4d2e

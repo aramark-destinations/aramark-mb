@@ -34,15 +34,16 @@
 
 ## Token Gaps
 
-These values from the Figma design have no matching token. Consider adding them to `styles/root-tokens.scss`.
+| Figma property | Value | Location | Action |
+|---|---|---|---|
+| Primary fill | `#B04C1A` | `brands/lake-powell/tokens.css` | Update `--color-primary` in brand file (current: `#0066cc`) |
+| Secondary fill | `#174355` | `brands/lake-powell/tokens.css` | Update `--color-secondary` in brand file (current: `#1a4d2e`) |
+| Letter spacing | `-2%` → `-0.02em` | `button.scss` | Applied as `letter-spacing: -0.02em`; promote to `--letter-spacing-tight` in `root-tokens.scss` |
+| Font size — Large | `16px` | `button.scss` | Hardcoded; promote to `--font-size-body-2` in `root-tokens.scss` |
+| Font size — Medium | `14px` | `button.scss` | Hardcoded; promote to `--font-size-body-3` in `root-tokens.scss` |
+| Font size — Small | `12px` | `button.scss` | Hardcoded; promote to `--font-size-body-4` in `root-tokens.scss` |
 
-| Figma property | Value | Suggested token |
-|---|---|---|
-| Primary fill (Lake Powell brand) | `#B04C1A` | `--color-primary` (update value in `root-tokens.scss`) |
-| Secondary fill (Lake Powell brand) | `#174355` | `--color-secondary` (update value in `root-tokens.scss`) |
-| Letter spacing | `-2%` | `--letter-spacing-tight` |
-
-> **Note on brand colors:** The Figma Primary (`#B04C1A`) and Secondary (`#174355`) differ from the current root-tokens values (`#eb002a` / `#022035`). These are the Lake Powell site brand colors. Update `--color-primary` and `--color-secondary` in `root-tokens.scss` to align the token system with this design. Run `/create-brand-tokens` to scaffold the change if needed.
+> **Note on brand colors:** Root token values (`--color-primary: #eb002a`, `--color-secondary: #022035`) are unbranded placeholders — mismatches with Figma there are expected and are not gaps. The gaps above are in `brands/lake-powell/tokens.css`, which must align with the Figma design.
 
 ---
 

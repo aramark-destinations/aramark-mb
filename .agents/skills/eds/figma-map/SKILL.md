@@ -118,11 +118,17 @@ For each extracted Figma value, attempt to map to a token:
 
 **Critical: do NOT match colors by hex value.**
 
-Root token values (e.g. `--color-primary: #eb002a`) are unbranded defaults. Every brand site overrides them in `brands/{brand}/tokens.css`. A Figma design for Lake Powell will show Lake Powell's brand primary color — that hex will never match the root default, and that is correct and expected.
+**Step 1 — Check the brand token file first.**
+
+Read `brands/{brand}/tokens.css` to find the brand's actual override values for `--color-primary`, `--color-secondary`, and any other overridden tokens. Compare Figma colors against *brand token values*, not root token values.
+
+- If a brand token value **matches** Figma → no gap, the block SCSS just needs to use the right token name.
+- If a brand token value **differs** from Figma → **brand token gap**: record the gap pointing to `brands/{brand}/tokens.css`.
+- Root token values (e.g. `--color-primary: #eb002a`) are unbranded placeholders — mismatches between root and Figma are **always expected and never gaps**.
+
+**Step 2 — Match by semantic role.**
 
 Block SCSS must only ever reference token *names* via `var(--color-primary)`. The resolved color is the brand's responsibility, not the block's.
-
-**Match by semantic role instead:**
 
 | Figma color role | Token to use |
 |---|---|
@@ -139,7 +145,7 @@ Block SCSS must only ever reference token *names* via `var(--color-primary)`. Th
 | Info blue | `var(--color-alerts-general)` |
 | Tinted/shaded brand color | Derived token e.g. `var(--color-primary-100)` from `fixed-tokens.scss` |
 
-**A Figma color is only a token gap if it has no semantic equivalent** — e.g. a decorative color that isn't primary, secondary, grey, or an alert. Do NOT flag brand primary/secondary mismatches as gaps — they are intentional brand overrides.
+**A Figma color is only a token gap if the brand token value differs from it, or if it has no semantic equivalent** (e.g. a decorative color that isn't primary, secondary, grey, or an alert). When recording a brand color gap, always cite `brands/{brand}/tokens.css` as the location — never `root-tokens.scss`.
 
 ### Typography mapping
 
