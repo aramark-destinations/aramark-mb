@@ -5,17 +5,19 @@
 **Always load first:** `AGENTS.md` + `INDEX.md` (this file + structure overview).
 **Then load on demand (JIT):** Only the category files relevant to the current task.
 
+Knowledge files live in `docs/project-knowledge/` (gitignored — obtain from team lead if missing).
+
 | Task Type | Load These Files |
 |---|---|
-| Block development | `technical/technical-standards.md`, `design/design-standards.md` |
-| Bug investigation | `technical/technical-standards.md`, `technical/platform-constraints.md` |
-| Brand token work | `design/design-standards.md` |
-| CF model work | `technical/technical-standards.md`, `technical/platform-constraints.md` |
-| Deployment / site spinup | `technical/platform-constraints.md`, `governance/business-rules.md` |
-| Third-party integration | `technical/platform-constraints.md`, `technical/technical-standards.md` |
-| Performance / CWV work | `technical/performance-targets.md`, `technical/platform-constraints.md` |
-| Accessibility | `technical/technical-standards.md`, `design/design-standards.md` |
-| Testing | `technical/technical-standards.md` |
+| Block development | `docs/project-knowledge/technical/technical-standards.md`, `docs/project-knowledge/design/design-standards.md` |
+| Bug investigation | `docs/project-knowledge/technical/technical-standards.md`, `docs/project-knowledge/technical/platform-constraints.md` |
+| Brand token work | `docs/project-knowledge/design/design-standards.md` |
+| CF model work | `docs/project-knowledge/technical/technical-standards.md`, `docs/project-knowledge/technical/platform-constraints.md` |
+| Deployment / site spinup | `docs/project-knowledge/technical/platform-constraints.md`, `docs/project-knowledge/governance/business-rules.md` |
+| Third-party integration | `docs/project-knowledge/technical/platform-constraints.md`, `docs/project-knowledge/technical/technical-standards.md` |
+| Performance / CWV work | `docs/project-knowledge/technical/performance-targets.md`, `docs/project-knowledge/technical/platform-constraints.md` |
+| Accessibility | `docs/project-knowledge/technical/technical-standards.md`, `docs/project-knowledge/design/design-standards.md` |
+| Testing | `docs/project-knowledge/technical/technical-standards.md` |
 
 ## Context Intake (Mandatory)
 
@@ -28,11 +30,11 @@ Before producing any deliverable:
 
 | File | Content |
 |---|---|
-| `technical/technical-standards.md` | Code standards, Block Pattern A, WCAG 2.1 AA, ARIA, testing |
-| `technical/platform-constraints.md` | EDS repoless, AEM Universal Editor, no Google Docs, no MSM, ADO (not Jira) |
-| `technical/performance-targets.md` | CWV thresholds, component budgets, image breakpoints |
-| `design/design-standards.md` | Breakpoints, CSS token cascade, multi-brand via tokens.css |
-| `governance/business-rules.md` | Aramark Destinations context, ADO workflow, branch naming |
+| `docs/project-knowledge/technical/technical-standards.md` | Code standards, Block Pattern A, WCAG 2.1 AA, ARIA, testing |
+| `docs/project-knowledge/technical/platform-constraints.md` | EDS repoless, AEM Universal Editor, no Google Docs, no MSM, ADO (not Jira) |
+| `docs/project-knowledge/technical/performance-targets.md` | CWV thresholds, component budgets, image breakpoints |
+| `docs/project-knowledge/design/design-standards.md` | Breakpoints, CSS token cascade, multi-brand via tokens.css |
+| `docs/project-knowledge/governance/business-rules.md` | Aramark Destinations context, ADO workflow, branch naming |
 
 ## 3-Tier Update Permissions
 

@@ -12,33 +12,46 @@ Aramark Destinations is modernizing 30+ property websites from Milestone CMS to 
 
 ## Knowledge Base Structure
 
+Agent configuration (tracked in repo):
 ```
-project-knowledge/
-├── AGENTS.md                            # Loading strategy + 3-tier permission model (this repo)
-├── INDEX.md                             # This file
+.agents/project-knowledge/
+├── AGENTS.md          # Loading strategy + 3-tier permission model
+├── INDEX.md           # This file — project context and quick start
+└── README.md          # Directory guide
+```
+
+Content documentation (gitignored — obtain from team lead):
+```
+docs/project-knowledge/
+├── overview.md
 ├── technical/
-│   ├── technical-standards.md           # Code standards, Block Pattern A, WCAG, testing
-│   ├── platform-constraints.md          # EDS, AEM UE, no MSM, ADO (not Jira)
-│   └── performance-targets.md           # CWV thresholds, component budgets, image breakpoints
+│   ├── technical-standards.md     # Code standards, Block Pattern A, WCAG, testing
+│   ├── platform-constraints.md    # EDS, AEM UE, no MSM, ADO (not Jira)
+│   └── performance-targets.md     # CWV thresholds, component budgets, image breakpoints
 ├── design/
-│   └── design-standards.md             # Breakpoints, token cascade, multi-brand
-└── governance/
-    └── business-rules.md               # ADO workflow, branch naming, ticket-details convention
+│   └── design-standards.md        # Breakpoints, token cascade, multi-brand
+├── governance/
+│   └── business-rules.md          # ADO workflow, branch naming, ticket-details convention
+├── blocks-and-components.md
+├── developer-alignment.md
+├── responsive.md
+└── technical-requirements.md
 ```
 
 ## Quick Start for New Agents
 
-1. Read `AGENTS.md` (this directory) to understand loading strategy and permissions
-2. Read `INDEX.md` (this file) for project context
-3. Load only the category files relevant to your task (see task-type table in `AGENTS.md`)
+1. Read `.agents/project-knowledge/AGENTS.md` to understand loading strategy and permissions
+2. Read `.agents/project-knowledge/INDEX.md` (this file) for project context
+3. Load only the `docs/project-knowledge/` files relevant to your task (see task-type table in `AGENTS.md`)
 4. **Always read `ticket-details.md` inside the block directory before doing any block work**
+5. If `docs/project-knowledge/` is missing, ask the developer to sync it from the team's internal share
 
 ## Key Facts Every Agent Must Know
 
 - Content is in **AEM**, not Git or SharePoint
 - Authoring is via **AEM Universal Editor** — not Google Docs, not SharePoint
 - Ticketing is **ADO** — not Jira
-- Branch naming: `ADO-{ticket}-{type}` (e.g., `ADO-94-feat`)
+- Branch naming: `ADO-{ticket}-{block/element/feature}` (e.g., `ADO-94-cards`, `ADO-120-carousel-scroll`)
 - There is **no Adobe Commerce**, no cart, no checkout
 - There are **no MSM live copies** — multi-brand is CSS tokens only
 - SCSS is used for global styles; run `pnpm build:css` after modifying `.scss` files

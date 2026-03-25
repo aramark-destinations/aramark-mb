@@ -1,40 +1,34 @@
-# Agent Project Knowledge — Index
+# Agent Project Knowledge
 
-This directory holds agent-guidance files that are tracked in the repo: the `INDEX.md`, `AGENTS.md` override, and `skills-to-build.md` planning doc.
+This directory contains agent configuration and discovery files tracked in the repo.
 
-## ⚠️ Project Knowledge Has Moved
+## Tracked Files
 
-Human-readable project documentation (business rules, technical standards, design standards, platform constraints, performance targets, solution design overview) now lives in:
+| File | Purpose |
+|---|---|
+| `AGENTS.md` | Loading strategy, task-type file map, 3-tier update permissions |
+| `INDEX.md` | Project context, key facts, quick start for new agents |
+| `README.md` | This file |
+
+## Content Knowledge Base
+
+All project documentation (architecture, standards, governance, design, performance) lives in:
 
 ```
 docs/project-knowledge/
 ```
 
-That directory is **gitignored** — it is not committed to the public repo. Share it with teammates via your internal channel (Slack, email, shared drive).
-
-## What Lives Here (tracked)
-
-| File | Purpose |
-|---|---|
-| `AGENTS.md` | Agent-specific overrides for this project |
-| `INDEX.md` | Index of knowledge files for agent discovery |
-| `skills-to-build.md` | Backlog of agent skills to build |
-
-## What Lives in `docs/project-knowledge/` (gitignored)
+This directory is **gitignored** and not committed to the public repo. Obtain it from your team lead or internal share.
 
 | File | Purpose |
 |---|---|
 | `overview.md` | Project goals, scope, architecture, technology stack |
-| `governance/business-rules.md` | ADO workflow, branch naming, commit convention, block status |
-| `technical/technical-standards.md` | Block Pattern A, SCSS pipeline, code style, WCAG requirements |
-| `technical/platform-constraints.md` | AEM/EDS repoless pattern, multi-brand rules, no-commerce constraints |
+| `governance/business-rules.md` | ADO workflow, branch naming, commit convention |
+| `technical/technical-standards.md` | Block Pattern A, code style, WCAG requirements |
+| `technical/platform-constraints.md` | EDS repoless pattern, multi-brand rules, no-commerce |
 | `technical/performance-targets.md` | Core Web Vitals targets, Lighthouse scores, image budgets |
-| `design/design-standards.md` | Breakpoint system, CSS token cascade, image standards |
-| `blocks-and-components.md` | Full component inventory with use cases and solution designs |
+| `design/design-standards.md` | Breakpoint system, CSS token cascade, multi-brand |
+| `blocks-and-components.md` | Component inventory with use cases and solution designs |
 | `developer-alignment.md` | Delivery checklist for developer reference |
 | `responsive.md` | Responsive design patterns |
 | `technical-requirements.md` | Infrastructure, CDN, testing, SEO requirements |
-
-## How Agents Should Load This Knowledge
-
-When a skill calls for loading project knowledge, read from `docs/project-knowledge/`. If the files are not present, the developer needs to sync that directory from the team's internal share.
