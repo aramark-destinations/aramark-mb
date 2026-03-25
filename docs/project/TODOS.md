@@ -95,6 +95,12 @@ Files needed: `blocks/side-by-side/side-by-side.js`, `blocks/side-by-side/side-b
 - Install `@phosphor-icons/core` and copy required SVGs to `/icons/ph-*.svg`
 - Document and configure `icon-base-url` metadata field per site
 
+### Typography Follow-ups (ADO-89)
+
+- Apply `.text-testimonial` utility class to `blocks/quote/quote.scss` *(separate PR)*
+- Apply `.eyebrow` utility class to `blocks/banner/banner.scss` *(separate PR)*
+- Apply `.eyebrow` utility class to `blocks/hero/hero.scss` *(separate PR)*
+
 ### Performance
 
 - Add preconnect hints to `head.html` for font CDN origins — check Network tab for actual hostname(s), then add `<link rel="preconnect" href="..." crossorigin>` entries

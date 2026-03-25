@@ -23,7 +23,8 @@ server.crt
 server.key
 test-results
 
-.vscode
+# Ignore VSCode chrome debug profile
+.vscode/chrome-debug-profile/
 
 # Ignore agent plans but keep shared templates tracked
 .agents/plans/*
@@ -31,7 +32,6 @@ test-results
 .ralphy/*
 .chrome/playwright/*
 docs/plans/*
-docs/project-knowledge/
 !.agents/plans/shared/
 !.agents/plans/shared/**
 .agents/skills/research/docs-search/.cache/*
@@ -41,5 +41,7 @@ docs/project-knowledge/
 
 # Ignore user IDE configuration files
 .editorconfig
-.claude/
+.claude/*
 .mcp.json
+.cline/
+docs/pr-reviews/
