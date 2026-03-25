@@ -1,8 +1,6 @@
 ---
-name: eds/block-research
-description: Research existing EDS block implementations before building new ones. Checks the project's /blocks/ directory, Adobe Block Collection, and Block Party community.
-when_to_use: before creating any new block or when unsure if a block capability already exists
-version: 1.0.0
+name: block-research
+description: Research existing EDS block implementations before building new ones. Checks the project's /blocks/ directory, Adobe Block Collection, and Block Party community. Use before creating any new block or when unsure if a block capability already exists.
 ---
 
 # EDS Block Research

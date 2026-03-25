@@ -1,8 +1,6 @@
 ---
-name: eds/figma-map
-description: Map a Figma design section to a local EDS block. Extracts styles via the Figma MCP, maps to CSS tokens, creates a figma-audit.md, updates block SCSS, and produces an analysis report.
-when_to_use: when starting a block implementation from Figma, or auditing an existing block against its Figma spec
-version: 1.0.0
+name: figma-map
+description: Map a Figma design section to a local EDS block. Extracts styles via the Figma MCP, maps to CSS tokens, creates a figma-audit.md, updates block SCSS, and produces an analysis report. Use when starting a block implementation from Figma, or auditing an existing block against its Figma spec.
 ---
 
 # EDS Figma Map

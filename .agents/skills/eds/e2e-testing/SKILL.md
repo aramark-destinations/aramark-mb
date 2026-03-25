@@ -1,8 +1,6 @@
 ---
-name: eds/e2e-testing
-description: Playwright E2E testing patterns for EDS blocks with interactive behavior.
-when_to_use: when a block has user interactions that require browser-level testing (carousels, accordions, tabs, forms, modals)
-version: 1.0.0
+name: e2e-testing
+description: Playwright E2E testing patterns for EDS blocks with interactive behavior. Use when a block has user interactions that require browser-level testing (carousels, accordions, tabs, forms, modals).
 ---
 
 # EDS E2E Testing (Playwright)

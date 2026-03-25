@@ -1,8 +1,6 @@
 ---
-name: eds/block-testing
-description: Jest unit testing patterns for EDS blocks. Covers test infrastructure bootstrapping, keeper vs throwaway tests, mock patterns for aem.js/scripts.js utilities.
-when_to_use: when a block has non-trivial JS logic (event handling, data transformation, state management) that should be unit tested
-version: 1.0.0
+name: block-testing
+description: Jest unit testing patterns for EDS blocks. Covers test infrastructure bootstrapping, keeper vs throwaway tests, mock patterns for aem.js/scripts.js utilities. Use when a block has non-trivial JS logic (event handling, data transformation, state management) that should be unit tested.
 ---
 
 # EDS Block Testing

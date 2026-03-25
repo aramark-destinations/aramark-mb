@@ -50,7 +50,6 @@ Active work items and outstanding implementation tasks.
 | File | Description |
 |------|-------------|
 | [project/TODOS.md](project/TODOS.md) | **Single source of truth for all open to-do items** — blocks, architecture, testing, security, integrations |
-| [in-progress/ADOPTION-PLAN.md](in-progress/ADOPTION-PLAN.md) | Detailed specs for three outstanding features: Section model expansion, CTA block, preconnect hints |
 
 ---
 

@@ -1,8 +1,6 @@
 ---
-name: eds/pre-merge-check
-description: Orchestrator skill — runs all compliance checks before a PR is merged.
-when_to_use: before merging any PR, as a final quality gate
-version: 1.0.0
+name: pre-merge-check
+description: Orchestrator skill — runs all compliance checks before a PR is merged. Use as the final quality gate before merging any PR.
 ---
 
 # Pre-Merge Check
@@ -139,12 +137,14 @@ If any files in `styles/` or `brands/` were modified:
 
 ### 5a. Branch naming
 
-Branch name must follow: `ADO-{ticket}-{description}`
+Branch name must follow: `ADO-{ticket}-{block/element/feature}`
 
 Examples:
-- `ADO-94-feat` (feature)
-- `ADO-120-fix-carousel-scroll` (bug fix)
-- `ADO-200-refactor-tokens` (refactor)
+- `ADO-94-cards` (cards block work)
+- `ADO-120-carousel-scroll` (carousel scroll fix)
+- `ADO-200-brand-tokens` (brand token work)
+
+The third segment is the **what** (block/feature name), not the commit type.
 
 **Check:**
 ```bash
