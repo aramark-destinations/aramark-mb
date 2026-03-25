@@ -8,11 +8,11 @@
 .button a {
   display: inline-block;
   padding: var(--spacing-008) var(--spacing-024);
-  border-radius: var(--border-radius);
+  border-radius: var(--radius-s);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: background-color var(--button-transition) ease, color var(--button-transition) ease, border-color var(--button-transition) ease;
   background-color: var(--button-bg, var(--link-color));
   color: var(--button-text, var(--background-color));
   border: 2px solid transparent;
@@ -76,16 +76,16 @@
 .button a.color-black {
   --button-bg: var(--color-neutral-900, #000);
   --button-bg-hover: var(--color-neutral-800, #333);
-  --button-text: var(--color-neutral-50, #fff);
+  --button-text: var(--color-base-white);
   --button-border: var(--color-neutral-900, #000);
   --button-text-link: var(--color-neutral-900, #000);
 }
 
 /* Color: White */
 .button a.color-white {
-  --button-bg: var(--color-neutral-50, #fff);
+  --button-bg: var(--color-base-white);
   --button-bg-hover: var(--color-neutral-200, #e5e5e5);
-  --button-text: var(--color-neutral-900, #000);
-  --button-border: var(--color-neutral-50, #fff);
+  --button-text: var(--color-grey-900);
+  --button-border: var(--color-base-white);
   --button-text-link: var(--color-neutral-50, #fff);
 }
