@@ -87,11 +87,12 @@ The repository enforces this directory layout:
     README.md
 
 /styles/
-  styles.css                       # Global styles, legacy token aliases, @import entry for token chain
-  fixed-tokens.css                 # Derived tokens (color shades, semantic surfaces via color-mix)
-  root-tokens.css                  # Configurable root design tokens (CSS custom properties)
-  fonts.css                        # Web font definitions
-  lazy-styles.css                  # Below-the-fold styles (currently empty placeholder)
+  styles.scss                      # Global styles, legacy token aliases, @import entry for token chain
+  fixed-tokens.scss                # Derived tokens (color shades, semantic surfaces via color-mix)
+  root-tokens.scss                 # Configurable root design tokens (CSS custom properties)
+  fonts.scss                       # Web font definitions
+  lazy-styles.scss                 # Below-the-fold styles (currently empty placeholder)
+  # Note: .scss files compile to .css via `pnpm build:css` — reference the .css output in browser
 
 /models/                           # Universal Editor JSON schemas
   _component-models.json           # Block configurations
@@ -108,8 +109,9 @@ The repository enforces this directory layout:
 
 - Block directories match block names exactly (lowercase, hyphenated)
 - JavaScript files: `{blockname}.js`
-- CSS files: `{blockname}.css`
-- No preprocessing extensions (`.scss`, `.tsx`) in repository
+- Block CSS files: `{blockname}.css` (plain CSS — no preprocessing)
+- Global/token styles: `.scss` files in `styles/` — compile via `pnpm build:css`
+- Brand token files: `brands/{brand}/tokens.css` (plain CSS)
 
 ---
 
