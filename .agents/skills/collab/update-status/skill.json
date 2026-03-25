@@ -1,0 +1,6 @@
+{
+  "name": "collab/update-status",
+  "description": "Append a daily EOD status entry to docs/collaboration/daily-status.md for async team visibility across time zones.",
+  "when_to_use": "at the end of the workday to log completed work, in-progress items, blockers, and handoff notes",
+  "version": "1.0.0"
+}

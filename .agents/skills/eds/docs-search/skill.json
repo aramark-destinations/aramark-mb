@@ -1,0 +1,6 @@
+{
+  "name": "eds/docs-search",
+  "description": "Searches the aem.live documentation index for information on EDS platform features, concepts, and implementation guidance. Returns ranked results with relevance scores; use WebFetch to read full pages.",
+  "when_to_use": "when you need information about an aem.live feature and basic web search is not returning relevant documentation results",
+  "version": "1.0.0"
+}
