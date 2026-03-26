@@ -22,6 +22,18 @@ module.exports = {
     'color-function-alias-notation': null,
     'alpha-value-notation': null,
   },
+  overrides: [
+    {
+      files: ['**/*.scss'],
+      customSyntax: 'postcss-scss',
+      rules: {
+        // SCSS nesting is compiled away by Sass — CSS nesting baseline check is a false positive
+        'plugin/use-baseline': null,
+        // SCSS variable interpolation #{$var} in media queries is not standard CSS syntax
+        'media-query-no-invalid': null,
+      },
+    },
+  ],
   ignoreFiles: [
     'scripts/__dropins__/**',
     'tools/authoring-guide-importer/**',
