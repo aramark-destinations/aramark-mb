@@ -456,20 +456,10 @@
     "id": "breadcrumbs",
     "fields": [
       {
-        "component": "text",
-        "valueType": "string",
-        "name": "breadcrumb-label-override",
-        "label": "Current Page Label Override",
-        "description": "Custom label for the current page (overrides og:title)",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
+        "component": "aem-content",
         "name": "breadcrumb-parent-override",
-        "label": "Parent Page URL Override",
-        "description": "Custom URL for the immediate parent breadcrumb (must be same domain)",
-        "value": ""
+        "label": "Parent Page Override",
+        "description": "Select a page to use as the immediate parent breadcrumb"
       }
     ]
   },
