@@ -1,5 +1,15 @@
 /* Breadcrumbs Block Styles */
 
+/*
+ * TEMPORARY TOKENS — remove once the typography token PR is merged into staging.
+ * These values mirror the pending additions to root-tokens.scss / styles.scss.
+ * TODO: Delete this block when --font-weight-light and --body-letter-spacing land.
+ */
+.breadcrumbs {
+  --font-weight-light: 300;
+  --body-letter-spacing: -0.02em;
+}
+
 /* Breadcrumb list - Horizontal layout */
 .breadcrumbs-list {
   display: flex;

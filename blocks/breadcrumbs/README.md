@@ -39,7 +39,7 @@ No URL parameters affect block behavior.
 
 | Storage Key | Format | TTL | Description |
 |-------------|--------|-----|-------------|
-| `kaiBreadcrumbContext` | JSON object | 30 seconds | Category context from PLP navigation |
+| `breadcrumb-context` | JSON object | 30 seconds | Category context from PLP navigation |
 
 **Storage Structure:**
 ```json
@@ -219,17 +219,17 @@ console.log('BREADCRUMB: Analytics deferred (no consent)');
 **CSS Variables (Design Tokens):**
 
 ```css
---spacing-medium: 1rem;         /* Container margin */
---spacing-small: 0.5rem;        /* Mobile margin */
---spacing-xsmall: 0.25rem;      /* Gap between items */
---spacing-xxsmall: 0.125rem;    /* Mobile gap */
---body-font-size-s: 0.875rem;   /* Desktop font size */
---body-font-size-xs: 0.8125rem; /* Mobile font size */
---link-color: #0066cc;          /* Link color */
---link-hover-color: #0052a3;    /* Link hover color */
---color-neutral-500: #6b7280;   /* Separator color */
---color-neutral-700: #374151;   /* Current page text */
---focus-ring-color: #0066cc;    /* Focus outline */
+--spacing-008: 8px;             /* Gap between items */
+--spacing-004: 4px;             /* Mobile gap */
+--body-font-size-xxs: 12px;     /* Item font size */
+--font-weight-light: 300;       /* Item font weight */
+--font-weight-bold: 700;        /* Current page font weight */
+--line-height-normal: 1.6;      /* Item line height */
+--body-letter-spacing: -0.02em; /* Item letter spacing */
+--text-dark-1: var(--color-grey-900); /* Link color */
+--text-light-1: var(--color-base-white); /* Dark mode link color */
+--color-base-black: #000;       /* Print color */
+--radius-xs: 4px;               /* Focus border radius */
 ```
 
 **Responsive Breakpoints:**
@@ -295,7 +295,9 @@ pnpm test:watch blocks/breadcrumbs/breadcrumbs.test.js
 ## Dependencies
 
 **Internal:**
-- `../../scripts/scripts.js` - `getMetadata()`
+- `../../scripts/aem.js` - `getMetadata()`
+- `../../scripts/scripts.js` - `readVariant()`
+- `../../scripts/baici/utils/utils.js` - `getBrandCode()`
 - `window.adobeDataLayer` - Analytics events
 - `localStorage` - Category context storage
 

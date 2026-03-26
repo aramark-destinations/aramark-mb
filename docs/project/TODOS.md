@@ -45,6 +45,8 @@ Full details in individual audit files under `docs/audits/`.
 
 - **Banner** — Missing `README.md`; incomplete UE schema (`mediaImage`, `ctaLink`, `ctaLabel` fields absent); no `prefers-reduced-motion`; no pause-on-hover; dismiss logic scoped incorrectly
 - **Breadcrumbs** — Full Pattern A rewrite required: no lifecycle hooks, no before/after events, no `readVariant` call; `localStorage` key uses wrong namespace (`kaiBreadcrumbContext`)
+- **Breadcrumbs — standalone section theming** — breadcrumb text color should switch to all-white or all-black depending on the section theme ([Figma ref](https://www.figma.com/design/sf2qQ3I3BFFN4NdWCC04cw/Lake-Powell-Site-Design?node-id=8652-3304)). Currently only `[data-theme='dark']` and `.hero` context are handled.
+- **Breadcrumbs — "Breadcrumb Title" metadata field** — the block currently falls back to `og:title` for the current page label; the spec requires reading a dedicated `breadcrumb-title` page metadata field first, with `og:title` as the secondary fallback.
 - **Button** — Missing UE schema in block dir; modal trigger behavior not implemented; screen reader text field absent
 - **Cards** — Content Fragment integration entirely absent; no UE schema in block dir; CSS violations
 - **Carousel** — Content Fragment integration entirely absent; no UE schema; CSS violations; no `prefers-reduced-motion`
