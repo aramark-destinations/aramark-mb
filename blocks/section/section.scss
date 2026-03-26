@@ -35,23 +35,23 @@
 
   // Background colors
   &[data-backgroundcolor='dark'] {
-    background-color: var(--color-brand-secondary-500, var(--color-neutral-900));
+    background-color: var(--surface-dark-0);
   }
 
   &[data-backgroundcolor='light'] {
-    background-color: var(--color-neutral-50);
+    background-color: var(--surface-light-0);
   }
 
   &[data-backgroundcolor='light-2'] {
-    background-color: var(--color-neutral-100);
+    background-color: var(--surface-light-2);
   }
 
   &[data-backgroundcolor='brand'] {
-    background-color: var(--color-brand-primary-500, var(--color-brand-primary));
+    background-color: var(--color-brand-primary);
   }
 
   &[data-backgroundcolor='tertiary'] {
-    background-color: var(--color-brand-tertiary-500, var(--color-brand-tertiary));
+    background-color: var(--color-brand-tertiary);
   }
 
   // Overlay and gradient layers
@@ -67,7 +67,7 @@
   &[data-sectiontheme='theme-dark'] {
     --section-text-color: var(--color-neutral-50);
     --section-heading-color: var(--color-neutral-50);
-
+    
     color: var(--section-text-color);
   }
 

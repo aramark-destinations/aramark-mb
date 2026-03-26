@@ -24,17 +24,6 @@
         gap: var(--spacing-004);
       }
 
-      // TODO - Remove once we have a better solution for section level backgrounds
-      [data-sectiontheme='theme-dark'] & {
-        background-color: var(--color-base-black);
-        display: flex;
-        align-items: center;
-
-        .breadcrumbs-item {
-          margin: 1rem 0;
-        }
-      }
-
       // Mode=Dark — white text (hero over image/dark background)
       [data-sectiontheme='theme-dark'] & {
         color: var(--text-light-1);

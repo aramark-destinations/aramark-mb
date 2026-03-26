@@ -22,14 +22,6 @@
   }
 }
 [data-sectiontheme=theme-dark] .breadcrumbs nav .breadcrumbs-list {
-  background-color: var(--color-base-black);
-  display: flex;
-  align-items: center;
-}
-[data-sectiontheme=theme-dark] .breadcrumbs nav .breadcrumbs-list .breadcrumbs-item {
-  margin: 1rem 0;
-}
-[data-sectiontheme=theme-dark] .breadcrumbs nav .breadcrumbs-list {
   color: var(--text-light-1);
 }
 [data-sectiontheme=theme-light] .breadcrumbs nav .breadcrumbs-list {
