@@ -96,10 +96,12 @@
      Adjust to match brand font family capabilities.
      ======================================================================== */
 
+  --font-weight-thin: 100;
+  --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
-  --font-weight-semibold: 600;
   --font-weight-bold: 700;
+  /* 600 (semibold) intentionally omitted — not present in Figma type system */
 
   /* ========================================================================
      Typography — Line Heights

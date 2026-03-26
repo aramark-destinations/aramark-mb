@@ -41,5 +41,7 @@ docs/project-knowledge/
 
 # Ignore user IDE configuration files
 .editorconfig
-.claude/
+.claude/*
 .mcp.json
+.cline/
+docs/pr-reviews/
