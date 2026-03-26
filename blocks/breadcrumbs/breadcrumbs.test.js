@@ -39,6 +39,7 @@ jest.mock('../../scripts/aem.js', () => ({
     };
     return metadata[name] || '';
   }),
+  readBlockConfig: jest.fn(() => ({})),
 }));
 
 jest.mock('../../scripts/scripts.js', () => ({
@@ -283,7 +284,7 @@ describe('Breadcrumbs Block', () => {
       expect(current.textContent).toContain('Safe Text');
     });
 
-    it('should apply parent override URL', async () => {
+    it('should insert parent override as a new crumb before current page', async () => {
       const { getMetadata } = require('../../scripts/aem.js');
       getMetadata.mockImplementation((name) => {
         if (name === 'breadcrumb-parent-override') return 'http://localhost/custom-parent';
@@ -302,13 +303,13 @@ describe('Breadcrumbs Block', () => {
 
       const links = block.querySelectorAll('a.breadcrumbs-link');
 
-      // Parent override should modify the immediate parent of current page
-      // With hierarchy [Home, Category] + Current Page
-      // Parent should be Category (links[1])
-      expect(links.length).toBeGreaterThanOrEqual(2);
-      expect(links[1]).toBeTruthy();
-      const categoryLink = links[1]; // Category is the immediate parent
-      expect(categoryLink.href).toContain('custom-parent');
+      // Parent override inserts a NEW crumb after the hierarchy: Home, Category, custom-parent, Current
+      // links = [Home, Category, custom-parent]
+      expect(links.length).toBe(3);
+      const overrideLink = links[2];
+      expect(overrideLink.href).toContain('custom-parent');
+      // Existing hierarchy crumbs remain untouched
+      expect(links[1].href).toContain('/category');
     });
 
     it('should validate parent override is same domain', async () => {
@@ -1044,22 +1045,22 @@ describe('Breadcrumbs Block', () => {
       expect(links.length).toBeGreaterThanOrEqual(1);
     });
 
-    it('should read label override from dataset', async () => {
-      const { getMetadata } = require('../../scripts/aem.js');
+    it('should read label override from block config', async () => {
+      const { getMetadata, readBlockConfig } = require('../../scripts/aem.js');
       getMetadata.mockImplementation((name) => {
         if (name === 'og:title') return 'Original Title';
         if (name === 'breadcrumb') return JSON.stringify([{ title: 'Home', url: '/' }]);
         return '';
       });
-      block.dataset.breadcrumbLabelOverride = 'Dataset Label';
+      readBlockConfig.mockReturnValueOnce({ breadcrumbLabelOverride: 'Dataset Label' });
       const { default: decorate } = await import('./breadcrumbs.js');
       await decorate(block);
       const current = block.querySelector('[aria-current="page"]');
       expect(current.textContent).toBe('Dataset Label');
     });
 
-    it('should apply valid same-domain parent override via dataset', async () => {
-      const { getMetadata } = require('../../scripts/aem.js');
+    it('should apply valid same-domain parent override from block config', async () => {
+      const { getMetadata, readBlockConfig } = require('../../scripts/aem.js');
       getMetadata.mockImplementation((name) => {
         if (name === 'og:title') return 'Current Page';
         if (name === 'breadcrumb') {
@@ -1070,7 +1071,7 @@ describe('Breadcrumbs Block', () => {
         }
         return '';
       });
-      block.dataset.breadcrumbParentOverride = 'http://localhost/custom-parent';
+      readBlockConfig.mockReturnValueOnce({ breadcrumbParentOverride: 'http://localhost/custom-parent' });
       const { default: decorate } = await import('./breadcrumbs.js');
       await decorate(block);
       expect(block.querySelector('nav')).toBeTruthy();
@@ -1079,14 +1080,14 @@ describe('Breadcrumbs Block', () => {
       expect(overriddenLink).toBeTruthy();
     });
 
-    it('should reject cross-domain parent override via dataset', async () => {
-      const { getMetadata } = require('../../scripts/aem.js');
+    it('should reject cross-domain parent override from block config', async () => {
+      const { getMetadata, readBlockConfig } = require('../../scripts/aem.js');
       getMetadata.mockImplementation((name) => {
         if (name === 'og:title') return 'Current Page';
         if (name === 'breadcrumb') return JSON.stringify([{ title: 'Home', url: '/' }]);
         return '';
       });
-      block.dataset.breadcrumbParentOverride = 'https://evil.com/bad';
+      readBlockConfig.mockReturnValueOnce({ breadcrumbParentOverride: 'https://evil.com/bad' });
       const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
       const { default: decorate } = await import('./breadcrumbs.js');
       await decorate(block);
@@ -1094,8 +1095,12 @@ describe('Breadcrumbs Block', () => {
       warnSpy.mockRestore();
     });
 
-    it('should handle invalid JSON in breadcrumb dataset', async () => {
-      block.dataset.breadcrumb = 'invalid json';
+    it('should handle invalid JSON in breadcrumb metadata', async () => {
+      const { getMetadata } = require('../../scripts/aem.js');
+      getMetadata.mockImplementation((name) => {
+        if (name === 'breadcrumb') return 'invalid json';
+        return '';
+      });
       const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
       const { default: decorate } = await import('./breadcrumbs.js');
       await decorate(block);
