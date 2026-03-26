@@ -1,5 +1,5 @@
 [
-  { "id": "main", "components": ["section"] },
+  { "id": "main", "components": ["section", "navigation-section"] },
   { "...": "./_section.json#/filters" },
   { "...": "../blocks/*/_*.json#/filters" }
 ]
