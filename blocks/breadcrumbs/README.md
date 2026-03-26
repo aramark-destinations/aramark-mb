@@ -27,7 +27,8 @@ Configuration is set via Universal Editor fields or `data-*` attributes on the b
 
 **Metadata Sources:**
 - `<meta name="breadcrumb">` - JSON array of hierarchy: `[{title, url}, ...]`
-- `<meta property="og:title">` - Current page title (fallback)
+- `<meta name="breadcrumb-title">` - Current page label (primary; overrides og:title)
+- `<meta property="og:title">` - Current page title (fallback when breadcrumb-title absent)
 - `<meta name="breadcrumb-label-override">` - Label override (alternative to dataset)
 - `<meta name="breadcrumb-parent-override">` - Parent override (alternative to dataset)
 

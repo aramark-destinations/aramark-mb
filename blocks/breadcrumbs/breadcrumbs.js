@@ -327,7 +327,7 @@ export async function decorate(block, options = {}) {
   try {
     // Read page metadata
     let hierarchyData = getMetadata('breadcrumb');
-    const currentTitle = getMetadata('og:title') || document.title;
+    const currentTitle = getMetadata('breadcrumb-title') || getMetadata('og:title') || document.title;
     let labelOverride = getMetadata('breadcrumb-label-override');
     let parentOverride = getMetadata('breadcrumb-parent-override');
 
