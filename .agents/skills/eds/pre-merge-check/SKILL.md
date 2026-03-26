@@ -137,7 +137,7 @@ If any files in `styles/` or `brands/` were modified:
 
 ### 5a. Branch naming
 
-Branch name must follow: `ADO-{ticket}-{block/element/feature}`
+Branch name must follow: `ado-{ticket}-{block/element/feature}` (lowercase, case-sensitive).
 
 Examples:
 - `ADO-94-cards` (cards block work)
