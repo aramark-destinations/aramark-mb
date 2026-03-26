@@ -181,16 +181,28 @@ function buildBreadcrumbTrail(options) {
     });
   }
 
-  // Apply parent override if specified and there are ancestor crumbs
-  // Parent override applies to the immediate parent of the current page
-  if (parentOverride && parentOverride.trim() && crumbs.length > 0) {
+  // Insert parent override as an immediate-parent crumb
+  if (parentOverride && parentOverride.trim()) {
     // Support test hostname override for unit tests
     const testHostname = options.block?.dataset?.testHostname || null;
     if (isSameDomain(parentOverride, testHostname)) {
-      // Find the immediate parent (last crumb before we add current page)
-      const parentIndex = crumbs.length - 1;
-      crumbs[parentIndex].url = parentOverride;
-      crumbs[parentIndex].override_used = true;
+      // Derive a label from the last non-empty path segment
+      let overrideLabel;
+      try {
+        const { pathname } = new URL(parentOverride, window.location.origin);
+        const segment = pathname.split('/').filter(Boolean).pop() || '';
+        overrideLabel = segment
+          .replace(/[-_]/g, ' ')
+          .replace(/\b\w/g, (c) => c.toUpperCase());
+      } catch (e) {
+        overrideLabel = parentOverride;
+      }
+      crumbs.push({
+        label: sanitizeHTML(overrideLabel),
+        url: parentOverride,
+        position: crumbs.length,
+        override_used: true,
+      });
     } else {
       logBreadcrumbWarning('INVALID_DOMAIN', { url: parentOverride });
     }
@@ -326,20 +338,20 @@ export async function decorate(block, options = {}) {
 
   try {
     // Read page metadata
-    let hierarchyData = getMetadata('breadcrumb');
-    const currentTitle = getMetadata('og:title') || document.title;
-    let labelOverride = getMetadata('breadcrumb-label-override');
+    const hierarchyData = getMetadata('breadcrumb');
+    const currentTitle = getMetadata('breadcrumb-title') || getMetadata('og:title') || document.title;
+    const labelOverride = getMetadata('breadcrumb-label-override');
     let parentOverride = getMetadata('breadcrumb-parent-override');
 
-    // Support reading from dataset (Universal Editor)
-    if (block.dataset.breadcrumbLabelOverride) {
-      labelOverride = block.dataset.breadcrumbLabelOverride;
-    }
-    if (block.dataset.breadcrumbParentOverride) {
-      parentOverride = block.dataset.breadcrumbParentOverride;
-    }
-    if (block.dataset.breadcrumb) {
-      hierarchyData = block.dataset.breadcrumb;
+    // Read UE-authored parent override: aem-content field renders as a
+    // single-cell row containing an <a> with a JCR path href.
+    // Convert JCR path (/content/{brand}/path.html) to EDS path (/path).
+    const parentOverrideLink = block.querySelector(':scope > div > div > a');
+    if (parentOverrideLink) {
+      const jcrPath = parentOverrideLink.getAttribute('href');
+      if (jcrPath) {
+        parentOverride = jcrPath.replace(/^\/content\/[^/]+/, '').replace(/\.html$/, '') || parentOverride;
+      }
     }
 
     // Parse hierarchy

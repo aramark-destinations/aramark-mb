@@ -13,7 +13,7 @@ Last validation: 2026-03-20 (full re-audit — all 28 blocks read from source)
 |---|---|---|---|---|---|---|
 | accordion | PASS | PASS | FAIL (5) | WARNING | 17/21 | **NO-GO** |
 | banner | WARNING | PASS | PASS (0) | WARNING | 13/19 | **GO** |
-| breadcrumbs | PASS | PASS | FAIL (5) | WARNING | 15/21 | **NO-GO** |
+| breadcrumbs | PASS | PASS | PASS (0) | WARNING | 15/21 | **GO** |
 | button | WARNING | PASS | FAIL (9) | WARNING | 14/21 | **NO-GO** |
 | cards | WARNING | WARNING | PASS (0) | WARNING | 17/22 | **GO** |
 | carousel | WARNING | PASS | WARNING (2) | WARNING | 17/21 | **GO** |
@@ -40,7 +40,7 @@ Last validation: 2026-03-20 (full re-audit — all 28 blocks read from source)
 | ugc-gallery | **FAIL** | WARNING | WARNING (1) | WARNING | 11/21 | **NO-GO** |
 | video | PASS | WARNING | WARNING (3) | WARNING | 20/26 | **GO** |
 
-**GO: 18 / 28 — NO-GO: 10 / 28**
+**GO: 19 / 28 — NO-GO: 9 / 28**
 
 ---
 
@@ -50,7 +50,7 @@ Last validation: 2026-03-20 (full re-audit — all 28 blocks read from source)
 |---|---|---|---|
 | Structure | 4 (accordion, breadcrumbs, columns, video) | 23 | 1 (ugc-gallery) |
 | Pattern A | 12 | 11 | 5 (fragment, modal†, navigation†, navigation-group, navigation-item) |
-| CSS Tokens | 14 | 9 | 5 (accordion, breadcrumbs, button, navigation, tabs) |
+| CSS Tokens | 15 | 9 | 4 (accordion, button, navigation, tabs) |
 | Spec Alignment | 2 (columns, title) | 26 | 0 |
 
 † modal and navigation Pattern A FAILs are intentional architectural deviations (utility block and auto-block patterns). Their NO-GO status reflects the audit rubric; these are not regressions.
@@ -90,7 +90,6 @@ Last validation: 2026-03-20 (full re-audit — all 28 blocks read from source)
 |---|---|---|
 | **button** | 9 | `font-weight: 600`, `0.2s` transition, 7 hex fallbacks (`#000`, `#333`, `#fff`, `#e5e5e5`) in `color-black`/`color-white` variant rules; `_button.json` entirely absent |
 | **accordion** | 5 | `margin: 8px` on subtitle, `transition: 0.2s` ×2, `font-weight: 300`, `top: 25px` on icon pseudo-element |
-| **breadcrumbs** | 5 | Transition duration, border-radius, spacing value in print styles, `#000` hex ×2 in `@media print` |
 | **navigation** | 5 | `z-index: 1` ×2, `z-index: 0`, redundant `1px`/`22px` fallbacks outside `:root`; also Pattern A FAIL (auto-block) |
 | **tabs** | 4 | `#dadada` hex fallback, `padding: 1rem` on mobile buttons, `0.3s` ×2 and `0.2s` transition durations; 6 block-level config fields missing from `_tabs.json` |
 

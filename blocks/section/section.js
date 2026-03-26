@@ -38,31 +38,12 @@ export function decorate(block, options = {}) {
   // === SECTION BLOCK LOGIC ===
   readVariant(block);
 
-  // Section type (full-width / contained / full-bleed)
-  const sectionType = block.dataset.sectiontype;
-  if (sectionType) {
-    block.classList.add(`section-${sectionType}`);
-  }
-
-  // Section theme
-  const sectionTheme = block.dataset.sectiontheme;
-  if (sectionTheme) {
-    block.classList.add(sectionTheme);
-  }
-
   // Background image
   const bgImage = block.dataset.backgroundimage;
   if (bgImage) {
     block.style.backgroundImage = `url('${bgImage}')`;
     block.style.backgroundSize = 'cover';
     block.style.backgroundPosition = 'center';
-    block.classList.add('has-background-image');
-  }
-
-  // Background color
-  const bgColor = block.dataset.backgroundcolor;
-  if (bgColor) {
-    block.classList.add(`bg-${bgColor}`);
   }
 
   // Full overlay

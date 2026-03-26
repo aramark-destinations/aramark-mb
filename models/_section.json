@@ -200,7 +200,7 @@
   "filters": [
     {
       "id": "section",
-      "components": ["text", "image", "button", "title", "accordion", "banner", "cards", "carousel", "columns", "embed", "form", "fragment", "hero", "modal", "quote", "search", "table", "tabs", "video"]
+      "components": ["text", "image", "button", "title", "accordion", "banner", "breadcrumbs", "cards", "carousel", "columns", "embed", "form", "fragment", "hero", "modal", "quote", "search", "table", "tabs", "video"]
     }
   ]
 }
