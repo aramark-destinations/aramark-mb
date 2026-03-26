@@ -1,116 +1,106 @@
-/* Breadcrumbs Block Styles */
+// Breadcrumbs Block Styles
 
-/*
- * TEMPORARY TOKENS — remove once the typography token PR is merged into staging.
- * These values mirror the pending additions to root-tokens.scss / styles.scss.
- * TODO: Delete this block when --font-weight-light and --body-letter-spacing land.
- */
 .breadcrumbs {
+  /*
+   * TEMPORARY TOKENS — remove once the typography token PR is merged into staging.
+   * These values mirror the pending additions to root-tokens.scss / styles.scss.
+   * TODO: Delete this block when --font-weight-light and --body-letter-spacing land.
+   */
   --font-weight-light: 300;
   --body-letter-spacing: -0.02em;
-}
 
-/* Breadcrumb list - Horizontal layout */
-.breadcrumbs-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: var(--spacing-008);
-}
+  nav {
+    // Breadcrumb list — horizontal layout
+    .breadcrumbs-list {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      gap: var(--spacing-008);
 
-/* Individual breadcrumb items */
-.breadcrumbs-item {
-  display: flex;
-  align-items: center;
-  font-size: var(--body-font-size-xxs);
-  font-weight: var(--font-weight-light);
-  line-height: var(--line-height-normal);
-  letter-spacing: var(--body-letter-spacing);
-}
+      // Small screens — compact spacing
+      @media (width < 600px) {
+        gap: var(--spacing-004);
+      }
 
-/* Current page (last item) — bold */
-.breadcrumbs-item:last-child {
-  font-weight: var(--font-weight-bold);
-}
+      // Individual breadcrumb items
+      .breadcrumbs-item {
+        display: flex;
+        align-items: center;
+        font-size: var(--body-font-size-xxs);
+        font-weight: var(--font-weight-light);
+        line-height: var(--line-height-normal);
+        letter-spacing: var(--body-letter-spacing);
 
-/* Add separator between items (not after last item) */
-.breadcrumbs-item:not(:last-child)::after {
-  content: '/';
-  margin: 0 var(--spacing-008);
-  color: currentcolor;
-  pointer-events: none;
-}
+        // Current page (last item) — bold
+        &:last-child {
+          font-weight: var(--font-weight-bold);
+        }
 
-/* Breadcrumb links — use theme text color, not brand link color */
-.breadcrumbs-link {
-  color: var(--text-dark-1);
-  text-decoration: none;
-}
+        // Separator between items (not after last item)
+        &:not(:last-child)::after {
+          content: '/';
+          margin: 0 var(--spacing-008);
+          color: currentcolor;
+          pointer-events: none;
 
-.breadcrumbs-link:hover {
-  text-decoration: underline;
-}
+          @media (width < 600px) {
+            margin: 0 var(--spacing-004);
+          }
 
-.breadcrumbs-link:focus {
-  outline: 2px solid currentcolor;
-  outline-offset: 2px;
-  border-radius: var(--radius-xs);
-}
+          @media print {
+            color: var(--color-base-black);
+          }
+        }
 
-/* Mode=Dark — white text (hero over image/dark background) */
-.hero .breadcrumbs-link,
-[data-theme='dark'] .breadcrumbs-link {
-  color: var(--text-light-1);
-}
+        // Breadcrumb links — use theme text color, not brand link color
+        a.breadcrumbs-link {
+          color: var(--text-dark-1);
+          text-decoration: none;
 
-/* ARIA live region for dynamic updates (visually hidden) */
-.breadcrumbs[aria-live='polite']:empty::before {
-  content: 'Breadcrumb navigation loading...';
-  position: absolute;
-  left: -10000px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
+          &:hover {
+            text-decoration: underline;
+          }
 
-/* Responsive Design - Mobile First */
+          &:focus {
+            outline: 2px solid currentcolor;
+            outline-offset: 2px;
+            border-radius: var(--radius-xs);
+          }
 
-/* Small screens (< 600px) - Compact spacing */
-@media (width < 600px) {
-  .breadcrumbs-list {
-    gap: var(--spacing-004);
-  }
+          // Mode=Dark — white text (hero over image/dark background)
+          .hero &,
+          [data-sectiontheme='theme-dark'] & {
+            color: var(--text-light-1);
+          }
 
-  .breadcrumbs-item:not(:last-child)::after {
-    margin: 0 var(--spacing-004);
-  }
-}
+          @media print {
+            color: var(--color-base-black);
+            text-decoration: none;
+          }
 
-/* Print styles - Show full breadcrumb trail */
-@media print {
-  .breadcrumbs-link {
-    color: var(--color-base-black);
-    text-decoration: none;
-  }
+          // High contrast mode support — progressive enhancement
+          // stylelint-disable-next-line media-feature-name-value-no-unknown
+          @media (prefers-contrast: high) {
+            text-decoration: underline;
 
-  .breadcrumbs-item:not(:last-child)::after {
-    color: var(--color-base-black);
-  }
-}
+            &:focus {
+              outline-width: 3px;
+            }
+          }
+        }
+      }
+    }
 
-/* High contrast mode support - progressive enhancement */
-/* stylelint-disable-next-line media-feature-name-value-no-unknown */
-@media (prefers-contrast: high) {
-  .breadcrumbs-link {
-    text-decoration: underline;
-  }
-
-  .breadcrumbs-link:focus {
-    outline-width: 3px;
+    // ARIA live region — visually hidden positioning handled via inline styles (JS-rendered)
+    .breadcrumbs-live-region {
+      position: absolute;
+      left: -10000px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
   }
 }
-
-

@@ -642,6 +642,21 @@ describe('Breadcrumbs Block', () => {
       expect(renderCall[0].breadcrumb.has_override).toBe(true);
     });
 
+    it('should dispatch analytics when consent object exists but analytics is not false', async () => {
+      // Covers the path: state.consent is truthy but analytics !== false
+      global.window.adobeDataLayer.getState.mockReturnValue({
+        consent: { analytics: true },
+      });
+
+      const { default: decorate } = await import('./breadcrumbs.js');
+      await decorate(block);
+
+      const renderCall = mockACDLPush.mock.calls.find(
+        (call) => call[0].event === 'breadcrumb_rendered',
+      );
+      expect(renderCall).toBeTruthy();
+    });
+
     it('should not dispatch events when consent not granted', async () => {
       // Mock consent check to return false
       global.window.adobeDataLayer.getState.mockReturnValue({
@@ -662,6 +677,53 @@ describe('Breadcrumbs Block', () => {
       await decorate(newBlock);
 
       logSpy.mockRestore();
+    });
+
+    it('should not dispatch breadcrumb_link_click when consent is denied', async () => {
+      global.window.adobeDataLayer.getState.mockReturnValue({
+        consent: { analytics: false },
+      });
+
+      const { default: decorate } = await import('./breadcrumbs.js');
+      await decorate(block);
+
+      mockACDLPush.mockClear();
+      const link = block.querySelector('a.breadcrumbs-link');
+      link.click();
+
+      const clickCall = mockACDLPush.mock.calls.find(
+        (call) => call[0].event === 'breadcrumb_link_click',
+      );
+      expect(clickCall).toBeUndefined();
+    });
+
+    it('should not dispatch breadcrumb_context_restored when consent is denied', async () => {
+      global.window.adobeDataLayer.getState.mockReturnValue({
+        consent: { analytics: false },
+      });
+
+      const context = {
+        categoryName: 'Pocket Knives',
+        categoryUrl: '/knives/pocket-knives',
+        brandCode: 'kershaw',
+        timestamp: new Date().toISOString(),
+      };
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
+
+      const { getMetadata } = require('../../scripts/aem.js');
+      getMetadata.mockImplementation((name) => {
+        if (name === 'og:title') return 'Product Name';
+        if (name === 'breadcrumb') return '[]';
+        return '';
+      });
+
+      const { default: decorate } = await import('./breadcrumbs.js');
+      await decorate(block);
+
+      const contextCall = mockACDLPush.mock.calls.find(
+        (call) => call[0].event === 'breadcrumb_context_restored',
+      );
+      expect(contextCall).toBeUndefined();
     });
 
     it('should not dispatch duplicate events on SPA rehydration', async () => {
@@ -1178,6 +1240,101 @@ describe('Breadcrumbs Block', () => {
       expect(liveRegion).toBeTruthy();
       expect(liveRegion.textContent).toContain('Dynamic Category');
     });
+
+    it('should prepend Home when hierarchy has non-Home first crumb and category context is present', async () => {
+      // Covers the crumbs[0].label !== 'Home' branch inside buildBreadcrumbTrail
+      const context = {
+        categoryName: 'Pocket Knives',
+        categoryUrl: '/knives/pocket-knives',
+        brandCode: 'kershaw',
+        timestamp: new Date().toISOString(),
+      };
+      localStorageMock.setItem('breadcrumb-context', JSON.stringify(context));
+
+      const { getMetadata } = require('../../scripts/aem.js');
+      getMetadata.mockImplementation((name) => {
+        if (name === 'og:title') return 'Product Name';
+        if (name === 'breadcrumb') {
+          // Hierarchy that does NOT start with Home
+          return JSON.stringify([{ title: 'Knives', url: '/knives' }]);
+        }
+        return '';
+      });
+
+      const { default: decorate } = await import('./breadcrumbs.js');
+      await decorate(block);
+
+      const links = block.querySelectorAll('a.breadcrumbs-link');
+      // Home should have been prepended before the Knives crumb
+      expect(links[0].textContent).toBe('Home');
+      const knifeLink = Array.from(links).find((l) => l.textContent === 'Knives');
+      expect(knifeLink).toBeTruthy();
+      const categoryLink = Array.from(links).find((l) => l.textContent === 'Pocket Knives');
+      expect(categoryLink).toBeTruthy();
+    });
+  });
+
+  // ============================================================================
+  // LIFECYCLE HOOKS TESTS
+  // ============================================================================
+
+  describe('Lifecycle Hooks', () => {
+    it('should fire breadcrumbs:before event before decoration', async () => {
+      const listener = jest.fn();
+      block.addEventListener('breadcrumbs:before', listener);
+
+      const { default: decorate } = await import('./breadcrumbs.js');
+      await decorate(block);
+
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    it('should fire breadcrumbs:after event after decoration', async () => {
+      const listener = jest.fn();
+      block.addEventListener('breadcrumbs:after', listener);
+
+      const { default: decorate } = await import('./breadcrumbs.js');
+      await decorate(block);
+
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call onBefore hook with ctx object containing block', async () => {
+      const onBefore = jest.fn();
+
+      const { decorate } = await import('./breadcrumbs.js');
+      await decorate(block, { onBefore });
+
+      expect(onBefore).toHaveBeenCalledTimes(1);
+      expect(onBefore).toHaveBeenCalledWith(expect.objectContaining({ block }));
+    });
+
+    it('should call onAfter hook with ctx object containing block', async () => {
+      const onAfter = jest.fn();
+
+      const { decorate } = await import('./breadcrumbs.js');
+      await decorate(block, { onAfter });
+
+      expect(onAfter).toHaveBeenCalledTimes(1);
+      expect(onAfter).toHaveBeenCalledWith(expect.objectContaining({ block }));
+    });
+
+    it('should fire breadcrumbs:before event even when an error occurs during decoration', async () => {
+      const { getBrandCode } = require('../../scripts/baici/utils/utils.js');
+      getBrandCode.mockImplementation(() => { throw new Error('force error'); });
+
+      const listener = jest.fn();
+      block.addEventListener('breadcrumbs:before', listener);
+
+      const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const { default: decorate } = await import('./breadcrumbs.js');
+      await decorate(block);
+
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      errorSpy.mockRestore();
+      getBrandCode.mockImplementation(() => 'kershaw');
+    });
   });
 
   // ============================================================================
@@ -1201,6 +1358,17 @@ describe('Breadcrumbs Block', () => {
 
       errorSpy.mockRestore();
       getBrandCode.mockImplementation(() => 'kershaw');
+    });
+
+    it('should use window.Breadcrumbs.hooks when calling the default export', async () => {
+      const onAfter = jest.fn();
+      window.Breadcrumbs = { hooks: { onAfter } };
+
+      const { default: breadcrumbsDefault } = await import('./breadcrumbs.js');
+      await breadcrumbsDefault(block);
+
+      expect(onAfter).toHaveBeenCalledTimes(1);
+      delete window.Breadcrumbs;
     });
   });
 });

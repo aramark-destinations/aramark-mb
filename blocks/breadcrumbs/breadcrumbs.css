@@ -1,17 +1,14 @@
 @charset "UTF-8";
-/* Breadcrumbs Block Styles */
-/*
- * TEMPORARY TOKENS — remove once the typography token PR is merged into staging.
- * These values mirror the pending additions to root-tokens.scss / styles.scss.
- * TODO: Delete this block when --font-weight-light and --body-letter-spacing land.
- */
 .breadcrumbs {
+  /*
+   * TEMPORARY TOKENS — remove once the typography token PR is merged into staging.
+   * These values mirror the pending additions to root-tokens.scss / styles.scss.
+   * TODO: Delete this block when --font-weight-light and --body-letter-spacing land.
+   */
   --font-weight-light: 300;
   --body-letter-spacing: -0.02em;
 }
-
-/* Breadcrumb list - Horizontal layout */
-.breadcrumbs-list {
+.breadcrumbs nav .breadcrumbs-list {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -20,9 +17,12 @@
   padding: 0;
   gap: var(--spacing-008);
 }
-
-/* Individual breadcrumb items */
-.breadcrumbs-item {
+@media (width < 600px) {
+  .breadcrumbs nav .breadcrumbs-list {
+    gap: var(--spacing-004);
+  }
+}
+.breadcrumbs nav .breadcrumbs-list .breadcrumbs-item {
   display: flex;
   align-items: center;
   font-size: var(--body-font-size-xxs);
@@ -30,79 +30,58 @@
   line-height: var(--line-height-normal);
   letter-spacing: var(--body-letter-spacing);
 }
-
-/* Current page (last item) — bold */
-.breadcrumbs-item:last-child {
+.breadcrumbs nav .breadcrumbs-list .breadcrumbs-item:last-child {
   font-weight: var(--font-weight-bold);
 }
-
-/* Add separator between items (not after last item) */
-.breadcrumbs-item:not(:last-child)::after {
+.breadcrumbs nav .breadcrumbs-list .breadcrumbs-item:not(:last-child)::after {
   content: "/";
   margin: 0 var(--spacing-008);
   color: currentcolor;
   pointer-events: none;
 }
-
-/* Breadcrumb links — use theme text color, not brand link color */
-.breadcrumbs-link {
+@media (width < 600px) {
+  .breadcrumbs nav .breadcrumbs-list .breadcrumbs-item:not(:last-child)::after {
+    margin: 0 var(--spacing-004);
+  }
+}
+@media print {
+  .breadcrumbs nav .breadcrumbs-list .breadcrumbs-item:not(:last-child)::after {
+    color: var(--color-base-black);
+  }
+}
+.breadcrumbs nav .breadcrumbs-list .breadcrumbs-item a.breadcrumbs-link {
   color: var(--text-dark-1);
   text-decoration: none;
 }
-
-.breadcrumbs-link:hover {
+.breadcrumbs nav .breadcrumbs-list .breadcrumbs-item a.breadcrumbs-link:hover {
   text-decoration: underline;
 }
-
-.breadcrumbs-link:focus {
+.breadcrumbs nav .breadcrumbs-list .breadcrumbs-item a.breadcrumbs-link:focus {
   outline: 2px solid currentcolor;
   outline-offset: 2px;
   border-radius: var(--radius-xs);
 }
-
-/* Mode=Dark — white text (hero over image/dark background) */
-.hero .breadcrumbs-link,
-[data-theme=dark] .breadcrumbs-link {
+.hero .breadcrumbs nav .breadcrumbs-list .breadcrumbs-item a.breadcrumbs-link, [data-sectiontheme=theme-dark] .breadcrumbs nav .breadcrumbs-list .breadcrumbs-item a.breadcrumbs-link {
   color: var(--text-light-1);
 }
-
-/* ARIA live region for dynamic updates (visually hidden) */
-.breadcrumbs[aria-live=polite]:empty::before {
-  content: "Breadcrumb navigation loading...";
+@media print {
+  .breadcrumbs nav .breadcrumbs-list .breadcrumbs-item a.breadcrumbs-link {
+    color: var(--color-base-black);
+    text-decoration: none;
+  }
+}
+@media (prefers-contrast: high) {
+  .breadcrumbs nav .breadcrumbs-list .breadcrumbs-item a.breadcrumbs-link {
+    text-decoration: underline;
+  }
+  .breadcrumbs nav .breadcrumbs-list .breadcrumbs-item a.breadcrumbs-link:focus {
+    outline-width: 3px;
+  }
+}
+.breadcrumbs nav .breadcrumbs-live-region {
   position: absolute;
   left: -10000px;
   width: 1px;
   height: 1px;
   overflow: hidden;
-}
-
-/* Responsive Design - Mobile First */
-/* Small screens (< 600px) - Compact spacing */
-@media (width < 600px) {
-  .breadcrumbs-list {
-    gap: var(--spacing-004);
-  }
-  .breadcrumbs-item:not(:last-child)::after {
-    margin: 0 var(--spacing-004);
-  }
-}
-/* Print styles - Show full breadcrumb trail */
-@media print {
-  .breadcrumbs-link {
-    color: var(--color-base-black);
-    text-decoration: none;
-  }
-  .breadcrumbs-item:not(:last-child)::after {
-    color: var(--color-base-black);
-  }
-}
-/* High contrast mode support - progressive enhancement */
-/* stylelint-disable-next-line media-feature-name-value-no-unknown */
-@media (prefers-contrast: high) {
-  .breadcrumbs-link {
-    text-decoration: underline;
-  }
-  .breadcrumbs-link:focus {
-    outline-width: 3px;
-  }
 }
