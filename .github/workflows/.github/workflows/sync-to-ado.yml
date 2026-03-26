@@ -1,0 +1,29 @@
+name: Sync GitHub Repo to Azure DevOps
+
+on:
+  push:
+    branches:
+      - main # Trigger the workflow on pushes to the main branch
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout GitHub repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Fetch all history for mirror pushing
+
+    - name: Push to Azure DevOps repository
+      env:
+        AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+        AZURE_DEVOPS_ORG: AramarkDestinations
+        AZURE_DEVOPS_PROJECT: Adobe%20Platform
+        AZURE_DEVOPS_REPO: Adobe%20Platform
+      run: |
+        # Configure the remote URL with the PAT for authentication
+        git remote add ado https://${AZURE_DEVOPS_ORG}:${AZURE_DEVOPS_PAT}@://dev.azure.com{AZURE_DEVOPS_ORG}/${AZURE_DEVOPS_PROJECT}/_git/${AZURE_DEVOPS_REPO}
+
+        # Use git push --mirror to push all branches and tags to the ADO repo
+        git push --mirror ado
