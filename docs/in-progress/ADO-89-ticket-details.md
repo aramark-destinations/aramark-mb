@@ -43,6 +43,16 @@ Update the global typography token system to match the Figma design specificatio
 
 ---
 
+## Post-Audit TODOs (from Figma typography audit — 2026-03-25)
+
+| # | Finding | Action | Status |
+|---|---|---|---|
+| 1 | `--font-weight-semibold` (600) not present in Figma type system. Was used in `table` block for caption, `tbody th`, and `.table-cell--row-header`. | Removed token; updated all usages to `var(--font-weight-bold)`. Confirm with design that 700 is correct for table row headers. | Done — needs design sign-off |
+| 2 | `@font-face` weight range was `100 900`; Figma max weight is 700 (Bold). Weights 800–900 are unused. | Capped range to `100 700` for both Inter and Montserrat. | Done |
+| 3 | Figma `Desktop/Testimonial` and `Mobile/Testimonial` use **Montserrat Thin Italic (100)**. No italic `@font-face` is declared — italic is intentionally browser-synthesized. | Confirm with design that browser-synthesized italic is acceptable for Testimonial/Quote rendering. If dedicated italic woff2 is required, a new `@font-face` block with `font-style: italic` will be needed. | Pending design confirmation |
+
+---
+
 ## Out of Scope
 
 - **ARCHITECTURE-TODO #5** — Moving font-family tokens into `root-tokens.scss` for brand override support. No brand-override intent for fonts at this time; tracked in `docs/project/TODOS.md`.

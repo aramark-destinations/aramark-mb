@@ -81,7 +81,7 @@ Audited `table.scss` and `table.css` (168 lines each; SCSS is the source).
 
 | Line | Value | Suggested Fix |
 |---|---|---|
-| Line 123 (`.table-cell--row-header`) | `font-weight: 600` | `font-weight: var(--font-weight-semibold)` |
+| Line 123 (`.table-cell--row-header`) | `font-weight: 600` | `font-weight: var(--font-weight-bold)` (semibold/600 removed from token system — not in Figma) |
 | Line 141 (`.table.block table td p + p`) | `margin-top: 0.25em` | Consider `var(--spacing-004)` if a 4px equivalent token exists, or define a block-scoped token `--table-paragraph-gap: 0.25em` |
 
 **Accepted exceptions (not flagged):**
@@ -194,7 +194,7 @@ Audited `table.scss` and `table.css` (168 lines each; SCSS is the source).
 **Priority 1 — Should Fix**
 
 1. **Replace `font-weight: 600` with a token.** Line 123 (`.table-cell--row-header`) uses a raw font weight number.
-   - Fix: `font-weight: var(--font-weight-semibold)` (or the project's equivalent semibold token).
+   - Fix: `font-weight: var(--font-weight-bold)` — `--font-weight-semibold` (600) was removed from the token system as it is not present in the Figma type system (ADO-89).
 
 2. **Replace `margin-top: 0.25em` with a token or block-scoped variable.** Line 141 (`.table.block table td p + p`) uses a raw em value.
    - Fix: `margin-top: var(--spacing-004)` if a 4px-equivalent token exists, or define `--table-paragraph-spacing: 0.25em` in a `:root` block or the table block scope.

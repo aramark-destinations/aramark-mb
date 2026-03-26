@@ -76,7 +76,7 @@
 .table.block caption {
   caption-side: top;
   text-align: left;
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-bold);
   margin-bottom: var(--spacing-012);
   color: var(--body-text-color, inherit);
 }
@@ -102,7 +102,7 @@
 }
 
 .table.block table tbody th {
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-bold);
 }
 
 .table.block table td.table-cell--numeric {
@@ -120,7 +120,7 @@
 }
 
 .table.block .table-cell--row-header {
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
 }
 
 .table.block .visually-hidden {

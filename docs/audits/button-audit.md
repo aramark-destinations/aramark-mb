@@ -65,7 +65,7 @@ Audited `button.scss` (verified against compiled `button.css`). The `color-black
 
 | # | File Location | Violation | Suggested Fix |
 |---|---|---|---|
-| 1 | SCSS/CSS line 13 | `font-weight: 600` on `.button a` | `var(--font-weight-semibold)` or `var(--font-weight-600)` |
+| 1 | SCSS/CSS line 13 | `font-weight: 600` on `.button a` | `var(--font-weight-bold)` — `--font-weight-semibold` (600) removed from token system (ADO-89) |
 | 2 | SCSS/CSS line 15 | `transition: ... 0.2s ease` (three properties) on `.button a` | Replace `0.2s` with `var(--transition-duration-fast, 0.2s)` |
 | 3 | SCSS/CSS line 77 | `--button-bg: var(--color-neutral-900, #000)` in `.color-black` | Remove `#000` fallback; rely on `var(--color-neutral-900)` |
 | 4 | SCSS/CSS line 78 | `--button-bg-hover: var(--color-neutral-800, #333)` in `.color-black` | Remove `#333` fallback; rely on `var(--color-neutral-800)` |
@@ -169,7 +169,7 @@ Result: **WARNING** (UE schema missing blocks the authoring contract; screen rea
 2. **Implement Button Screen Reader Text in JS:** Read `data-linkscreenreadertext` or equivalent field value and apply as `aria-label` on the anchor element. This is a named ticket requirement.
 
 3. **Fix 9 CSS token violations in `button.scss`:**
-   - `font-weight: 600` → `var(--font-weight-semibold)`
+   - `font-weight: 600` → `var(--font-weight-bold)` (note: `--font-weight-semibold` removed from token system in ADO-89)
    - `transition: ... 0.2s ease` → `var(--transition-duration-fast, 0.2s)`
    - Remove all `#000`, `#333`, `#fff`, `#e5e5e5` hex fallbacks from `color-black` and `color-white` variant rules; rely on `var(--color-neutral-*)` token chain
 
