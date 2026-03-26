@@ -167,8 +167,10 @@ ol {
   margin-bottom: 2.5rem;
   padding-left: var(--list-padding-left);
   font-size: var(--list-font-size);
+  font-weight: var(--list-font-weight);
   line-height: var(--list-line-height);
   letter-spacing: var(--list-letter-spacing);
+  color: var(--list-color);
 }
 ul > li,
 ol > li {
@@ -217,9 +219,23 @@ dd {
 }
 
 /* ============================================================
-   Links — Figma-aligned (node 5366-7069, style-yn409d)
-   Inline Link:      Inter 400 / 16px / 1.5em / -2% letter-spacing / underline
-   Independent Link: Inter 700 / 16px / 1.5em / -2% letter-spacing
+   Links — Figma-aligned (node 5366-7069)
+   Inline Link:      Inter 400 / 16px / 1.5em / -2% letter-spacing / underline  (style-8eftut)
+   Independent Link: Inter 700 / 16px / 1.5em / -2% letter-spacing              (style-teequx)
+
+   NOTE — Default color discrepancy (Figma vs code):
+   Figma fills for both link types use fill-a8dwfn → VariableID:325:7444 → #041526 (grey-900 / dark navy).
+   Figma distinguishes links by underline only, not by color.
+   Code uses --link-color = var(--color-primary) = #0066cc (blue) as the default link color.
+   This is intentional in the code system (blue links = standard web convention).
+   Aligning with Figma would require --link-color: var(--color-grey-900) in Lake Powell tokens.css,
+   which is a design decision for the team to confirm before changing.
+
+   Hover color: Figma fill-e8d969 → VariableID:325:7445 → #b04c1a (reddish-brown).
+   Resolved via --link-hover-color → --color-primary-700 → overridden to #b04c1a in lake-powell/tokens.css. ✅
+
+   Focus indicator: Figma stroke-273vxx → #339dff at 4px solid.
+   Resolved via --focus-outline → overridden to 4px solid #339dff in lake-powell/tokens.css. ✅
    ============================================================ */
 a:any-link {
   color: var(--link-color);
@@ -231,6 +247,27 @@ a:any-link {
 
 a:hover {
   color: var(--link-hover-color);
+  text-decoration: underline;
+}
+
+/* Focus indicator — Figma node 5366-7069 (stroke-273vxx): 4px solid #339dff
+   --focus-outline token is defined in root-tokens.css and overridden per brand in tokens.css */
+a:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: 2px;
+  text-decoration: none;
+}
+
+/* Independent Link — Figma style-teequx: Inter 700 (Bold)
+   Inline Link     — Figma style-8eftut: Inter 400 (Regular, inherited)
+   Apply bold only to standalone independent links (.independent-link or aria role).
+   Inline <a> tags inside body copy remain 400 (inherited). */
+a.independent-link:any-link {
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+}
+
+a.independent-link:hover {
   text-decoration: underline;
 }
 
