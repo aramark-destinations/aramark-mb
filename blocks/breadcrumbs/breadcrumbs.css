@@ -15,10 +15,10 @@
 .breadcrumbs-item {
   display: flex;
   align-items: center;
-  font-size: 12px; /* --font-size-xs candidate */
-  font-weight: var(--font-weight-light); /* 300 — candidate token */
-  line-height: 1.5em;
-  letter-spacing: -0.02em; /* --letter-spacing-tight candidate */
+  font-size: var(--body-font-size-xxs);
+  font-weight: var(--font-weight-light);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--body-letter-spacing);
 }
 
 /* Current page (last item) — bold */
@@ -38,7 +38,6 @@
 .breadcrumbs-link {
   color: var(--text-dark-1);
   text-decoration: none;
-  transition: opacity var(--transition-duration-fast) ease;
 }
 
 .breadcrumbs-link:hover {
@@ -48,7 +47,7 @@
 .breadcrumbs-link:focus {
   outline: 2px solid currentcolor;
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
 }
 
 /* Mode=Dark — white text (hero over image/dark background) */
@@ -80,11 +79,11 @@
 /* Print styles - Show full breadcrumb trail */
 @media print {
   .breadcrumbs-link {
-    color: #000;
+    color: var(--color-base-black);
     text-decoration: none;
   }
   .breadcrumbs-item:not(:last-child)::after {
-    color: #000;
+    color: var(--color-base-black);
   }
 }
 /* High contrast mode support - progressive enhancement */
@@ -95,11 +94,5 @@
   }
   .breadcrumbs-link:focus {
     outline-width: 3px;
-  }
-}
-/* Reduced motion support - Disable transitions */
-@media (prefers-reduced-motion: reduce) {
-  .breadcrumbs-link {
-    transition: none;
   }
 }

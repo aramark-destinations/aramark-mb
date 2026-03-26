@@ -51,7 +51,7 @@ The hero wraps the breadcrumbs in a **"Breadcrumbs Frame"** container:
 | Property | Value | Notes |
 |---|---|---|
 | Container layout | `mode: row` | |
-| `justifyContent` | `flex-end` | Aligns breadcrumbs to the right edge |
+| `justifyContent` | `flex-start` | Aligns breadcrumbs to the left edge |
 | `alignItems` | `center` | |
 | `alignSelf` | `stretch` | Spans full hero width |
 | `sizing` | `horizontal: fill, vertical: hug` | |
@@ -62,7 +62,7 @@ The instance uses `Amount=3, Mode=Light` but overrides text fills to white (#FFF
 - **Mode=Light** → dark text (`#041526`, `--text-dark-1`) — for light backgrounds
 - **Mode=Dark** → white text (`#FFFFFF`, `--text-light-1`) — for dark/image backgrounds
 
-The hero wrapper layout (`justifyContent: flex-end`, `alignSelf: stretch`) is the hero block's responsibility, not breadcrumbs.
+The hero wrapper layout (`justifyContent: flex-start`, `alignSelf: stretch`) is the hero block's responsibility, not breadcrumbs.
 
 ---
 
@@ -74,4 +74,4 @@ The hero wrapper layout (`justifyContent: flex-end`, `alignSelf: stretch`) is th
 - **Link color is not `--link-color`.** Breadcrumb links in Figma use the theme text color (`--text-dark-1` or `--text-light-1`), not the primary brand link color. They are navigational labels, not inline body links.
 - **Gap is 8px, not 4px.** The existing SCSS uses `--spacing-xsmall` (4px). Figma shows 8px gap (`--spacing-008`).
 - **Font size 12px / weight 300.** Neither has a token yet — candidates added to block SCSS.
-- **Hero placement layout.** In the hero, the breadcrumbs frame uses `justifyContent: flex-end, alignItems: center, alignSelf: stretch` — controlled by the hero block, not breadcrumbs.
+- **Hero placement layout.** In the hero, the breadcrumbs frame uses `justifyContent: flex-start, alignItems: center, alignSelf: stretch` — controlled by the hero block, not breadcrumbs.
