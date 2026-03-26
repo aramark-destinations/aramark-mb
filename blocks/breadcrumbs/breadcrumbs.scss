@@ -18,11 +18,21 @@
       list-style: none;
       margin: 0;
       padding: 0;
-      gap: var(--spacing-008);
 
       // Small screens — compact spacing
       @media (width < 600px) {
         gap: var(--spacing-004);
+      }
+
+      // TODO - Remove once we have a better solution for section level backgrounds
+      [data-sectiontheme='theme-dark'] & {
+        background-color: var(--color-base-black);
+        display: flex;
+        align-items: center;
+
+        .breadcrumbs-item {
+          margin: 1rem 0;
+        }
       }
 
       // Mode=Dark — white text (hero over image/dark background)

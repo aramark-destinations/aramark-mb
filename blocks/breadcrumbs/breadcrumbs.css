@@ -15,12 +15,19 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: var(--spacing-008);
 }
 @media (width < 600px) {
   .breadcrumbs nav .breadcrumbs-list {
     gap: var(--spacing-004);
   }
+}
+[data-sectiontheme=theme-dark] .breadcrumbs nav .breadcrumbs-list {
+  background-color: var(--color-base-black);
+  display: flex;
+  align-items: center;
+}
+[data-sectiontheme=theme-dark] .breadcrumbs nav .breadcrumbs-list .breadcrumbs-item {
+  margin: 1rem 0;
 }
 [data-sectiontheme=theme-dark] .breadcrumbs nav .breadcrumbs-list {
   color: var(--text-light-1);
