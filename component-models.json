@@ -17,6 +17,12 @@
       {
         "component": "text",
         "valueType": "string",
+        "name": "breadcrumb-title",
+        "label": "Alternate Breadcrumb Title"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
         "name": "keywords",
         "multi": true,
         "label": "Keywords"
