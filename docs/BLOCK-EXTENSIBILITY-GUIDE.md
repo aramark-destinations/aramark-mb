@@ -57,14 +57,14 @@ export default function decorate(block, options = {}) {
 
   // Lifecycle hook + event (before core logic)
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('{block}:before', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('{block}:before', { detail: ctx, bubbles: true }));
 
   // === CORE BLOCK LOGIC ===
   // Your block's main functionality goes here
 
   // Lifecycle hook + event (after core logic)
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('{block}:after', { detail: ctx }));
+  block.dispatchEvent(new CustomEvent('{block}:after', { detail: ctx, bubbles: true }));
 }
 ```
 

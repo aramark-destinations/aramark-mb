@@ -1,8 +1,6 @@
 ---
-name: eds/scaffold-cf-model
-description: Design and scaffold a Content Fragment model following solution design patterns. Ensures common card fields use identical names across models.
-when_to_use: when creating a new Content Fragment model for a content type or reviewing an existing CF model
-version: 1.0.0
+name: scaffold-cf-model
+description: Design and scaffold a Content Fragment model following solution design patterns. Ensures common card fields use identical names across models. Use when creating a new Content Fragment model for a content type or reviewing an existing CF model.
 ---
 
 # Scaffold Content Fragment Model

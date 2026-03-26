@@ -2,7 +2,8 @@
   {
     "id": "main",
     "components": [
-      "section"
+      "section",
+      "navigation-section"
     ]
   },
   {
@@ -14,6 +15,7 @@
       "title",
       "accordion",
       "banner",
+      "breadcrumbs",
       "cards",
       "carousel",
       "columns",
@@ -67,7 +69,8 @@
       "button",
       "title",
       "table",
-      "video"
+      "video",
+      "accordion"
     ]
   },
   {

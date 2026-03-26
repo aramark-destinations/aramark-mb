@@ -1,8 +1,6 @@
 ---
-name: eds/validate-third-party
-description: Validate third-party integrations follow solution design requirements for async loading, consent, environment config, and performance.
-when_to_use: when adding or reviewing third-party integrations (OneTrust, HotJar, Elastic Search, Fleeknote, YouTube, Emplifi, Google Maps, chatbot)
-version: 1.0.0
+name: validate-third-party
+description: Validate third-party integrations follow solution design requirements for async loading, consent, environment config, and performance. Use when adding or reviewing third-party integrations (OneTrust, HotJar, Elastic Search, Fleeknote, YouTube, Emplifi, Google Maps, chatbot).
 ---
 
 # Validate Third-Party Integration

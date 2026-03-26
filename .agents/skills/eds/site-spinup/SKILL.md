@@ -1,8 +1,6 @@
 ---
-name: EDS Site Spinup
-description: Rapidly create a new brand site using the 2-tier multi-site framework
-when_to_use: when launching a new brand site
-version: 2.0.0
+name: site-spinup
+description: Rapidly create a new brand site using the 2-tier multi-site framework. Use when launching a new brand site.
 ---
 
 # EDS Site Spinup

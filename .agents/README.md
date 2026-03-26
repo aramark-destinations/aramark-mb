@@ -6,32 +6,62 @@ AI agent configuration and skills for this project. Skills are structured prompt
 
 ```
 .agents/
-├── README.md              # This file
+├── README.md                        # This file
+├── CODE_GENERATION_CHECKLIST.md     # Per-generation ESLint checklist (run before + after every code change)
 ├── docs/
-│   └── SUPERPOWERS.md     # Superpowers agent system reference (version, skill locations, conventions)
+│   └── SUPERPOWERS.md               # Superpowers agent system reference (version, skill locations, conventions)
+├── project-knowledge/               # JIT-loaded project context for agents
+│   ├── AGENTS.md                    # Loading strategy + 3-tier update permissions
+│   ├── INDEX.md                     # Project overview + knowledge base structure
+│   ├── technical/
+│   │   ├── technical-standards.md  # Block Pattern A, SCSS pipeline, WCAG, ARIA, testing
+│   │   ├── platform-constraints.md # EDS repoless, AEM UE, no MSM, ADO (not Jira)
+│   │   └── performance-targets.md  # CWV thresholds, component budgets, image breakpoints
+│   ├── design/
+│   │   └── design-standards.md     # Breakpoints, CSS token cascade, multi-brand
+│   └── governance/
+│       └── business-rules.md       # ADO workflow, branch naming, ticket-details convention
 ├── skills/
+│   ├── collab/
+│   │   └── update-status/          # Daily EOD status log for async team visibility
 │   └── eds/
-│       ├── site-spinup/         # Brand site scaffolding
-│       ├── block-development/   # Block TDD workflow (new + modification)
-│       ├── block-research/      # Pre-build research (existing blocks + external patterns)
-│       ├── block-testing/       # Jest unit testing patterns + infrastructure bootstrapping
-│       ├── block-readme/        # Developer README template and conventions
-│       ├── authoring-guide/     # Author-facing CMS documentation
-│       ├── e2e-testing/         # Playwright E2E testing patterns
-│       ├── block-audit/        # Block validation, spec alignment, and token audit
-│       ├── scaffold-cf-model/  # Content Fragment model scaffolding
-│       ├── create-brand-tokens/# Brand token CSS creation and validation
-│       ├── quality-audit/      # Lighthouse, SEO, and accessibility audit
-│       ├── validate-third-party/# Third-party integration validation
-│       └── pre-merge-check/    # Pre-PR orchestrator (lint, test, block audit)
-└── _archive/
-    └── skills/
-        └── eds/
-            ├── block-creation/   # Archived block creation skill
-            └── block-extension/  # Archived block extension skill
+│       ├── site-spinup/            # Brand site scaffolding
+│       ├── block-development/      # Block TDD workflow (new + modification)
+│       ├── block-research/         # Pre-build research (existing blocks + external patterns)
+│       ├── block-testing/          # Jest unit testing patterns + infrastructure bootstrapping
+│       ├── block-readme/           # Developer README template and conventions
+│       ├── authoring-guide/        # Author-facing CMS documentation
+│       ├── e2e-testing/            # Playwright E2E testing patterns
+│       ├── block-audit/            # Block validation, spec alignment, and token audit
+│       ├── scaffold-cf-model/      # Content Fragment model scaffolding
+│       ├── create-brand-tokens/    # Brand token CSS creation and validation
+│       ├── quality-audit/          # Lighthouse, SEO, and accessibility audit
+│       ├── validate-third-party/   # Third-party integration validation
+│       ├── pre-merge-check/        # Pre-PR orchestrator (lint, test, block audit)
+│       ├── figma-map/              # Figma design system token mapping
+│       └── docs-search/            # aem.live documentation search with relevance scoring
+└── superpowers/
+    ├── bug-hunt.prompt.md          # Systematic block bug investigation workflow
+    └── create-uat-document.prompt.md # Generate UAT docs from ticket-details.md + block-audit
 ```
 
 ## Active Skills
+
+### `collab/update-status`
+
+Daily EOD status log for async team visibility across time zones.
+
+**When to use:** At the end of the workday to log completed work, in-progress items, blockers, and handoff notes.
+
+**What it does:**
+1. Reads `docs/collaboration/daily-status.md`
+2. Finds or creates a heading for today's date
+3. Appends a formatted status entry
+4. Reminds you to commit and push
+
+See [skills/collab/update-status/SKILL.md](skills/collab/update-status/SKILL.md) for the full format and examples.
+
+---
 
 ### `eds/site-spinup`
 
@@ -244,14 +274,65 @@ See [skills/eds/pre-merge-check/SKILL.md](skills/eds/pre-merge-check/SKILL.md).
 
 ---
 
-## Archived Skills
+### `eds/figma-map`
 
-Skills in `_archive/` are retired but preserved for reference. They were superseded by the current implementation or became obsolete after framework changes.
+Maps Figma design system tokens to the project's CSS token system.
 
-| Skill | Reason Archived |
-|-------|----------------|
-| `block-creation` | Replaced by updated patterns in the extensibility guide |
-| `block-extension` | Replaced by lifecycle hook model in `site-spinup` skill |
+**When to use:** When comparing a Figma design spec against the project's token system, or when adding new tokens from a design handoff.
+
+See [skills/eds/figma-map/SKILL.md](skills/eds/figma-map/SKILL.md).
+
+---
+
+### `eds/docs-search`
+
+Searches the aem.live documentation index for information on EDS platform features and concepts.
+
+**When to use:** When you need information about an aem.live feature and basic web search is not returning relevant documentation results.
+
+**What it does:**
+1. Runs a local search script against the aem.live docpages index (150+ pages)
+2. Returns relevance-ranked results with title, description, snippet, and deprecation warnings
+3. Falls back to blog posts if fewer than 5 doc results found
+4. Caches index locally for 24 hours to speed up subsequent searches
+
+```bash
+# Usage from project root
+node .agents/skills/eds/docs-search/scripts/search.js <keyword1> [keyword2]
+node .agents/skills/eds/docs-search/scripts/search.js --all metadata
+```
+
+See [skills/eds/docs-search/SKILL.md](skills/eds/docs-search/SKILL.md) for full workflow and examples.
+
+---
+
+## Superpowers
+
+Superpower prompts in `superpowers/` are pre-assembled agent instructions for complex investigation or generation tasks. Use them as the starting prompt when tackling multi-step workflows.
+
+### `bug-hunt`
+
+Systematic block bug investigation workflow for NO-GO block remediation.
+
+**When to use:** Investigating a specific block bug — schema/implementation mismatch, missing lifecycle hooks, broken event delegation, or wrong localStorage namespace.
+
+**What it assembles:** `eds/block-audit` → root cause analysis → `eds/block-development` fix → `eds/block-testing` regression test → `eds/pre-merge-check` verification.
+
+See [superpowers/bug-hunt.prompt.md](superpowers/bug-hunt.prompt.md).
+
+---
+
+### `create-uat-document`
+
+Generate structured UAT documentation for block remediation and acceptance review.
+
+**When to use:** When a block needs a formal UAT document for stakeholder sign-off (reads `ticket-details.md` + block-audit output).
+
+**Output:** `docs/UAT-{BLOCK-NAME}.md` with authoring guide, test scenarios, and sign-off checklist.
+
+See [superpowers/create-uat-document.prompt.md](superpowers/create-uat-document.prompt.md).
+
+---
 
 ## Superpowers Agent System
 

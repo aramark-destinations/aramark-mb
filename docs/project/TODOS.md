@@ -44,7 +44,6 @@ These should be applied as a sweep across all blocks during remediation:
 Full details in individual audit files under `docs/audits/`.
 
 - **Banner** — Missing `README.md`; incomplete UE schema (`mediaImage`, `ctaLink`, `ctaLabel` fields absent); no `prefers-reduced-motion`; no pause-on-hover; dismiss logic scoped incorrectly
-- **Breadcrumbs** — Full Pattern A rewrite required: no lifecycle hooks, no before/after events, no `readVariant` call; `localStorage` key uses wrong namespace (`kaiBreadcrumbContext`)
 - **Button** — Missing UE schema in block dir; modal trigger behavior not implemented; screen reader text field absent
 - **Cards** — Content Fragment integration entirely absent; no UE schema in block dir; CSS violations
 - **Carousel** — Content Fragment integration entirely absent; no UE schema; CSS violations; no `prefers-reduced-motion`
@@ -94,6 +93,12 @@ Files needed: `blocks/side-by-side/side-by-side.js`, `blocks/side-by-side/side-b
 - Use inline SVG injection (not `<img>`) so icons inherit `currentColor`
 - Install `@phosphor-icons/core` and copy required SVGs to `/icons/ph-*.svg`
 - Document and configure `icon-base-url` metadata field per site
+
+### Typography Follow-ups (ADO-89)
+
+- Apply `.text-testimonial` utility class to `blocks/quote/quote.scss` *(separate PR)*
+- Apply `.eyebrow` utility class to `blocks/banner/banner.scss` *(separate PR)*
+- Apply `.eyebrow` utility class to `blocks/hero/hero.scss` *(separate PR)*
 
 ### Performance
 
