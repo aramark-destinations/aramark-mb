@@ -39,7 +39,6 @@ jest.mock('../../scripts/aem.js', () => ({
     };
     return metadata[name] || '';
   }),
-  readBlockConfig: jest.fn(() => ({})),
 }));
 
 jest.mock('../../scripts/scripts.js', () => ({
@@ -1045,22 +1044,21 @@ describe('Breadcrumbs Block', () => {
       expect(links.length).toBeGreaterThanOrEqual(1);
     });
 
-    it('should read label override from block config', async () => {
-      const { getMetadata, readBlockConfig } = require('../../scripts/aem.js');
+    it('should use og:title when label-override metadata is absent', async () => {
+      const { getMetadata } = require('../../scripts/aem.js');
       getMetadata.mockImplementation((name) => {
         if (name === 'og:title') return 'Original Title';
         if (name === 'breadcrumb') return JSON.stringify([{ title: 'Home', url: '/' }]);
         return '';
       });
-      readBlockConfig.mockReturnValueOnce({ breadcrumbLabelOverride: 'Dataset Label' });
       const { default: decorate } = await import('./breadcrumbs.js');
       await decorate(block);
       const current = block.querySelector('[aria-current="page"]');
-      expect(current.textContent).toBe('Dataset Label');
+      expect(current.textContent).toBe('Original Title');
     });
 
-    it('should apply valid same-domain parent override from block config', async () => {
-      const { getMetadata, readBlockConfig } = require('../../scripts/aem.js');
+    it('should apply valid same-domain parent override from UE authored link', async () => {
+      const { getMetadata } = require('../../scripts/aem.js');
       getMetadata.mockImplementation((name) => {
         if (name === 'og:title') return 'Current Page';
         if (name === 'breadcrumb') {
@@ -1071,7 +1069,8 @@ describe('Breadcrumbs Block', () => {
         }
         return '';
       });
-      readBlockConfig.mockReturnValueOnce({ breadcrumbParentOverride: 'http://localhost/custom-parent' });
+      // Simulate UE aem-content field: single-cell row with JCR path link
+      block.innerHTML = '<div><div><a href="/content/lake-powell/custom-parent.html">/content/lake-powell/custom-parent</a></div></div>';
       const { default: decorate } = await import('./breadcrumbs.js');
       await decorate(block);
       expect(block.querySelector('nav')).toBeTruthy();
@@ -1080,14 +1079,14 @@ describe('Breadcrumbs Block', () => {
       expect(overriddenLink).toBeTruthy();
     });
 
-    it('should reject cross-domain parent override from block config', async () => {
-      const { getMetadata, readBlockConfig } = require('../../scripts/aem.js');
+    it('should reject cross-domain parent override from UE authored link', async () => {
+      const { getMetadata } = require('../../scripts/aem.js');
       getMetadata.mockImplementation((name) => {
         if (name === 'og:title') return 'Current Page';
         if (name === 'breadcrumb') return JSON.stringify([{ title: 'Home', url: '/' }]);
         return '';
       });
-      readBlockConfig.mockReturnValueOnce({ breadcrumbParentOverride: 'https://evil.com/bad' });
+      block.innerHTML = '<div><div><a href="https://evil.com/bad">bad</a></div></div>';
       const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
       const { default: decorate } = await import('./breadcrumbs.js');
       await decorate(block);

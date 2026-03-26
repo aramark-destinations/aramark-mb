@@ -1,4 +1,4 @@
-import { getMetadata, readBlockConfig } from '../../scripts/aem.js';
+import { getMetadata } from '../../scripts/aem.js';
 import { readVariant } from '../../scripts/scripts.js';
 import { getBrandCode } from '../../scripts/baici/utils/utils.js';
 
@@ -337,24 +337,21 @@ export async function decorate(block, options = {}) {
   readVariant(block);
 
   try {
-    // Read authored block config (UE key-value rows inside the block)
-    const blockConfig = readBlockConfig(block);
-
     // Read page metadata
-    let hierarchyData = getMetadata('breadcrumb');
+    const hierarchyData = getMetadata('breadcrumb');
     const currentTitle = getMetadata('breadcrumb-title') || getMetadata('og:title') || document.title;
-    let labelOverride = getMetadata('breadcrumb-label-override');
+    const labelOverride = getMetadata('breadcrumb-label-override');
     let parentOverride = getMetadata('breadcrumb-parent-override');
 
-    // Block config (authored via UE) takes precedence over page metadata
-    if (blockConfig.breadcrumbParentOverride) {
-      parentOverride = blockConfig.breadcrumbParentOverride;
-    }
-    if (blockConfig.breadcrumbLabelOverride) {
-      labelOverride = blockConfig.breadcrumbLabelOverride;
-    }
-    if (blockConfig.breadcrumb) {
-      hierarchyData = blockConfig.breadcrumb;
+    // Read UE-authored parent override: aem-content field renders as a
+    // single-cell row containing an <a> with a JCR path href.
+    // Convert JCR path (/content/{brand}/path.html) to EDS path (/path).
+    const parentOverrideLink = block.querySelector(':scope > div > div > a');
+    if (parentOverrideLink) {
+      const jcrPath = parentOverrideLink.getAttribute('href');
+      if (jcrPath) {
+        parentOverride = jcrPath.replace(/^\/content\/[^/]+/, '').replace(/\.html$/, '') || parentOverride;
+      }
     }
 
     // Parse hierarchy
