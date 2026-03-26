@@ -189,7 +189,7 @@ function buildBreadcrumbTrail(options) {
       // Derive a label from the last non-empty path segment
       let overrideLabel;
       try {
-        const pathname = new URL(parentOverride, window.location.origin).pathname;
+        const { pathname } = new URL(parentOverride, window.location.origin);
         const segment = pathname.split('/').filter(Boolean).pop() || '';
         overrideLabel = segment
           .replace(/[-_]/g, ' ')

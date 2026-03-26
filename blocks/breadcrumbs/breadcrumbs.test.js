@@ -303,8 +303,8 @@ describe('Breadcrumbs Block', () => {
 
       const links = block.querySelectorAll('a.breadcrumbs-link');
 
-      // Parent override inserts a NEW crumb after the hierarchy: Home, Category, custom-parent, Current
-      // links = [Home, Category, custom-parent]
+      // Parent override inserts a NEW crumb after hierarchy:
+      // Home, Category, custom-parent, Current. links = [Home, Category, custom-parent]
       expect(links.length).toBe(3);
       const overrideLink = links[2];
       expect(overrideLink.href).toContain('custom-parent');
