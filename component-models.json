@@ -105,101 +105,34 @@
       {
         "component": "aem-content",
         "name": "link",
-        "label": "Button Link",
-        "description": "Page path, DAM asset for download, or fragment reference for modal trigger"
+        "label": "Link"
       },
       {
         "component": "text",
         "name": "linkText",
-        "label": "Button Text"
+        "label": "Text"
       },
       {
         "component": "text",
         "name": "linkTitle",
-        "label": "Button Screen Reader Text",
-        "description": "Accessible title shown as tooltip"
+        "label": "Title"
       },
       {
         "component": "select",
         "name": "linkType",
-        "label": "Button Style",
-        "description": "Visual style of the button",
+        "label": "Type",
         "options": [
           {
-            "name": "Filled",
-            "value": "filled"
+            "name": "default",
+            "value": ""
           },
           {
-            "name": "Outlined",
-            "value": "outlined"
-          },
-          {
-            "name": "Text-only",
-            "value": "text-only"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "name": "linkColor",
-        "label": "Button Color",
-        "description": "Color theme for the button",
-        "options": [
-          {
-            "name": "Primary Color",
+            "name": "primary",
             "value": "primary"
           },
           {
-            "name": "Secondary Color",
+            "name": "secondary",
             "value": "secondary"
-          },
-          {
-            "name": "Tertiary Color",
-            "value": "tertiary"
-          },
-          {
-            "name": "Black",
-            "value": "black"
-          },
-          {
-            "name": "White",
-            "value": "white"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "name": "linkSize",
-        "label": "Button Size",
-        "description": "Size of the button",
-        "options": [
-          {
-            "name": "Large",
-            "value": "large"
-          },
-          {
-            "name": "Medium",
-            "value": "medium"
-          },
-          {
-            "name": "Small",
-            "value": "small"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "name": "linkShape",
-        "label": "Button Shape",
-        "description": "Shape of the button corners",
-        "options": [
-          {
-            "name": "Rectangular",
-            "value": "rectangular"
-          },
-          {
-            "name": "Pill",
-            "value": "pill"
           }
         ]
       }
