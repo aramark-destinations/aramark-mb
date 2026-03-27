@@ -15,16 +15,4 @@
   --color-primary: #0066cc;
   --color-secondary: #1a4d2e;
 
-  /* Link hover color — Figma node 5366-7069 (fill-e8d969, VariableID:325:7445)
-     Figma hover state uses a dark reddish-brown accent, NOT a tint/shade of primary.
-     This overrides the generated --color-primary-700 (dark navy) from fixed-tokens.css. */
-  --color-primary-700: #b04c1a;
-
-  /* Derived alias — link hover resolves through --color-primary-700 */
-  /* --link-hover-color: var(--color-primary-700) is set in styles.css — no override needed */
-
-  /* Focus indicator — Figma node 5366-7069 (stroke-273vxx): #339dff at 4px
-     Overrides root-tokens.css --focus-outline (3px solid --color-brand-primary). */
-  --focus-outline: 4px solid #339dff;
-  --focus-ring-color: #339dff;
 }

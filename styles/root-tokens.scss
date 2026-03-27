@@ -186,9 +186,10 @@
   --color-error: var(--color-alerts-error);
   --color-highlight: var(--color-primary-100);
 
-  /* Focus styling */
-  --focus-ring-color: var(--link-color);
-  --focus-outline: 3px solid var(--color-brand-primary);
+  /* Focus styling — mapped to --surface-utility-focus (non-brand, consistent across all brands)
+     --surface-utility-focus: var(--color-alerts-general-400) → #339DFF */
+  --focus-ring-color: var(--surface-utility-focus);
+  --focus-outline: 3px solid var(--surface-utility-focus);
 
   /* Shadows */
   --dropdown-box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 7.5%);
