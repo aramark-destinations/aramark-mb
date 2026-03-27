@@ -44,7 +44,8 @@ These should be applied as a sweep across all blocks during remediation:
 Full details in individual audit files under `docs/audits/`.
 
 - **Banner** — Missing `README.md`; incomplete UE schema (`mediaImage`, `ctaLink`, `ctaLabel` fields absent); no `prefers-reduced-motion`; no pause-on-hover; dismiss logic scoped incorrectly
-- **Button** — Missing UE schema in block dir; modal trigger behavior not implemented; screen reader text field absent
+- **Button** — Modal trigger behavior not implemented; run `pnpm build:json` after schema is added
+- **Button (token promotions)** — Three hardcoded font-size values in `button.scss` should be promoted to `root-tokens.scss`: `16px` → `--font-size-body-2`, `14px` → `--font-size-body-3`, `12px` → `--font-size-body-4`; letter-spacing `-0.02em` → `--letter-spacing-tight`
 - **Cards** — Content Fragment integration entirely absent; no UE schema in block dir; CSS violations
 - **Carousel** — Content Fragment integration entirely absent; no UE schema; CSS violations; no `prefers-reduced-motion`
 - **Header** — Scroll states not implemented; mega menu not implemented; search bar not rendered; booking modal trigger depends on scroll state

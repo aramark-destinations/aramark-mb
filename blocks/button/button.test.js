@@ -6,7 +6,9 @@ describe('button decorate', () => {
   let decorate;
   let block;
 
-  const buildBlock = ({ type = '', color = '', size = '', shape = '' } = {}) => {
+  const buildBlock = ({
+    type = '', color = '', size = '', shape = '',
+  } = {}) => {
     const b = document.createElement('div');
     b.className = ['button', type, color, size, shape].filter(Boolean).join(' ');
     b.innerHTML = '<div><div><p><a href="/page">Click me</a></p></div></div>';
