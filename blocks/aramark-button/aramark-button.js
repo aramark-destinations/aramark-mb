@@ -4,10 +4,14 @@
  * - Dispatches before/after events
  * - Implements core button block functionality
  * - Supports multiple buttons with style and color variants
- * - Reads linkType, linkColor, linkSize, linkShape from AUE block model fields
+ *
+ * Block row structure (positional):
+ *   Row 1: link (rendered as <a> by decorateButtons)
+ *   Row 2: linkType  — filled | outlined | text-only        (default: filled)
+ *   Row 3: linkColor — primary | secondary | tertiary | black | white (default: primary)
+ *   Row 4: linkSize  — large | medium | small               (default: large)
+ *   Row 5: linkShape — rectangular | pill                   (default: rectangular)
  */
-
-import { extractAueConfig } from '../../scripts/aem.js';
 
 export function decorate(block, options = {}) {
   const ctx = { block, options };
@@ -16,39 +20,41 @@ export function decorate(block, options = {}) {
   options.onBefore?.(ctx);
   block.dispatchEvent(new CustomEvent('aramark-button:before', { detail: ctx, bubbles: true }));
 
-  const links = block.querySelectorAll('a');
-  links.forEach((link) => {
-    // Extract AUE config from block model fields (linkType, linkColor, linkSize, linkShape)
-    const config = extractAueConfig(block);
+  // Collect all rows
+  const rows = [...block.querySelectorAll(':scope > div')];
 
-    // Read style (filled/outlined/text-only)
-    // from AUE config, wrapper data attr, or block data attr
-    const wrapper = link.closest('div');
-    const linkStyle = config.linkType
-      || wrapper?.dataset.linktype
-      || block.dataset.linktype
-      || 'filled';
-    if (linkStyle) link.classList.add(linkStyle);
+  // Helper: get trimmed text from a row's first cell
+  const rowText = (row) => row?.querySelector('div, p')?.textContent?.trim()
+    || row?.textContent?.trim()
+    || '';
 
-    // Read color (primary/secondary/tertiary/black/white)
-    const linkColor = config.linkColor
-      || wrapper?.dataset.linkcolor
-      || block.dataset.linkcolor
-      || 'primary';
+  // Find the row containing the link (Row 1)
+  const linkRowIndex = rows.findIndex((row) => row.querySelector('a'));
+
+  // Positional config rows after the link row
+  const linkType = rowText(rows[linkRowIndex + 1]) || 'filled';
+  const linkColor = rowText(rows[linkRowIndex + 2]) || 'primary';
+  const linkSize = rowText(rows[linkRowIndex + 3]) || 'large';
+  const linkShape = rowText(rows[linkRowIndex + 4]) || '';
+
+  // Apply classes to each link
+  block.querySelectorAll('a').forEach((link) => {
+    // Style: filled | outlined | text-only
+    if (linkType) link.classList.add(linkType);
+
+    // Color: color-primary | color-secondary | color-tertiary | color-black | color-white
     if (linkColor) link.classList.add(`color-${linkColor}`);
 
-    // Read size (large/medium/small)
-    const linkSize = config.linkSize
-      || wrapper?.dataset.linksize
-      || block.dataset.linksize
-      || 'large';
+    // Size: size-large | size-medium | size-small
     if (linkSize) link.classList.add(`size-${linkSize}`);
 
-    // Read shape (rectangular/pill)
-    const linkShape = config.linkShape
-      || wrapper?.dataset.linkshape
-      || block.dataset.linkshape;
+    // Shape: shape-pill (only applied when explicitly set to 'pill')
     if (linkShape === 'pill') link.classList.add('shape-pill');
+  });
+
+  // Remove config rows from DOM — they are data, not visible content
+  rows.forEach((row, index) => {
+    if (index > linkRowIndex) row.remove();
   });
 
   // lifecycle hook + event (after)
