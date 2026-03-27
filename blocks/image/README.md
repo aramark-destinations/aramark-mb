@@ -5,7 +5,7 @@ Standalone image block with responsive picture output and Universal Editor autho
 ## Features
 
 - **Responsive image** output via `createOptimizedPicture` — generates `<source>` elements at 375, 768, and 1200px widths with WebP and fallback formats
-- **Alt text** applied from the authored `imageAlt` field; `imageAltFromDam` field is present in the model for future auto-population from DAM asset metadata (pending xwalk/UE support — see `docs/in-progress/BLOCK-TODOS.md`)
+- **Alt text** applied from the authored `imageAlt` field; `imageAltFromDam` field is present in the model for future auto-population from DAM asset metadata (see [DAM Alt Text](#dam-alt-text) below)
 - **UE instrumentation preserved** via `moveInstrumentation` when the picture element is replaced during decoration
 - **Lifecycle hooks** for site-level customization (onBefore/onAfter)
 - **Events** dispatched before and after decoration
@@ -93,6 +93,42 @@ Create `/brands/{property}/blocks/image/image.js` to:
 - Alt text applied from authored `imageAlt` field for screen readers
 - Image renders as `display: block` to prevent inline spacing issues
 - Responsive width (100%) ensures proper scaling across viewports
+
+## DAM Alt Text
+
+### Current State
+
+The `imageAltFromDam` boolean field exists in the UE schema (`models/_image.json`) and appears in the Author dialog. However, it is **not yet active in JavaScript rendering** — the block currently reads alt text from `block.dataset.imagealt` (set by UE from the `imageAlt` field) with a fallback to the existing `img.alt` attribute.
+
+### Why It's Deferred
+
+AEM's xwalk plugin does not currently support conditional field behavior (disabling the `imageAlt` text field and populating it from DAM asset metadata based on a sibling boolean field's state). Until that capability is available, the checkbox has no runtime effect.
+
+### Future Implementation Options
+
+#### Option A — xwalk/UE Plugin Enhancement (Recommended)
+
+When the xwalk plugin adds support for computed/conditional field states in the UE dialog, this can be implemented natively without any JavaScript changes to the block. The dialog would:
+1. Fetch the DAM asset metadata description when `imageAltFromDam` is checked
+2. Populate and disable the `imageAlt` text field
+3. The authored value would flow through to `block.dataset.imagealt` as usual
+
+This is the preferred path — zero runtime overhead and fully author-controlled.
+
+#### Option B — AEM Dynamic Media
+
+When the project migrates to AEM Dynamic Media, asset metadata (including `alt` text) can be accessed via the Assets HTTP API at content-publish time or embedded in delivery URLs. This would allow the xwalk integration or a content transformation step to inject the correct alt text before the page is served, with no client-side fetch required.
+
+#### Option C — Runtime Fetch (Not Recommended)
+
+At decoration time, the block JS could fetch the asset metadata from the AEM Assets HTTP API using the image `src` path, then apply the returned `dc:description` or similar field as the alt text. Drawbacks:
+- Adds an async network request per image on every page load
+- Requires authentication configuration for the Assets API in the delivery environment
+- Introduces timing complexity (alt text applied after initial render)
+
+### When Implementing
+
+Once Option A or B is viable, update `image.js` to read `block.dataset.imagealtfromdam` to gate the behavior, and update this section accordingly.
 
 ## Token Dependencies
 

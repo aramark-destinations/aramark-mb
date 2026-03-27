@@ -27,7 +27,7 @@
         },
         {
           "component": "boolean",
-          "name": "getAltFromDam",
+          "name": "imageAltFromDam",
           "label": "Get Alternative Text from DAM",
           "description": "When checked, alt text is populated from the image DAM metadata and the Alt Text field is disabled",
           "valueType": "boolean",
@@ -37,13 +37,6 @@
           "component": "text",
           "name": "imageAlt",
           "label": "Alt Text"
-        },
-        {
-          "component": "boolean",
-          "name": "imageAltFromDam",
-          "label": "Get Alternative Text from DAM",
-          "valueType": "boolean",
-          "value": true
         }
       ]
     }
