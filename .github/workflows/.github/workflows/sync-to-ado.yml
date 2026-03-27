@@ -2,8 +2,8 @@ name: Sync GitHub Repo to Azure DevOps
 
 on:
   push:
-    branches:
-      - main # Trigger the workflow on pushes to the main branch
+   # Empty configuration means the workflow runs on push to any branch or tag
+   # The default behavior for 'on: push:' without filters is to match all branches and tags.
 
 jobs:
   sync:
