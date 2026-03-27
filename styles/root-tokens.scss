@@ -17,6 +17,7 @@
   --color-base-black: #000;
   --color-primary: #eb002a;
   --color-secondary: #022035;
+  --color-tertiary: var(--color-secondary);
   --color-alerts-success: #008545;
   --color-alerts-caution: #edc700;
   --color-alerts-error: #d73044;
@@ -101,7 +102,6 @@
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-bold: 700;
-  /* 600 (semibold) intentionally omitted — not present in Figma type system */
 
   /* ========================================================================
      Typography — Line Heights
@@ -144,7 +144,7 @@
   --button-padding-horizontal: 1.2em;
   --button-border-radius: 2.4em;
   --button-border-width: var(--weight-m);
-  --button-font-weight: var(--font-weight-medium);
+  --button-font-weight: var(--font-weight-bold);
   --button-line-height: var(--line-height-snug);
   --button-transition: var(--transition-duration-fast);
   --button-touch-target: var(--sizing-048);
@@ -161,8 +161,8 @@
   --color-brand-primary-500: var(--color-primary);
   --color-brand-secondary: var(--color-secondary);
   --color-brand-secondary-500: var(--color-secondary);
-  --color-brand-tertiary: var(--color-secondary);           /* Override per brand */
-  --color-brand-tertiary-500: var(--color-brand-tertiary);
+  --color-brand-tertiary: var(--color-tertiary);
+  --color-brand-tertiary-500: var(--color-tertiary);
   --color-brand-light: var(--color-primary-100);
   --color-brand-500: var(--color-primary);
 
