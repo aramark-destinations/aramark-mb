@@ -1,18 +1,13 @@
-/* TODO (architecture): All block CSS should use CSS nesting syntax as blocks are upgraded.
-   Verify PostCSS/build tooling handles nesting for the project's browserslist target.
-   CSS nesting is Baseline 2024 (Chrome 120+, Firefox 117+, Safari 17.2+).
-   See docs/ARCHITECTURE-TODO.md for the full nesting migration item. */
-
 :root {
     --accordion-title-color: var(--color-text-primary);
     --accordion-title-padding-left: 0;
-    --accordion-title-padding-top: 27.5px;
+    --accordion-title-padding-top: var(--spacing-016);
     --accordion-title-padding-right: 30px;
-    --accordion-title-padding-bottom: 27.5px;
-    --accordion-title-padding: 27.5px 0;
-    --accordion-title-font-family: var(--font-family-display);
+    --accordion-title-padding-bottom: var(--spacing-016);
+    --accordion-title-padding: var(--spacing-016) 0;
+    --accordion-title-font-family: var(--body-font-family);
     --accordion-title-font-size: 20px;
-    --accordion-title-font-weight: 500;
+    --accordion-title-font-weight: var(--font-weight-bold);
     --accordion-title-line-height: 1.4;
     --accordion-title-letter-spacing: 1px;
     --accordion-title-text-transform: uppercase;
@@ -20,7 +15,7 @@
         var(--accordion-title-font-size) / var(--accordion-title-line-height)
         var(--accordion-title-font-family);
     --accordion-subtitle-color: var(--accordion-title-color);
-    --accordion-subtitle-font-family: var(--font-family-display);
+    --accordion-subtitle-font-family: var(--body-font-family);
     --accordion-subtitle-font-size: 18px;
     --accordion-subtitle-font-weight: 300;
     --accordion-subtitle-letter-spacing: 1px;
@@ -29,12 +24,12 @@
     --accordion-subtitle-font: normal var(--accordion-subtitle-font-weight)
         var(--accordion-subtitle-font-size) / var(--accordion-subtitle-line-height)
         var(--accordion-subtitle-font-family);
-    --accordion-border: 1px solid var(--color-neutral-400);
+    --accordion-border: 1px solid var(--stroke-light-2);
     --accordion-closed-icon: '+';
     --accordion-open-icon: '−';
     --accordion-open-background-color: var(--background-color);
     --accordion-open-body-background-color: var(--accordion-open-background-color);
-    --accordion-body-padding: 0;
+    --accordion-body-padding: var(--spacing-008) var(--spacing-040) var(--spacing-024) 0;
     --accordion-body-color: var(--color-text-primary);
     --accordion-body-heading-color: var(--accordion-body-color);
     --accordion-body-paragraph-color: var(--accordion-body-color);
@@ -42,12 +37,8 @@
     --accordion-body-anchor-color: var(--accordion-body-color);
     --accordion-body-anchor-hover-color: var(--accordion-body-anchor-color);
     --accordion-body-anchor-active-color: var(--accordion-body-anchor-color);
-    --accordion-icon-size: 28px;
+    --accordion-icon-size: var(--icons-size-icon-medium);
 }
-
-/* TODO (accordion dev): Review +/− character icon vs. original arrow icon.
-   Original used CSS border trick (rotating chevron). Current uses +/− characters.
-   Decision deferred — reanalyze during accordion feature dev work. */
 
 .accordion {
     details {
@@ -101,11 +92,11 @@
 
             &::after {
                 content: '+' / '';
-                font-family: var(--font-family-display);
+                font-family: var(--body-font-family);
                 font-weight: 300;
                 position: absolute;
                 right: 0;
-                top: 25px;
+                top: var(--spacing-016);
                 font-size: var(--accordion-icon-size);
                 line-height: var(--accordion-icon-size);
                 display: inline-block;
@@ -194,3 +185,4 @@
         }
     }
 }
+

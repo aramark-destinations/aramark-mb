@@ -114,6 +114,19 @@
   --line-height-relaxed: 1.75;
 
   /* ========================================================================
+     Typography — Letter Spacing
+     Use em units so values scale proportionally with font size.
+     Figma encodes letter-spacing as a % of font size; divide by 100 to get em.
+     -0.02em = Figma's Body/1/Bold and Body/3/Light (-2%) — the standard body text rule.
+     ======================================================================== */
+
+  --letter-spacing-tightest: -0.05em;  /* display / large headings */
+  --letter-spacing-tight: -0.02em;     /* body text (Figma Body/* styles) */
+  --letter-spacing-none: 0em;          /* default / reset */
+  --letter-spacing-wide: 0.05em;       /* small caps / labels */
+  --letter-spacing-wider: 0.1em;       /* uppercase / all-caps */
+
+  /* ========================================================================
      Breakpoints
      For documentation/reference. Cannot be used in media queries directly.
      ======================================================================== */
