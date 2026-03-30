@@ -34,10 +34,10 @@ All images are delivered via Dynamic Media with OpenAPI.
   <div>
     <div>
       <picture>
+        <source media="(min-width: 1200px)" type="image/webp" srcset="/adobe/dynamicmedia/deliver/dm-aid--{id}/image.jpg?width=1200&preferwebp=true&quality=85">
+        <source media="(min-width: 768px)" type="image/webp" srcset="/adobe/dynamicmedia/deliver/dm-aid--{id}/image.jpg?width=768&preferwebp=true&quality=85">
         <source type="image/webp" srcset="/adobe/dynamicmedia/deliver/dm-aid--{id}/image.jpg?width=375&preferwebp=true&quality=85">
-        <source type="image/webp" srcset="/adobe/dynamicmedia/deliver/dm-aid--{id}/image.jpg?width=768&preferwebp=true&quality=85">
-        <source type="image/webp" srcset="/adobe/dynamicmedia/deliver/dm-aid--{id}/image.jpg?width=1200&preferwebp=true&quality=85">
-        <img loading="lazy" alt="Description" src="/adobe/dynamicmedia/deliver/dm-aid--{id}/image.jpg?width=1200&quality=85">
+        <img loading="lazy" alt="Description" src="/adobe/dynamicmedia/deliver/dm-aid--{id}/image.jpg?width=375&quality=85">
       </picture>
     </div>
   </div>

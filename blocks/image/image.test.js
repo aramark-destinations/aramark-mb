@@ -203,6 +203,15 @@ describe('decorate — DM picture output', () => {
     decorate(block);
     expect(mockMoveInstrumentation).toHaveBeenCalledTimes(1);
   });
+
+  it('applies responsive media attributes to <source> elements', () => {
+    decorate(block);
+    const sources = [...block.querySelectorAll('source[type="image/webp"]')];
+    expect(sources.length).toBe(3);
+    expect(sources[0].getAttribute('media')).toBe('(min-width: 1200px)');
+    expect(sources[1].getAttribute('media')).toBe('(min-width: 768px)');
+    expect(sources[2].hasAttribute('media')).toBe(false);
+  });
 });
 
 describe('decorate — imageAltFromDam', () => {

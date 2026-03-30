@@ -110,6 +110,18 @@ describe('createDmPicture', () => {
     expect(source.getAttribute('srcset')).not.toContain('width=1280');
     expect(source.getAttribute('srcset')).toContain('width=375');
   });
+
+  it('applies media attribute to <source> when provided in breakpoint', () => {
+    const pic = createDmPicture(DM_PATH, '', false, [
+      { media: '(min-width: 1200px)', width: '1200' },
+      { media: '(min-width: 768px)', width: '768' },
+      { width: '375' },
+    ]);
+    const sources = [...pic.querySelectorAll('source[type="image/webp"]')];
+    expect(sources[0].getAttribute('media')).toBe('(min-width: 1200px)');
+    expect(sources[1].getAttribute('media')).toBe('(min-width: 768px)');
+    expect(sources[2].hasAttribute('media')).toBe(false);
+  });
 });
 
 describe('fetchDmAltText', () => {

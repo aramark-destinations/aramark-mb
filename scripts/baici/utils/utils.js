@@ -140,6 +140,7 @@ export function createDmPicture(src, alt = '', eager = false, breakpoints = [{ w
 
   breakpoints.forEach((br) => {
     const source = document.createElement('source');
+    if (br.media) source.setAttribute('media', br.media);
     source.setAttribute('type', 'image/webp');
     source.setAttribute('srcset', `${pathname}?width=${br.width}&preferwebp=true&quality=85`);
     picture.appendChild(source);

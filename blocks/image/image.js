@@ -24,7 +24,11 @@ export function decorate(block, options = {}) {
     const altText = block.dataset.imagealt || img?.alt || '';
 
     if (img) {
-      const breakpoints = [{ width: '375' }, { width: '768' }, { width: '1200' }];
+      const breakpoints = [
+        { media: '(min-width: 1200px)', width: '1200' },
+        { media: '(min-width: 768px)', width: '768' },
+        { width: '375' },
+      ];
       const dmPicture = createDmPicture(img.src, altText, false, breakpoints);
       moveInstrumentation(img, dmPicture.querySelector('img'));
       picture.replaceWith(dmPicture);
