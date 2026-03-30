@@ -1,5 +1,7 @@
 Block Overview
 
+> **Note:** This block was renamed from `button` to `cta` in the codebase to avoid conflicting with the OOTB AEM `button` component. All codebase references use `cta`. The OOTB `button` component remains unchanged. Ticket and Figma documentation retain the "Button" name — that is intentional and correct.
+
 The Buttons block should be set up in the EDS codebase with the needed configuration fields in Universal Editor.
 The Button block should be able to be:
 Used as a stand-alone block and added to Sections, Columns, Tabs, and Accordions
@@ -51,4 +53,4 @@ Font sizes are tied to button size: Large = 16px, Medium = 14px, Small = 12px
 Button layout (from Figma, not in original ticket):
 Button content (text + optional icon) is centered both horizontally and vertically (inline-flex)
 Gap between icon and label text is 8px
-Outlined button stroke weight is 1px (Figma spec); current implementation uses 2px — to be aligned in a follow-up
+Outlined button stroke weight is 1px (Figma spec); current implementation uses 2px — Dev should update to match Figma

@@ -1,9 +1,11 @@
 # Button — Figma Audit
 
+> **Note:** This block was renamed from `button` to `cta` in the codebase to avoid conflicting with the OOTB AEM `button` component. All codebase references (block directory, JS, SCSS, CSS, JSON schema, tests) use `cta`. The OOTB `button` component remains unchanged. Figma design files and designer-facing documentation continue to use the name "Button" — that is intentional and correct.
+
 **Figma file:** https://www.figma.com/design/sf2qQ3I3BFFN4NdWCC04cw/Lake-Powell-Site-Design
 **Node URL:** https://www.figma.com/design/sf2qQ3I3BFFN4NdWCC04cw/Lake-Powell-Site-Design?node-id=51-125
 **Audit date:** 2026-03-24
-**Block:** `blocks/button/`
+**Block:** `blocks/cta/` *(formerly `blocks/button/`)*
 
 ---
 
@@ -38,10 +40,10 @@
 |---|---|---|---|
 | Primary fill | `#B04C1A` | `brands/lake-powell/tokens.css` | Update `--color-primary` in brand file (current: `#0066cc`) |
 | Secondary fill | `#174355` | `brands/lake-powell/tokens.css` | Update `--color-secondary` in brand file (current: `#1a4d2e`) |
-| Letter spacing | `-2%` → `-0.02em` | `button.scss` | Applied as `letter-spacing: -0.02em`; promote to `--letter-spacing-tight` in `root-tokens.scss` |
-| Font size — Large | `16px` | `button.scss` | Hardcoded; promote to `--font-size-body-2` in `root-tokens.scss` |
-| Font size — Medium | `14px` | `button.scss` | Hardcoded; promote to `--font-size-body-3` in `root-tokens.scss` |
-| Font size — Small | `12px` | `button.scss` | Hardcoded; promote to `--font-size-body-4` in `root-tokens.scss` |
+| Letter spacing | `-2%` → `-0.02em` | `cta.scss` | Applied as `letter-spacing: -0.02em`; promote to `--letter-spacing-tight` in `root-tokens.scss` |
+| Font size — Large | `16px` | `cta.scss` | Hardcoded; promote to `--font-size-body-2` in `root-tokens.scss` |
+| Font size — Medium | `14px` | `cta.scss` | Hardcoded; promote to `--font-size-body-3` in `root-tokens.scss` |
+| Font size — Small | `12px` | `cta.scss` | Hardcoded; promote to `--font-size-body-4` in `root-tokens.scss` |
 
 > **Note on brand colors:** Root token values (`--color-primary: #eb002a`, `--color-secondary: #022035`) are unbranded placeholders — mismatches with Figma there are expected and are not gaps. The gaps above are in `brands/lake-powell/tokens.css`, which must align with the Figma design.
 
@@ -49,7 +51,7 @@
 
 ## SCSS Issues Found
 
-The following hardcoded or mismatched values were found in `button.scss` and have been corrected:
+The following hardcoded or mismatched values were found in `cta.scss` and have been corrected:
 
 | Line | Before | After |
 |---|---|---|
