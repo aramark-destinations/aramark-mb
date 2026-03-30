@@ -109,6 +109,75 @@ export function getPictureSrc(picture) {
   return `${url.origin}${url.pathname}`;
 }
 
+const DM_DELIVER_PATH = '/adobe/dynamicmedia/deliver/';
+
+/**
+ * Returns true if the src is a Dynamic Media with OpenAPI delivery URL.
+ * @param {string} src
+ * @returns {boolean}
+ */
+export function isDmUrl(src) {
+  try {
+    const { pathname } = new URL(src, window.location.href);
+    return pathname.startsWith(DM_DELIVER_PATH);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Builds a responsive <picture> element for DM with OpenAPI delivery URLs.
+ * Uses DM-native params (preferwebp, quality, width) instead of EDS format strings.
+ * @param {string} src
+ * @param {string} alt
+ * @param {boolean} eager
+ * @param {Array<{width: string}>} breakpoints
+ * @returns {HTMLPictureElement}
+ */
+export function createDmPicture(src, alt = '', eager = false, breakpoints = [{ width: '750' }]) {
+  const { pathname } = new URL(src, window.location.href);
+  const picture = document.createElement('picture');
+
+  breakpoints.forEach((br) => {
+    const source = document.createElement('source');
+    if (br.media) source.setAttribute('media', br.media);
+    source.setAttribute('type', 'image/webp');
+    source.setAttribute('srcset', `${pathname}?width=${br.width}&preferwebp=true&quality=85`);
+    picture.appendChild(source);
+  });
+
+  const img = document.createElement('img');
+  const last = breakpoints[breakpoints.length - 1];
+  img.setAttribute('loading', eager ? 'eager' : 'lazy');
+  img.setAttribute('alt', alt);
+  img.setAttribute('src', `${pathname}?width=${last.width}&quality=85`);
+  picture.appendChild(img);
+
+  return picture;
+}
+
+/**
+ * Fetches alt text for a DM image from the DM Assets Metadata API.
+ * Returns the dc:description value, or null if unavailable or on any error.
+ * @param {string} src - A DM delivery URL
+ * @returns {Promise<string|null>}
+ */
+export async function fetchDmAltText(src) {
+  try {
+    const match = src.match(/\/adobe\/dynamicmedia\/deliver\/dm-aid--([^/]+)\//);
+    if (!match) return null;
+    const assetId = `urn:aaid:aem:${match[1]}`;
+    const { origin } = new URL(src, window.location.href);
+    const url = `${origin}/adobe/assets/${encodeURIComponent(assetId)}/metadata`;
+    const response = await fetch(url);
+    if (!response.ok) return null;
+    const json = await response.json();
+    return json.value?.assetMetadata?.['dc:description'] ?? null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Debounces a function, ensuring it's only called after a certain
  * delay has passed since the last call.

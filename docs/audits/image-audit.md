@@ -1,5 +1,5 @@
 # Block Audit Report: image
-Date: 2026-03-20
+Date: 2026-03-20 (updated 2026-03-29)
 
 ## Summary
 | Category | Result |
@@ -36,7 +36,7 @@ The UE schema exists at the fallback path `models/_image.json` rather than `bloc
 | Check | Result |
 |---|---|
 | `export function decorate(block, options = {})` | PASS — line 11 |
-| `export default (block) => decorate(block, window.Image?.hooks)` | PASS — line 44 |
+| `export default (block) => decorate(block, window.ImageBlock?.hooks)` | PASS — line 44 | Note: renamed from `window.Image` to avoid collision with native `HTMLImageElement` constructor |
 | `options = {}` default param | PASS |
 
 #### 2b. Lifecycle hooks and events
@@ -58,9 +58,10 @@ All lifecycle requirements met.
 
 | Import | Path | Result |
 |---|---|---|
+| `createOptimizedPicture` | `../../scripts/aem.js` | PASS |
+| `moveInstrumentation` | `../../scripts/scripts.js` | PASS |
 | `readVariant` | `../../scripts/scripts.js` | PASS |
-
-No additional imports needed. `createOptimizedPicture`, `readBlockConfig`, and baici utilities are not required — N/A.
+| `isDmUrl`, `createDmPicture` | `../../scripts/baici/utils/utils.js` | PASS |
 
 #### 2d. No site-specific code
 
@@ -158,7 +159,7 @@ The `getAltFromDam` checkbox is in the schema but `image.js` does not read `bloc
 | Item | Result |
 |---|---|
 | Async scripts | PASS |
-| Optimized images | PASS — uses AEM `<picture>` element |
+| Optimized images | PASS — DM paths routed through `createDmPicture` (DM-native params: `preferwebp=true&quality=85`); standard paths through `createOptimizedPicture` |
 | No unnecessary JS | PASS — minimal JS |
 | Video embed | N/A |
 
@@ -182,10 +183,10 @@ The `getAltFromDam` checkbox is in the schema but `image.js` does not read `bloc
 
 **Priority 2 — Should Fix**
 
-3. **Verify block output parity with Card** — Confirm that the `<source>`, alt text, and data attributes produced by the image block match the Card component output as specified in the ticket. Add any missing attributes or source elements.
+3. ~~**Verify block output parity with Card**~~ **RESOLVED** — DM-aware `createDmPicture` and `createOptimizedPicture` routing produces correct `<source>`, alt text, and data attributes. Parity confirmed.
 4. **Expand CSS for Figma styles** — Implement additional styles specified in the Figma design (spacing, shadows, or additional border-radius variants). The current CSS is minimal (3 properties).
 
 **Priority 3 — Advisory**
 
 5. **Define `--image-border-radius`** — Ensure this token is defined in the global or brand token files. The fallback `0` prevents a visual error but the token value should be explicitly set.
-6. **README: Document `getAltFromDam` behavior** — Once implemented, add a note explaining the two alt text modes (DAM auto-populate vs manual override) so authors understand the checkbox behavior.
+6. ~~**README: Document `getAltFromDam` behavior**~~ **RESOLVED** — README now contains a full `DAM Alt Text` section documenting current and deferred behavior (Options A, B, C), with Option B updated to reflect the project is live on DM with OpenAPI.

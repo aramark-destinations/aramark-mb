@@ -2,7 +2,7 @@
 
 Single source of truth for all open work items across the platform.
 
-**Last updated:** 2026-03-20
+**Last updated:** 2026-03-29
 
 For per-block audit details, see [`docs/audits/SUMMARY.md`](../audits/SUMMARY.md) and individual block audit files in `docs/audits/`.
 
@@ -50,7 +50,6 @@ Full details in individual audit files under `docs/audits/`.
 - **Carousel** — Content Fragment integration entirely absent; no UE schema; CSS violations; no `prefers-reduced-motion`
 - **Header** — Scroll states not implemented; mega menu not implemented; search bar not rendered; booking modal trigger depends on scroll state
 - **Hero** — Eyebrow text and description text fields absent from both `_hero.json` and JS; breadcrumbs integration not implemented
-- **Image** — DAM alt text auto-populate (`imageAltFromDam` checkbox) not implemented; Dynamic Media integration absent; UE schema not in block dir
 - **UGC Gallery** — Missing `README.md`, `ticket-details.md`, and entire UE model (`_ugc-gallery.json`)
 
 ### Priority 2 — Should Fix
@@ -109,7 +108,9 @@ Files needed: `blocks/side-by-side/side-by-side.js`, `blocks/side-by-side/side-b
 ### Image Block
 
 - **[RISK]** Validate UE dialog disable/auto-populate behavior for `imageAltFromDam` checkbox — requires UE deployment to test; may need custom UE field extension
-- **[SPIKE]** Dynamic Media (Scene7) integration — current `createOptimizedPicture` approach uses EDS query params incompatible with DM URL/param system; spike needed before DM is enabled
+- **Cards** — Add `imageAltFromDam` boolean field to cards UE schema and wire up to `fetchDmAltText()` (same fire-and-update pattern as image block)
+- **Search** — Add `imageAltFromDam` boolean field to search result schema and wire up to `fetchDmAltText()` (same fire-and-update pattern as image block)
+
 
 ---
 
