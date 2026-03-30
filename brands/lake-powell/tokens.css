@@ -12,7 +12,8 @@
 :root {
   /* Brand Colors — Lake Powell brand values */
   /* stylelint-disable-next-line color-hex-length */
-  --color-primary: #0066cc;
-  --color-secondary: #1a4d2e;
+  --color-primary: #b04c1a;
+  --color-secondary: #174355;
+  --color-tertiary: #639654;
 
 }
