@@ -3,20 +3,19 @@
  * - Provides lifecycle hooks (onBefore/onAfter)
  * - Dispatches before/after events
  * - Implements core image block functionality
- * - Supports DAM alt text population and manual alt text override
+ * - All images are delivered via Dynamic Media with OpenAPI
+ * - Supports DAM alt text auto-population via imageAltFromDam checkbox
  */
 
-import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation, readVariant } from '../../scripts/scripts.js';
+import { createDmPicture, fetchDmAltText } from '../../scripts/baici/utils/utils.js';
 
 export function decorate(block, options = {}) {
   const ctx = { block, options };
 
-  // lifecycle hook + event (before)
   options.onBefore?.(ctx);
   block.dispatchEvent(new CustomEvent('image:before', { detail: ctx, bubbles: true }));
 
-  // === IMAGE BLOCK LOGIC ===
   readVariant(block);
 
   const picture = block.querySelector('picture');
@@ -25,25 +24,21 @@ export function decorate(block, options = {}) {
     const altText = block.dataset.imagealt || img?.alt || '';
 
     if (img) {
-      const optimizedPicture = createOptimizedPicture(
-        img.src,
-        altText,
-        false,
-        [{ width: '375' }, { width: '768' }, { width: '1200' }],
-      );
-      moveInstrumentation(img, optimizedPicture.querySelector('img'));
-      picture.replaceWith(optimizedPicture);
+      const breakpoints = [{ width: '375' }, { width: '768' }, { width: '1200' }];
+      const dmPicture = createDmPicture(img.src, altText, false, breakpoints);
+      moveInstrumentation(img, dmPicture.querySelector('img'));
+      picture.replaceWith(dmPicture);
+
+      if (block.dataset.imagealtfromdam !== 'false') {
+        fetchDmAltText(img.src).then((dmAlt) => {
+          if (dmAlt) dmPicture.querySelector('img')?.setAttribute('alt', dmAlt);
+        });
+      }
     }
   }
 
-  // lifecycle hook + event (after)
   options.onAfter?.(ctx);
   block.dispatchEvent(new CustomEvent('image:after', { detail: ctx, bubbles: true }));
 }
 
-/**
- * Default export
- * - Calls decorate()
- * - Allows global hook injection via window.Image?.hooks
- */
-export default (block) => decorate(block, window.Image?.hooks);
+export default (block) => decorate(block, window.ImageBlock?.hooks);
