@@ -260,3 +260,67 @@ describe('decorate — imageAltFromDam', () => {
     expect(block.querySelector('img').getAttribute('alt')).toBe('Manual alt');
   });
 });
+
+describe('decorate — UE field row parsing', () => {
+  let decorate;
+  let block;
+
+  beforeEach(async () => {
+    jest.resetModules();
+    document.body.innerHTML = '';
+    mockMoveInstrumentation = jest.fn();
+    mockFetchDmAltText = jest.fn().mockResolvedValue(null);
+    ({ decorate } = await import('./image.js'));
+  });
+
+  it('reads imageAltFromDam from row and removes the row', () => {
+    block = document.createElement('div');
+    block.innerHTML = [
+      `<div><div><picture><img src="${DM_SRC}" alt=""></picture></div></div>`,
+      '<div><div><p>false</p></div></div>',
+      '<div><div><p></p></div></div>',
+    ].join('');
+    document.body.appendChild(block);
+    decorate(block);
+    expect(block.dataset.imagealtfromdam).toBe('false');
+    expect(block.children.length).toBe(1);
+  });
+
+  it('reads imageAlt from row and sets it as the synchronous alt text', () => {
+    block = document.createElement('div');
+    block.innerHTML = [
+      `<div><div><picture><img src="${DM_SRC}" alt=""></picture></div></div>`,
+      '<div><div><p>true</p></div></div>',
+      '<div><div><p>A scenic canyon view</p></div></div>',
+    ].join('');
+    document.body.appendChild(block);
+    decorate(block);
+    expect(block.querySelector('img').getAttribute('alt')).toBe('A scenic canyon view');
+  });
+
+  it('removes all non-image rows leaving only the picture row', () => {
+    block = document.createElement('div');
+    block.innerHTML = [
+      `<div><div><picture><img src="${DM_SRC}" alt=""></picture></div></div>`,
+      '<div><div><p>true</p></div></div>',
+      '<div><div><p>Alt text</p></div></div>',
+    ].join('');
+    document.body.appendChild(block);
+    decorate(block);
+    // After decorate, block has exactly one child: the image row (picture replaced)
+    expect(block.children.length).toBe(1);
+    expect(block.querySelector('picture')).not.toBeNull();
+  });
+
+  it('does not call fetchDmAltText when imageAltFromDam row is false', () => {
+    mockFetchDmAltText = jest.fn().mockResolvedValue('Alt from DAM');
+    block = document.createElement('div');
+    block.innerHTML = [
+      `<div><div><picture><img src="${DM_SRC}" alt=""></picture></div></div>`,
+      '<div><div><p>false</p></div></div>',
+    ].join('');
+    document.body.appendChild(block);
+    decorate(block);
+    expect(mockFetchDmAltText).not.toHaveBeenCalled();
+  });
+});

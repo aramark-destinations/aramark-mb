@@ -18,6 +18,17 @@ export function decorate(block, options = {}) {
 
   readVariant(block);
 
+  // In UE rendering, non-reference fields are output as positional rows after
+  // the image reference row. Read them into block.dataset and remove the rows
+  // so they don't render as visible text content.
+  const configRows = Array.from(block.children).filter((row) => !row.querySelector('picture'));
+  configRows.forEach((row, idx) => {
+    const text = row.querySelector('p')?.textContent?.trim() ?? row.textContent?.trim() ?? '';
+    if (idx === 0) block.dataset.imagealtfromdam = text;
+    if (idx === 1) block.dataset.imagealt = text;
+    row.remove();
+  });
+
   const picture = block.querySelector('picture');
   if (picture) {
     const img = picture.querySelector('img');
