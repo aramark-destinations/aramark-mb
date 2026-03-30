@@ -4,19 +4,40 @@ import {
 
 let mockMoveInstrumentation = jest.fn();
 let mockFetchDmAltText = jest.fn().mockResolvedValue(null);
+// createOptimizedPicture mock — returns a real <picture> with a WebP <source> and <img>
+let mockCreateOptimizedPicture = jest.fn().mockImplementation((src, alt) => {
+  const pic = document.createElement('picture');
+  const source = document.createElement('source');
+  source.setAttribute('type', 'image/webp');
+  source.setAttribute('srcset', `${src}?width=750&format=webply&optimize=medium`);
+  pic.appendChild(source);
+  const img = document.createElement('img');
+  img.setAttribute('src', `${src}?width=750&format=jpg&optimize=medium`);
+  img.setAttribute('alt', alt ?? '');
+  pic.appendChild(img);
+  return pic;
+});
+
+// aem.js has a top-level init() call; mock the module to avoid side effects in tests.
+// Pass createOptimizedPicture through the mockCreateOptimizedPicture variable so tests can
+// assert on it and swap implementations per describe block.
+jest.mock('../../scripts/aem.js', () => ({
+  createOptimizedPicture: (...args) => mockCreateOptimizedPicture(...args),
+}));
 
 jest.mock('../../scripts/scripts.js', () => ({
   readVariant: jest.fn(),
   moveInstrumentation: (...args) => mockMoveInstrumentation(...args),
 }));
 
-// Use real createDmPicture from utils (no mock — tested in utils.test.js);
+// Use real createDmPicture and isDmUrl from utils (no mock — tested in utils.test.js);
 // mock fetchDmAltText for gating tests
 jest.mock('../../scripts/baici/utils/utils.js', () => {
   const actual = jest.requireActual('../../scripts/baici/utils/utils.js');
   return {
     ...actual,
     createDmPicture: actual.createDmPicture,
+    isDmUrl: actual.isDmUrl,
     fetchDmAltText: (...args) => mockFetchDmAltText(...args),
   };
 });
@@ -28,6 +49,20 @@ describe('decorate — lifecycle events', () => {
   beforeEach(async () => {
     jest.resetModules();
     document.body.innerHTML = '';
+    mockMoveInstrumentation = jest.fn();
+    mockFetchDmAltText = jest.fn().mockResolvedValue(null);
+    mockCreateOptimizedPicture = jest.fn().mockImplementation((src, alt) => {
+      const pic = document.createElement('picture');
+      const source = document.createElement('source');
+      source.setAttribute('type', 'image/webp');
+      source.setAttribute('srcset', `${src}?width=750&format=webply`);
+      pic.appendChild(source);
+      const img = document.createElement('img');
+      img.setAttribute('src', `${src}?width=750`);
+      img.setAttribute('alt', alt ?? '');
+      pic.appendChild(img);
+      return pic;
+    });
     block = document.createElement('div');
     block.className = 'image';
     block.innerHTML = '<div><div><picture><img src="/img.jpg" alt="Test"></picture></div></div>';
@@ -94,6 +129,18 @@ describe('decorate — core logic', () => {
 
     mockMoveInstrumentation = jest.fn();
     mockFetchDmAltText = jest.fn().mockResolvedValue(null);
+    mockCreateOptimizedPicture = jest.fn().mockImplementation((src, alt) => {
+      const pic = document.createElement('picture');
+      const source = document.createElement('source');
+      source.setAttribute('type', 'image/webp');
+      source.setAttribute('srcset', `${src}?width=750&format=webply`);
+      pic.appendChild(source);
+      const img = document.createElement('img');
+      img.setAttribute('src', `${src}?width=750`);
+      img.setAttribute('alt', alt ?? '');
+      pic.appendChild(img);
+      return pic;
+    });
 
     block = document.createElement('div');
     block.className = 'image';
@@ -150,6 +197,7 @@ describe('decorate — DM picture output', () => {
     document.body.innerHTML = '';
     mockMoveInstrumentation = jest.fn();
     mockFetchDmAltText = jest.fn().mockResolvedValue(null);
+    mockCreateOptimizedPicture = jest.fn();
 
     block = document.createElement('div');
     block.className = 'image';
@@ -223,6 +271,7 @@ describe('decorate — imageAltFromDam', () => {
     document.body.innerHTML = '';
     mockMoveInstrumentation = jest.fn();
     mockFetchDmAltText = jest.fn().mockResolvedValue(null);
+    mockCreateOptimizedPicture = jest.fn();
 
     block = document.createElement('div');
     block.className = 'image';
@@ -269,6 +318,8 @@ describe('decorate — UE field row parsing', () => {
     jest.resetModules();
     document.body.innerHTML = '';
     mockMoveInstrumentation = jest.fn();
+    mockFetchDmAltText = jest.fn().mockResolvedValue(null);
+    mockCreateOptimizedPicture = jest.fn();
     mockFetchDmAltText = jest.fn().mockResolvedValue(null);
     ({ decorate } = await import('./image.js'));
   });
@@ -322,5 +373,115 @@ describe('decorate — UE field row parsing', () => {
     document.body.appendChild(block);
     decorate(block);
     expect(mockFetchDmAltText).not.toHaveBeenCalled();
+  });
+});
+
+const DAM_PATH = '/content/dam/projects/images/test-image.jpg';
+
+describe('decorate — EDS delivery (DAM link)', () => {
+  let decorate;
+
+  beforeEach(async () => {
+    jest.resetModules();
+    document.body.innerHTML = '';
+    mockMoveInstrumentation = jest.fn();
+    mockFetchDmAltText = jest.fn().mockResolvedValue(null);
+    mockCreateOptimizedPicture = jest.fn().mockImplementation((src, alt) => {
+      const pic = document.createElement('picture');
+      const source = document.createElement('source');
+      source.setAttribute('type', 'image/webp');
+      source.setAttribute('srcset', `${src}?width=750&format=webply&optimize=medium`);
+      pic.appendChild(source);
+      const img = document.createElement('img');
+      img.setAttribute('src', `${src}?width=750&format=jpg&optimize=medium`);
+      img.setAttribute('alt', alt ?? '');
+      pic.appendChild(img);
+      return pic;
+    });
+    ({ decorate } = await import('./image.js'));
+  });
+
+  it('creates a picture from a DAM link when no picture element exists', () => {
+    const block = document.createElement('div');
+    block.innerHTML = `<div><div><a href="${DAM_PATH}">${DAM_PATH}</a></div></div>`;
+    document.body.appendChild(block);
+    decorate(block);
+    expect(block.querySelector('picture')).not.toBeNull();
+  });
+
+  it('uses the DAM path as the image source', () => {
+    const block = document.createElement('div');
+    block.innerHTML = `<div><div><a href="${DAM_PATH}">${DAM_PATH}</a></div></div>`;
+    document.body.appendChild(block);
+    decorate(block);
+    const img = block.querySelector('img');
+    expect(img.getAttribute('src')).toContain(DAM_PATH);
+  });
+
+  it('uses link text as alt when it differs from the href', () => {
+    const block = document.createElement('div');
+    block.innerHTML = `<div><div><a href="${DAM_PATH}">Custom alt text</a></div></div>`;
+    document.body.appendChild(block);
+    decorate(block);
+    expect(mockCreateOptimizedPicture).toHaveBeenCalledWith(
+      expect.stringContaining(DAM_PATH),
+      'Custom alt text',
+      false,
+      expect.any(Array),
+    );
+  });
+
+  it('uses empty alt when link text equals the href (no custom alt)', () => {
+    const block = document.createElement('div');
+    block.innerHTML = `<div><div><a href="${DAM_PATH}">${DAM_PATH}</a></div></div>`;
+    document.body.appendChild(block);
+    decorate(block);
+    expect(mockCreateOptimizedPicture).toHaveBeenCalledWith(
+      expect.stringContaining(DAM_PATH),
+      '',
+      false,
+      expect.any(Array),
+    );
+  });
+
+  it('reads imageAltFromDam boolean from second row and removes it', () => {
+    const block = document.createElement('div');
+    block.innerHTML = [
+      `<div><div><a href="${DAM_PATH}">${DAM_PATH}</a></div></div>`,
+      '<div><div>false</div></div>',
+    ].join('');
+    document.body.appendChild(block);
+    decorate(block);
+    expect(block.dataset.imagealtfromdam).toBe('false');
+    expect(block.children.length).toBe(1);
+  });
+
+  it('does not call fetchDmAltText for non-DM DAM paths', () => {
+    const block = document.createElement('div');
+    block.innerHTML = `<div><div><a href="${DAM_PATH}">${DAM_PATH}</a></div></div>`;
+    document.body.appendChild(block);
+    decorate(block);
+    expect(mockFetchDmAltText).not.toHaveBeenCalled();
+  });
+
+  it('calls createOptimizedPicture (not createDmPicture) for DAM paths', () => {
+    const block = document.createElement('div');
+    block.innerHTML = `<div><div><a href="${DAM_PATH}">${DAM_PATH}</a></div></div>`;
+    document.body.appendChild(block);
+    decorate(block);
+    expect(mockCreateOptimizedPicture).toHaveBeenCalledTimes(1);
+  });
+
+  it('generates WebP sources via EDS params for DAM links', () => {
+    const block = document.createElement('div');
+    block.innerHTML = `<div><div><a href="${DAM_PATH}">${DAM_PATH}</a></div></div>`;
+    document.body.appendChild(block);
+    decorate(block);
+    const sources = block.querySelectorAll('source[type="image/webp"]');
+    expect(sources.length).toBeGreaterThan(0);
+    sources.forEach((s) => {
+      expect(s.getAttribute('srcset')).toContain(DAM_PATH);
+      expect(s.getAttribute('srcset')).not.toContain('preferwebp=true');
+    });
   });
 });
