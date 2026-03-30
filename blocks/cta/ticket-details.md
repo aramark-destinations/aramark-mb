@@ -53,4 +53,4 @@ Font sizes are tied to button size: Large = 16px, Medium = 14px, Small = 12px
 Button layout (from Figma, not in original ticket):
 Button content (text + optional icon) is centered both horizontally and vertically (inline-flex)
 Gap between icon and label text is 8px
-Outlined button stroke weight is 1px (Figma spec); current implementation uses 2px — to be aligned in a follow-up
+Outlined button stroke weight is 1px (Figma spec); current implementation uses 2px — Dev should update to match Figma
