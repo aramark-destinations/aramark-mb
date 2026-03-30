@@ -45,7 +45,6 @@ These should be applied as a sweep across all blocks during remediation:
 Full details in individual audit files under `docs/audits/`.
 
 - **Banner** — Missing `README.md`; incomplete UE schema (`mediaImage`, `ctaLink`, `ctaLabel` fields absent); no `prefers-reduced-motion`; no pause-on-hover; dismiss logic scoped incorrectly
-- **Breadcrumbs** — Full Pattern A rewrite required: no lifecycle hooks, no before/after events, no `readVariant` call; `localStorage` key uses wrong namespace (`kaiBreadcrumbContext`)
 - **Button** — Missing UE schema in block dir; modal trigger behavior not implemented; screen reader text field absent
 - **Cards** — Content Fragment integration entirely absent; no UE schema in block dir; CSS violations
 - **Carousel** — Content Fragment integration entirely absent; no UE schema; CSS violations; no `prefers-reduced-motion`

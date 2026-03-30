@@ -144,6 +144,14 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+
+    // Load section block CSS (sections are not auto-loaded as blocks)
+    loadCSS(`${window.hlx.codeBasePath}/blocks/section/section.css`).catch(() => {});
+
+    // Decorate all sections with section.js (overlays, gradients, themes)
+    const { decorate: decorateSection } = await import('../blocks/section/section.js');
+    main.querySelectorAll('.section').forEach((section) => decorateSection(section));
+
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }

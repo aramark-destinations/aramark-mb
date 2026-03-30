@@ -1,0 +1,7 @@
+{
+  "name": "collab/qa-handoff",
+  "description": "Generate a structured QA handoff document for a block — reads the current branch/ticket number, block source files, UE schema, Figma audit, and ticket-details.md to produce a ready-to-paste Implementation Summary with author fields, Figma references, test URLs, What to Test checklist, and Out of Scope notes. Saves output to blocks/{blockname}/qa-handoff.md. Use when: handing off dev work to QA, writing ticket comments after a PR is ready for review, documenting what was built for a block.",
+  "when_to_use": "after a block implementation is complete and ready for QA review, to produce a structured handoff summary for the ADO ticket",
+  "version": "1.0.0",
+  "aliases": ["qa-handoff", "handoff", "dev-handoff", "impl-summary"]
+}

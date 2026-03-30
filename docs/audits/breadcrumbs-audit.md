@@ -6,11 +6,11 @@ Date: 2026-03-20
 |---|---|
 | Structure | PASS |
 | Pattern A Compliance | PASS |
-| CSS Token Usage | FAIL (5 violations) |
+| CSS Token Usage | PASS (0 violations) |
 | Spec Alignment | WARNING |
 | Developer Checklist | 15/21 items passed |
 
-## Overall: NO-GO
+## Overall: GO
 
 ## Details
 
@@ -64,15 +64,15 @@ Result: **PASS**
 
 Audited `breadcrumbs.scss` (verified against compiled `breadcrumbs.css`).
 
-| # | File Location | Violation | Suggested Fix |
+| # | File Location | Status | Resolution |
 |---|---|---|---|
-| 1 | SCSS line 60 / CSS line 58 | `transition: color 0.2s ease, text-decoration 0.2s ease` on `.breadcrumbs-link` | Replace `0.2s` with `var(--transition-duration-fast, 0.2s)` |
-| 2 | SCSS line 69 / CSS line 69 | `border-radius: 2px` on `.breadcrumbs-link:focus` | Replace `2px` with `var(--radius-sm)` or `var(--border-radius-small)` |
-| 3 | CSS line 96 (print `@media print`) | `margin: 0.5rem 0` on `.breadcrumbs` | Replace with `var(--spacing-small)` or appropriate spacing token |
-| 4 | CSS line 100 (print `@media print`) | `color: #000` on `.breadcrumbs-link` | Replace with `var(--color-neutral-900)` or `var(--color-print-text)` |
-| 5 | CSS line 104 (print `@media print`) | `color: #000` on `.breadcrumbs-item::after` separator | Replace with `var(--color-neutral-900)` or `var(--color-print-text)` |
+| 1 | SCSS `.breadcrumbs-link` | RESOLVED | `transition` removed entirely (hover only underlines; opacity was never animated) |
+| 2 | SCSS `.breadcrumbs-link:focus` | RESOLVED | `border-radius: 2px` → `var(--radius-xs)` |
+| 3 | SCSS `@media print` `.breadcrumbs` | RESOLVED | `margin: 0.5rem 0` rule removed (the entire `.breadcrumbs` print rule was removed) |
+| 4 | SCSS `@media print` `.breadcrumbs-link` | RESOLVED | `color: #000` → `var(--color-base-black)` |
+| 5 | SCSS `@media print` `.breadcrumbs-item::after` | RESOLVED | `color: #000` → `var(--color-base-black)` |
 
-**Total violations: 5 — FAIL (threshold: ≥4)**
+**Total violations: 0 — PASS**
 
 Note: `outline: 2px solid` on `.breadcrumbs-link:focus` — the `2px` border width is excepted per audit rules (1px borders are excepted; this is a focus outline width). However, given this is a focus ring style value, it is borderline. Not counted as a separate violation. The `outline-offset: 2px` on the same rule is also a pixel value on a structural property — borderline. Not counted.
 
@@ -115,7 +115,7 @@ Result: **WARNING** (Hero integration and theme-aware styling not implemented; a
 | BEM CSS class naming | PASS — `.breadcrumbs`, `.breadcrumbs-list`, `.breadcrumbs-item`, `.breadcrumbs-link`, `.breadcrumbs-current` |
 | README present and substantive | PASS — comprehensive documentation |
 | No site-specific code | PASS |
-| Token usage in CSS | FAIL — 5 violations (print styles and transition/radius in main styles) |
+| Token usage in CSS | PASS — 0 violations |
 | Root + Brand cascade support | PASS |
 
 #### Responsive Design
@@ -158,13 +158,8 @@ Result: **WARNING** (Hero integration and theme-aware styling not implemented; a
 
 ## Remediation
 
-### P1 — Blocking (required before GO)
-1. **Fix 5 CSS token violations in `breadcrumbs.scss`:**
-   - `transition: color 0.2s ease, text-decoration 0.2s ease` → `var(--transition-duration-fast, 0.2s)`
-   - `border-radius: 2px` on focus ring → `var(--radius-sm)` or `var(--border-radius-small)`
-   - `margin: 0.5rem 0` in print styles → `var(--spacing-small)`
-   - `color: #000` on `.breadcrumbs-link` in print styles → `var(--color-neutral-900)` or define `var(--color-print-text)`
-   - `color: #000` on separator in print styles → same as above
+### P1 — Resolved
+1. **All 5 CSS token violations fixed** — transition removed, border-radius tokenized, print hex values replaced with `var(--color-base-black)`, print margin rule removed.
 
 ### P2 — Spec gaps (recommended before production)
 2. **Hero block integration:** Per the ticket, breadcrumbs should be accessible from the Hero block, not as a standalone drop-in. Coordinate with Hero block development to provide a composable integration point.

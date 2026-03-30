@@ -1,132 +1,112 @@
-/* Breadcrumbs Block Styles */
-
-
-.section.breadcrumbs-container {
-  overflow: hidden;
-}
-
-/* Container - Semantic navigation element */
-.breadcrumbs-wrapper {
-  position: relative;
-}
+// Breadcrumbs Block Styles
 
 .breadcrumbs {
-  width: 100%;
-  padding: var(--spacing-small) 0;
-  text-transform: uppercase;
-}
+  /*
+   * TEMPORARY TOKENS — remove once the typography token PR is merged into staging.
+   * These values mirror the pending additions to root-tokens.scss / styles.scss.
+   * TODO: Delete this block when --font-weight-light and --body-letter-spacing land.
+   */
+  --font-weight-light: 300;
+  --body-letter-spacing: -0.02em;
 
-.breadcrumbs-wrapper::before {
-  content: '';
-  display: block;
-  width: 100vw;
-  height: 100%;
-  background-color: var(--color-neutral-100);
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: -1;
-}
+  nav {
+    // Breadcrumb list — horizontal layout
+    .breadcrumbs-list {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      list-style: none;
+      margin: 0;
+      padding: 0;
 
-/* Breadcrumb list - Horizontal layout */
-.breadcrumbs-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: var(--spacing-xsmall);
-}
+      // Small screens — compact spacing
+      @media (width < 600px) {
+        gap: var(--spacing-004);
+      }
 
-/* Individual breadcrumb items */
-.breadcrumbs-item {
-  display: flex;
-  align-items: center;
-}
+      // Mode=Dark — white text (hero over image/dark background)
+      [data-sectiontheme='theme-dark'] & {
+        color: var(--text-light-1);
+      }
 
-/* Add separator between items (not after last item) */
-.breadcrumbs-item:not(:last-child)::after {
-  content: '/';
-  margin: 0 var(--spacing-xsmall);
-  color: var(--color-neutral-500);
-  pointer-events: none;
-}
+      // Mode=Light — dark text (default)
+      [data-sectiontheme='theme-light'] & {
+        color: var(--text-dark-1);
+      }
 
-/* Breadcrumb links - Ancestors */
-.breadcrumbs-link {
-  color: var(--link-color);
-  text-decoration: none;
-  transition: color 0.2s ease, text-decoration 0.2s ease;
-}
+      // Individual breadcrumb items
+      .breadcrumbs-item {
+        display: flex;
+        align-items: center;
+        color: currentcolor;
+        font-size: var(--body-font-size-xxs);
+        font-weight: var(--font-weight-light);
+        line-height: var(--line-height-normal);
+        letter-spacing: var(--body-letter-spacing);
 
-.breadcrumbs-link:hover {
-  color: var(--link-hover-color);
-  text-decoration: underline;
-}
+        // Current page (last item) — bold
+        &:last-child {
+          font-weight: var(--font-weight-bold);
+        }
 
-.breadcrumbs-link:focus {
-  outline: 2px solid var(--focus-ring-color);
-  outline-offset: 2px;
-  border-radius: 2px;
-}
+        // Separator between items (not after last item)
+        &:not(:last-child)::after {
+          content: '/';
+          margin: 0 var(--spacing-008);
+          color: currentcolor;
+          pointer-events: none;
 
-/* ARIA live region for dynamic updates (visually hidden) */
-.breadcrumbs[aria-live="polite"]:empty::before {
-  content: 'Breadcrumb navigation loading...';
-  position: absolute;
-  left: -10000px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
+          @media (width < 600px) {
+            margin: 0 var(--spacing-004);
+          }
 
-/* Responsive Design - Mobile First */
+          @media print {
+            color: var(--color-base-black);
+          }
+        }
 
-/* Small screens (< 600px) - Compact spacing */
-@media (width < 600px) {
-  /* Reduce gap on mobile for tighter layout */
-  .breadcrumbs-list {
-    gap: var(--spacing-xxsmall);
-  }
+        // Breadcrumb links — use theme text color, not brand link color
+        a.breadcrumbs-link {
+          color: currentcolor;
+          text-decoration: none;
 
-  .breadcrumbs-item:not(:last-child)::after {
-    margin: 0 var(--spacing-xxsmall);
-  }
-}
+          &:hover {
+            text-decoration: underline;
+          }
 
-/* Print styles - Show full breadcrumb trail */
-@media print {
-  .breadcrumbs {
-    margin: 0.5rem 0;
-    padding: 0;
-  }
+          &:focus {
+            outline: 2px solid currentcolor;
+            outline-offset: 2px;
+            border-radius: var(--radius-xs);
+          }
 
-  .breadcrumbs-link {
-    color: #000;
-    text-decoration: none;
-  }
+          
 
-  .breadcrumbs-item:not(:last-child)::after {
-    color: #000;
-  }
-}
+          @media print {
+            color: var(--color-base-black);
+            text-decoration: none;
+          }
 
-/* High contrast mode support - progressive enhancement */
-/* stylelint-disable-next-line media-feature-name-value-no-unknown */
-@media (prefers-contrast: high) {
-  .breadcrumbs-link {
-    text-decoration: underline;
-  }
+          // High contrast mode support — progressive enhancement
+          // stylelint-disable-next-line media-feature-name-value-no-unknown
+          @media (prefers-contrast: more) {
+            text-decoration: underline;
 
-  .breadcrumbs-link:focus {
-    outline-width: 3px;
-  }
-}
+            &:focus {
+              outline-width: 3px;
+            }
+          }
+        }
+      }
+    }
 
-/* Reduced motion support - Disable transitions */
-@media (prefers-reduced-motion: reduce) {
-  .breadcrumbs-link {
-    transition: none;
+    // ARIA live region — visually hidden positioning handled via inline styles (JS-rendered)
+    .breadcrumbs-live-region {
+      position: absolute;
+      left: -10000px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
   }
 }

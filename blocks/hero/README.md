@@ -69,6 +69,17 @@ Create `/brands/{property}/blocks/hero/hero.js` to:
 - Implement parallax scrolling
 - Add property-specific CTAs
 
+## Breadcrumb Integration
+
+The Hero block supports an optional breadcrumb trail rendered at the bottom of the hero image. Breadcrumbs are not an independently placeable block — they are toggled on via the Hero block configuration.
+
+The breadcrumbs are positioned in a flex row that spans the full hero width (`align-self: stretch`) with `justify-content: flex-start`, placing them in the bottom-left corner of the hero. Text color is always white in this context, overriding the breadcrumbs component's default Mode=Light dark text.
+
+The breadcrumb trail is dynamically constructed from site structure. Each crumb label comes from the page's `Breadcrumb Title` metadata field, falling back to the page `Title`. The first crumb is always "Home" linked to the property homepage.
+
+See [`blocks/breadcrumbs/`](../breadcrumbs/) for the breadcrumbs block and [`blocks/breadcrumbs/breadcrumbs-figma-audit.md`](../breadcrumbs/breadcrumbs-figma-audit.md) for the Figma spec.
+
 ## See Also
 
 - [Carousel Block](../carousel/README.md) - Multi-slide hero
+- [Breadcrumbs Block](../breadcrumbs/README.md) - Breadcrumb trail (hero-embedded)
