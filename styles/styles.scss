@@ -97,9 +97,10 @@
   --link-letter-spacing: -0.02em;
   --link-line-height: 1.5em;
 
-  /* list tokens — Figma "Listed Items" = Body 2 Light (node 8720-19764, style-gc72zn)
-     Inter 300 / 16px / 1.5em / -2% letter-spacing */
-  --list-font-size: var(--body-font-size-s);
+  /* list tokens */
+  --list-font-size: 16px;
+  --list-font-weight: var(--font-weight-light); 
+  --list-color: var(--color-base-black); 
   --list-line-height: 1.5em;
   --list-letter-spacing: -0.02em;
   --list-padding-left: 1.5em;

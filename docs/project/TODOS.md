@@ -14,13 +14,14 @@ These items block a production-quality launch and should be prioritized above al
 
 ### Token System Gaps
 
-- **`--nav-height` not in design token system** — defined as `64px` directly in `styles/styles.css`. Brands cannot override nav height via `tokens.css`. Move to `root-tokens.css`. *(ARCHITECTURE-TODO #4, BLOCK-TODOS General)*
-- **Font family and responsive font sizes not in token system** — `--body-font-family`, `--heading-font-family`, and responsive heading sizes live in `styles/styles.css`, not in the token chain. Brands cannot override fonts via `tokens.css`. *(ARCHITECTURE-TODO #5, BLOCK-TODOS General)*
-- **`lazy-styles.css` is empty** — `styles/lazy-styles.css` is loaded in `loadLazy()` but contains only a placeholder comment, adding a wasted network request. Either populate it with below-the-fold styles or remove the `loadCSS()` call from `scripts.js`. *(ARCHITECTURE-TODO #6, BLOCK-TODOS General)*
+- **`--nav-height` not in design token system** — defined as `64px` directly in `styles/styles.css`. Brands cannot override nav height via `tokens.css`. Move to `root-tokens.css`. _(ARCHITECTURE-TODO #4, BLOCK-TODOS General)_
+- **Font family and responsive font sizes not in token system** — `--body-font-family`, `--heading-font-family`, and responsive heading sizes live in `styles/styles.css`, not in the token chain. Brands cannot override fonts via `tokens.css`. _(ARCHITECTURE-TODO #5, BLOCK-TODOS General)_
+- **`lazy-styles.css` is empty** — `styles/lazy-styles.css` is loaded in `loadLazy()` but contains only a placeholder comment, adding a wasted network request. Either populate it with below-the-fold styles or remove the `loadCSS()` call from `scripts.js`. _(ARCHITECTURE-TODO #6, BLOCK-TODOS General)_
+- **Migrate typography & component tokens out of `styles/styles.scss`** — The `:root` block in `styles/styles.scss` contains typography, component, and legacy alias tokens that should live in the token chain, not in `styles.scss`. Plan: move brand-configurable tokens (font families, font sizes, line heights, letter spacings, nav height, and legacy `--background-color` / `--link-color` etc. aliases) to `root-tokens.scss`; move derived/constant tokens (font-weight aliases, eyebrow / list / link / input / details / testimonial derived tokens, `@font-face` fallbacks, and the `@media (width >= 900px)` `:root` overrides) to `fixed-tokens.scss`. After migration `styles.scss` should contain only page-level layout rules (`body`, `header`, `main`, sections). _(Token System — styles.scss cleanup)_
 
 ### Testing (Zero Coverage)
 
-- **No test files exist** — Jest and Playwright are installed and configured in `package.json` but no test files exist anywhere. `pnpm test` has nothing to run. Priority candidates: `scripts/site-resolver.js` (brand detection logic), block `decorate()` functions, E2E smoke tests for critical pages. *(ARCHITECTURE-TODO #15)*
+- **No test files exist** — Jest and Playwright are installed and configured in `package.json` but no test files exist anywhere. `pnpm test` has nothing to run. Priority candidates: `scripts/site-resolver.js` (brand detection logic), block `decorate()` functions, E2E smoke tests for critical pages. _(ARCHITECTURE-TODO #15)_
 
 ---
 
@@ -32,12 +33,12 @@ Current audit state: **7 GO, 21 NO-GO** (see [`docs/audits/SUMMARY.md`](../audit
 
 These should be applied as a sweep across all blocks during remediation:
 
-| Issue | Scope | Impact |
-|---|---|---|
-| Missing `ticket-details.md` | 20 of 28 blocks | Convention not followed |
-| Missing `bubbles: true` on lifecycle events | 12+ blocks | Event delegation broken for parent-level extensions |
-| Hard-coded hex fallbacks in `var()` | 14+ blocks | Token cascade bypassed (brand overrides ignored) |
-| Content Fragment integration absent | Cards, Carousel | Core platform requirement unmet |
+| Issue                                       | Scope           | Impact                                              |
+| ------------------------------------------- | --------------- | --------------------------------------------------- |
+| Missing `ticket-details.md`                 | 20 of 28 blocks | Convention not followed                             |
+| Missing `bubbles: true` on lifecycle events | 12+ blocks      | Event delegation broken for parent-level extensions |
+| Hard-coded hex fallbacks in `var()`         | 14+ blocks      | Token cascade bypassed (brand overrides ignored)    |
+| Content Fragment integration absent         | Cards, Carousel | Core platform requirement unmet                     |
 
 ### Priority 1 — Blocking (NO-GO, Major Work Required)
 
@@ -74,9 +75,9 @@ Full details in individual audit files under `docs/audits/`.
 
 Required for page composition patterns involving background images/videos. `component-models.json` fields (`backgroundImage`, `backgroundAlt`, `fullOverlay`, `linearGradient`, `sectionType`, etc.) are **done**. Remaining work:
 
-| File | Change |
-|---|---|
-| `scripts/scripts.js` | Add `decorateSectionBackgrounds()` function; call from `decorateMain()` after `decorateSections(main)` |
+| File                 | Change                                                                                                                                 |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `scripts/scripts.js` | Add `decorateSectionBackgrounds()` function; call from `decorateMain()` after `decorateSections(main)`                                 |
 | `styles/styles.scss` | Add `.section-bg`, `.section--overlay-*`, `.section--width-*`, `.section--align-*` rules (all values must reference custom properties) |
 
 ### Side-by-Side Block (New)
@@ -96,9 +97,9 @@ Files needed: `blocks/side-by-side/side-by-side.js`, `blocks/side-by-side/side-b
 
 ### Typography Follow-ups (ADO-89)
 
-- Apply `.text-testimonial` utility class to `blocks/quote/quote.scss` *(separate PR)*
-- Apply `.eyebrow` utility class to `blocks/banner/banner.scss` *(separate PR)*
-- Apply `.eyebrow` utility class to `blocks/hero/hero.scss` *(separate PR)*
+- Apply `.text-testimonial` utility class to `blocks/quote/quote.scss` _(separate PR)_
+- Apply `.eyebrow` utility class to `blocks/banner/banner.scss` _(separate PR)_
+- Apply `.eyebrow` utility class to `blocks/hero/hero.scss` _(separate PR)_
 
 ### Performance
 
@@ -114,15 +115,15 @@ Files needed: `blocks/side-by-side/side-by-side.js`, `blocks/side-by-side/side-b
 
 ## 4. Architecture & Design System
 
-### Token Governance *(FED-SOLUTION-DESIGN.md Open Items)*
+### Token Governance _(FED-SOLUTION-DESIGN.md Open Items)_
 
 - Final Brand token whitelist must be documented and approved
 - Tonal variant generation algorithm requires final specification (currently used in `fixed-tokens.css` via `color-mix()` but not documented as a spec)
 - Permission model governing Root vs Brand authoring requires governance alignment
-- Token documentation/discovery mechanism for designers and developers *(ARCHITECTURE-TODO #2)*
-- Zombie token prevention process *(ARCHITECTURE-TODO #1)*
+- Token documentation/discovery mechanism for designers and developers _(ARCHITECTURE-TODO #2)_
+- Zombie token prevention process _(ARCHITECTURE-TODO #1)_
 
-### App Builder Integration *(BLOCK-RENDERING-BUILD-CONFIG.md, FED-SOLUTION-DESIGN.md)*
+### App Builder Integration _(BLOCK-RENDERING-BUILD-CONFIG.md, FED-SOLUTION-DESIGN.md)_
 
 App Builder is referenced throughout the architecture for automated token PR creation but is not yet implemented. Requires spec for:
 
@@ -133,7 +134,7 @@ App Builder is referenced throughout the architecture for automated token PR cre
 - PR automation (target branch strategy, auto vs manual review, merge automation)
 - Infrastructure (hosting on Adobe I/O Runtime, scaling, monitoring, SLA)
 
-### Universal Editor *(ARCHITECTURE-TODO #11-14)*
+### Universal Editor _(ARCHITECTURE-TODO #11-14)_
 
 - Document actual UE preview environment behavior (branch preview vs local vs staging)
 - Document how authors discover available variants when authoring blocks
@@ -144,69 +145,69 @@ App Builder is referenced throughout the architecture for automated token PR cre
 
 - **Document `onBefore`/`onAfter` lifecycle hooks** — Explain what the hooks are, why they exist, and why they should rarely be used in practice. Brands should extend via `/brands/{property}/blocks/` overrides, not hook into base block internals. The hooks are an escape hatch, not a standard authoring pattern.
 
-### CSS Nesting Migration *(ARCHITECTURE-TODO #38)*
+### CSS Nesting Migration _(ARCHITECTURE-TODO #38)_
 
 Decision: migrate block CSS to nested syntax opportunistically during development work. Accordion (March 2026) is the first block using nested CSS.
 
 **Action needed:** Verify current PostCSS/build tooling passes nested CSS through correctly for the `browserslist` target without flattening or erroring. Document tooling state here once confirmed.
 
-### Build & Infrastructure *(ARCHITECTURE-TODO #8-10)*
+### Build & Infrastructure _(ARCHITECTURE-TODO #8-10)_
 
-- Evaluate if manual chunk splitting is needed beyond EDS automatic bundling *(#8)*
-- Determine source map strategy for production debugging *(#9)*
-- Document build artifact lifecycle within EDS infrastructure *(#10)*
+- Evaluate if manual chunk splitting is needed beyond EDS automatic bundling _(#8)_
+- Determine source map strategy for production debugging _(#9)_
+- Document build artifact lifecycle within EDS infrastructure _(#10)_
 
 ---
 
-## 5. Testing & Quality *(ARCHITECTURE-TODO #15-20)*
+## 5. Testing & Quality _(ARCHITECTURE-TODO #15-20)_
 
 - **Zero tests currently** — see Critical Blockers above. Write tests starting with brand detection and block decorate() functions.
-- Define unit test coverage targets and CI enforcement *(#16)*
-- Prioritize critical user journeys for E2E testing via Playwright *(#17)*
-- Evaluate visual regression testing approach (Percy, Chromatic, Playwright screenshots) *(#18)*
-- Document browser/version support matrix from `browserslist: "baseline widely available"` *(#19)*
-- Automate accessibility testing beyond linting (axe-core in Playwright, Pa11y) *(#20)*
+- Define unit test coverage targets and CI enforcement _(#16)_
+- Prioritize critical user journeys for E2E testing via Playwright _(#17)_
+- Evaluate visual regression testing approach (Percy, Chromatic, Playwright screenshots) _(#18)_
+- Document browser/version support matrix from `browserslist: "baseline widely available"` _(#19)_
+- Automate accessibility testing beyond linting (axe-core in Playwright, Pa11y) _(#20)_
 
 ---
 
-## 6. Monitoring & Operations *(ARCHITECTURE-TODO #21-27)*
+## 6. Monitoring & Operations _(ARCHITECTURE-TODO #21-27)_
 
-- Document RUM data storage and analysis pipeline *(#21)*
-- Audit all `sampleRUM()` calls; catalog tracked events and define success metrics *(#22)*
-- Select and integrate error tracking service (Sentry, New Relic, Adobe-native) *(#23)*
-- Implement Lighthouse CI in GitHub Actions; define performance budget thresholds; decide blocking vs advisory *(#24)*
-- Define alert routing: critical → on-call, warning → Slack, info → email digest *(#25)*
-- Define deployment notification mechanism (GitHub Actions → Slack webhook, email, etc.) *(#26)*
-- Define deployment policy: blackout periods, emergency hotfix exception process *(#27)*
-
----
-
-## 7. Security & Compliance (Required Before Launch) *(ARCHITECTURE-TODO #28-33)*
-
-- **CSP headers** — Review current CSP `<meta>` tag for XSS protections; test third-party integrations (maps, booking widgets); verify `move-to-http-header` works in EDS *(#28)*
-- **AEM authentication** — Document UE access control model (SSO, role-based) *(#29)*
-- **PII handling** — Define data classification, storage locations, retention policies, and right-to-deletion workflows for form submissions *(#30)*
-- **GDPR compliance** — Cookie consent banner implementation, data retention policies, user rights workflow *(#31)*
-- **Security audit logging** — Define what actions are logged (publishes, token changes, permission modifications) and retention period *(#32)*
-- **Vendor SLAs** — Review Adobe uptime commitments, document backup procedures *(#33)*
+- Document RUM data storage and analysis pipeline _(#21)_
+- Audit all `sampleRUM()` calls; catalog tracked events and define success metrics _(#22)_
+- Select and integrate error tracking service (Sentry, New Relic, Adobe-native) _(#23)_
+- Implement Lighthouse CI in GitHub Actions; define performance budget thresholds; decide blocking vs advisory _(#24)_
+- Define alert routing: critical → on-call, warning → Slack, info → email digest _(#25)_
+- Define deployment notification mechanism (GitHub Actions → Slack webhook, email, etc.) _(#26)_
+- Define deployment policy: blackout periods, emergency hotfix exception process _(#27)_
 
 ---
 
-## 8. Third-Party Integration Specs *(ARCHITECTURE-TODO #35-37)*
+## 7. Security & Compliance (Required Before Launch) _(ARCHITECTURE-TODO #28-33)_
+
+- **CSP headers** — Review current CSP `<meta>` tag for XSS protections; test third-party integrations (maps, booking widgets); verify `move-to-http-header` works in EDS _(#28)_
+- **AEM authentication** — Document UE access control model (SSO, role-based) _(#29)_
+- **PII handling** — Define data classification, storage locations, retention policies, and right-to-deletion workflows for form submissions _(#30)_
+- **GDPR compliance** — Cookie consent banner implementation, data retention policies, user rights workflow _(#31)_
+- **Security audit logging** — Define what actions are logged (publishes, token changes, permission modifications) and retention period _(#32)_
+- **Vendor SLAs** — Review Adobe uptime commitments, document backup procedures _(#33)_
+
+---
+
+## 8. Third-Party Integration Specs _(ARCHITECTURE-TODO #35-37)_
 
 Specs required before implementation:
 
-- **Booking Widget APIs** — document provider, authentication, failover behavior, rate limits, fallback UI *(#35)*
-- **Weather Service** — provider selection, API key management, caching duration, graceful degradation *(#36)*
-- **Interactive Map** — Google Maps vs Mapbox decision, API key management per brand, static map fallback for performance *(#37)*
+- **Booking Widget APIs** — document provider, authentication, failover behavior, rate limits, fallback UI _(#35)_
+- **Weather Service** — provider selection, API key management, caching duration, graceful degradation _(#36)_
+- **Interactive Map** — Google Maps vs Mapbox decision, API key management per brand, static map fallback for performance _(#37)_
 
 ---
 
 ## 9. Open Questions (Pending External Input)
 
-| Question | Source | Blocking |
-|---|---|---|
-| Admin API key header format for org/site-level keys (Adobe docs gap) | AEM-EDS-REPOLESS-UE-SETUP.md #1 | Team automation using API keys |
-| Exact request body for API key creation endpoint | AEM-EDS-REPOLESS-UE-SETUP.md #2 | API key setup |
-| Final Lake Powell brand colors (placeholder values in tokens.css) | BRAND-CONFIG-TICKET-RUNDOWN.md | Production launch of Lake Powell site |
-| Brand-specific block variant strategy (filter variants by brand in UE?) | ARCHITECTURE-TODO #3 | Block variant governance |
+| Question                                                                | Source                          | Blocking                              |
+| ----------------------------------------------------------------------- | ------------------------------- | ------------------------------------- |
+| Admin API key header format for org/site-level keys (Adobe docs gap)    | AEM-EDS-REPOLESS-UE-SETUP.md #1 | Team automation using API keys        |
+| Exact request body for API key creation endpoint                        | AEM-EDS-REPOLESS-UE-SETUP.md #2 | API key setup                         |
+| Final Lake Powell brand colors (placeholder values in tokens.css)       | BRAND-CONFIG-TICKET-RUNDOWN.md  | Production launch of Lake Powell site |
+| Brand-specific block variant strategy (filter variants by brand in UE?) | ARCHITECTURE-TODO #3            | Block variant governance              |

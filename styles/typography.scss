@@ -160,8 +160,10 @@ ol {
     margin-bottom: 2.5rem;
     padding-left: var(--list-padding-left);
     font-size: var(--list-font-size);
+    font-weight: var(--list-font-weight);
     line-height: var(--list-line-height);
     letter-spacing: var(--list-letter-spacing);
+    color: var(--list-color);
 
     >li {
         margin-top: 0;
@@ -209,9 +211,7 @@ dd {
 }
 
 /* ============================================================
-   Links — Figma-aligned (node 5366-7069, style-yn409d)
-   Inline Link:      Inter 400 / 16px / 1.5em / -2% letter-spacing / underline
-   Independent Link: Inter 700 / 16px / 1.5em / -2% letter-spacing
+   Links — Figma-aligned
    ============================================================ */
 a:any-link {
     color: var(--link-color);
@@ -224,6 +224,13 @@ a:any-link {
 a:hover {
     color: var(--link-hover-color);
     text-decoration: underline;
+}
+
+/* Focus indicator  */
+a:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: 2px;
+    text-decoration: none;
 }
 
 /* ============================================================
@@ -746,8 +753,4 @@ del {
     &::after {
         content: ' [deletion end] ';
     }
-}
-
-div:empty {
-    display: none;
 }
