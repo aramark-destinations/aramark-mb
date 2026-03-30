@@ -1,5 +1,7 @@
 Block Overview
 
+> **Note:** This block was renamed from `button` to `cta` in the codebase to avoid conflicting with the OOTB AEM `button` component. All codebase references use `cta`. The OOTB `button` component remains unchanged. Ticket and Figma documentation retain the "Button" name — that is intentional and correct.
+
 The Buttons block should be set up in the EDS codebase with the needed configuration fields in Universal Editor.
 The Button block should be able to be:
 Used as a stand-alone block and added to Sections, Columns, Tabs, and Accordions

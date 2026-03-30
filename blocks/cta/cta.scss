@@ -1,4 +1,6 @@
-.button {
+// CTA block — formerly "button" block. Renamed to avoid conflict with the OOTB AEM button component.
+// Figma/ticket docs use "Button"; all codebase references use "cta".
+.cta {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-008);

@@ -2,7 +2,7 @@ import {
   describe, it, expect, beforeEach, jest,
 } from '@jest/globals';
 
-describe('button decorate', () => {
+describe('cta decorate', () => {
   let decorate;
   let block;
 
@@ -10,7 +10,7 @@ describe('button decorate', () => {
     type = '', color = '', size = '', shape = '',
   } = {}) => {
     const b = document.createElement('div');
-    b.className = ['button', type, color, size, shape].filter(Boolean).join(' ');
+    b.className = ['cta', type, color, size, shape].filter(Boolean).join(' ');
     b.innerHTML = '<div><div><p><a href="/page">Click me</a></p></div></div>';
     document.body.appendChild(b);
     return b;
@@ -20,19 +20,19 @@ describe('button decorate', () => {
     jest.resetModules();
     document.body.innerHTML = '';
     block = buildBlock();
-    ({ decorate } = await import('./button.js'));
+    ({ decorate } = await import('./cta.js'));
   });
 
-  it('fires button:before event', () => {
+  it('fires cta:before event', () => {
     const listener = jest.fn();
-    block.addEventListener('button:before', listener);
+    block.addEventListener('cta:before', listener);
     decorate(block);
     expect(listener).toHaveBeenCalledTimes(1);
   });
 
-  it('fires button:after event', () => {
+  it('fires cta:after event', () => {
     const listener = jest.fn();
-    block.addEventListener('button:after', listener);
+    block.addEventListener('cta:after', listener);
     decorate(block);
     expect(listener).toHaveBeenCalledTimes(1);
   });
@@ -113,7 +113,7 @@ describe('button decorate', () => {
   it('removes stale content rows (no <a>) as defense for old authored content', () => {
     document.body.innerHTML = '';
     const b = document.createElement('div');
-    b.className = 'button';
+    b.className = 'cta';
     b.innerHTML = `
       <div><div><p><a href="/page">Click me</a></p></div></div>
       <div><div><p>stale-row</p></div></div>
@@ -126,7 +126,7 @@ describe('button decorate', () => {
   it('sets aria-label from title attribute when title is present', () => {
     document.body.innerHTML = '';
     const b = document.createElement('div');
-    b.className = 'button';
+    b.className = 'cta';
     b.innerHTML = '<div><div><p><a href="/page" title="Book a reservation">Book now</a></p></div></div>';
     document.body.appendChild(b);
     decorate(b);

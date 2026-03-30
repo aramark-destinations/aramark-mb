@@ -1,5 +1,7 @@
 # Button Block
 
+> **Note:** This block was renamed from `button` to `cta` in the codebase to avoid conflicting with the OOTB AEM `button` component. All codebase references use `cta`. The OOTB `button` component remains unchanged. Figma design files and designer-facing documentation continue to use the name "Button" — that is intentional and correct.
+
 A project-specific rich button block for AEM Universal Editor + xwalk authoring.
 Provides author-controlled style, color, size, and shape variants via `block/v1/block` —
 replacing the OOTB `button/v1/button` default content component which cannot be customized.
@@ -12,9 +14,9 @@ The OOTB `button/v1/button` resource type renders buttons as default content —
 styled by `styles/styles.css`. Because it never generates a `<div class="button block">` wrapper,
 `blocks/button/button.js` and `blocks/button/button.css` are never loaded by the EDS runtime.
 
-By switching to `core/franklin/components/block/v1/block` with `"name": "Button"` in the template,
-EDS generates a proper block table in the document and loads `blocks/button/button.js` and
-`blocks/button/button.css` — giving full decoration and styling control.
+By switching to `core/franklin/components/block/v1/block` with `"name": "CTA"` in the template,
+EDS generates a proper block table in the document and loads `blocks/cta/cta.js` and
+`blocks/cta/cta.css` — giving full decoration and styling control.
 
 The OOTB inline button behavior (links styled as buttons in default content) is handled by
 `styles/styles.css` and is unaffected by this block.
@@ -78,7 +80,7 @@ Example output for a Tertiary / Large / Pill / Outlined button:
 
 ## UE Model
 
-Fields exposed to authors are defined in `models/_button.json` and aggregated into the root
+Fields exposed to authors are defined in `blocks/cta/_cta.json` and aggregated into the root
 `component-models.json` at build time via `pnpm build:json`.
 
 | Field                     | Component     | Values                                     |
@@ -97,10 +99,10 @@ Fields exposed to authors are defined in `models/_button.json` and aggregated in
 
 ```javascript
 // Global hook injection (e.g. from a brand override or analytics script)
-window.Button = {
+window.Cta = {
   hooks: {
     onBefore: ({ block }) => {
-      block.dataset.analyticsComponent = 'button';
+      block.dataset.analyticsComponent = 'cta';
     },
     onAfter: ({ block }) => {
       // post-decoration logic
@@ -111,10 +113,10 @@ window.Button = {
 
 ### Custom Events
 
-| Event           | When fired                          |
-|----------------|-------------------------------------|
-| `button:before` | Before class decoration             |
-| `button:after`  | After class decoration and row cleanup |
+| Event       | When fired                             |
+|------------|----------------------------------------|
+| `cta:before` | Before class decoration              |
+| `cta:after`  | After class decoration and row cleanup |
 
 ---
 

@@ -1,13 +1,13 @@
 /**
- * Button Block
+ * CTA Block
  * - Provides lifecycle hooks (onBefore/onAfter)
  * - Dispatches before/after events
- * - Implements core button block functionality
+ * - Implements core CTA block functionality
  * - Supports multiple buttons with style and color variants
  *
  * Variant classes are authored via classes_* fields in the UE model and rendered
  * as CSS classes directly on the block wrapper element by AEM delivery:
- *   <div class="button [filled|outlined|text-only] [color-*] [size-*] [shape-pill]">
+ *   <div class="cta [filled|outlined|text-only] [color-*] [size-*] [shape-pill]">
  *
  * JS reads block.classList and applies defaults when no authored class is present.
  */
@@ -16,7 +16,7 @@ export function decorate(block, options = {}) {
   const ctx = { block, options };
 
   options.onBefore?.(ctx);
-  block.dispatchEvent(new CustomEvent('button:before', { detail: ctx, bubbles: true }));
+  block.dispatchEvent(new CustomEvent('cta:before', { detail: ctx, bubbles: true }));
 
   const STYLE_CLASSES = ['filled', 'outlined', 'text-only'];
   const COLOR_CLASSES = ['color-primary', 'color-secondary', 'color-tertiary', 'color-black', 'color-white'];
@@ -37,10 +37,10 @@ export function decorate(block, options = {}) {
   });
 
   options.onAfter?.(ctx);
-  block.dispatchEvent(new CustomEvent('button:after', { detail: ctx, bubbles: true }));
+  block.dispatchEvent(new CustomEvent('cta:after', { detail: ctx, bubbles: true }));
 }
 
 /**
- * Default export — allows global hook injection via window.Button?.hooks
+ * Default export — allows global hook injection via window.Cta?.hooks
  */
-export default (block) => decorate(block, window.Button?.hooks);
+export default (block) => decorate(block, window.Cta?.hooks);

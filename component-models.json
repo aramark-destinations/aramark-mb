@@ -105,101 +105,34 @@
       {
         "component": "aem-content",
         "name": "link",
-        "label": "Button Link",
-        "description": "Page path, DAM asset for download, or fragment reference for modal trigger"
+        "label": "Link"
       },
       {
         "component": "text",
         "name": "linkText",
-        "label": "Button Text"
+        "label": "Text"
       },
       {
         "component": "text",
         "name": "linkTitle",
-        "label": "Button Screen Reader Text",
-        "description": "Accessible title shown as tooltip"
+        "label": "Title"
       },
       {
         "component": "select",
-        "name": "classes_type",
-        "label": "Button Style",
-        "description": "Visual style of the button",
+        "name": "linkType",
+        "label": "Type",
         "options": [
           {
-            "name": "Filled",
-            "value": "filled"
-          },
-          {
-            "name": "Outlined",
-            "value": "outlined"
-          },
-          {
-            "name": "Text-only",
-            "value": "text-only"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "name": "classes_color",
-        "label": "Button Color",
-        "description": "Color theme for the button",
-        "options": [
-          {
-            "name": "Primary Color",
-            "value": "color-primary"
-          },
-          {
-            "name": "Secondary Color",
-            "value": "color-secondary"
-          },
-          {
-            "name": "Tertiary Color",
-            "value": "color-tertiary"
-          },
-          {
-            "name": "Black",
-            "value": "color-black"
-          },
-          {
-            "name": "White",
-            "value": "color-white"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "name": "classes_size",
-        "label": "Button Size",
-        "description": "Size of the button",
-        "options": [
-          {
-            "name": "Large",
-            "value": "size-large"
-          },
-          {
-            "name": "Medium",
-            "value": "size-medium"
-          },
-          {
-            "name": "Small",
-            "value": "size-small"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "name": "classes_shape",
-        "label": "Button Shape",
-        "description": "Shape of the button corners",
-        "options": [
-          {
-            "name": "Rectangular",
+            "name": "default",
             "value": ""
           },
           {
-            "name": "Pill",
-            "value": "shape-pill"
+            "name": "primary",
+            "value": "primary"
+          },
+          {
+            "name": "secondary",
+            "value": "secondary"
           }
         ]
       }
@@ -585,6 +518,112 @@
         "name": "rows",
         "value": "",
         "label": "Rows"
+      }
+    ]
+  },
+  {
+    "id": "cta",
+    "fields": [
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Button Link",
+        "description": "Page path, DAM asset for download, or fragment reference for modal trigger"
+      },
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Button Text"
+      },
+      {
+        "component": "text",
+        "name": "linkTitle",
+        "label": "Button Screen Reader Text",
+        "description": "Accessible title shown as tooltip"
+      },
+      {
+        "component": "select",
+        "name": "classes_type",
+        "label": "Button Style",
+        "description": "Visual style of the button",
+        "options": [
+          {
+            "name": "Filled",
+            "value": "filled"
+          },
+          {
+            "name": "Outlined",
+            "value": "outlined"
+          },
+          {
+            "name": "Text-only",
+            "value": "text-only"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "classes_color",
+        "label": "Button Color",
+        "description": "Color theme for the button",
+        "options": [
+          {
+            "name": "Primary Color",
+            "value": "color-primary"
+          },
+          {
+            "name": "Secondary Color",
+            "value": "color-secondary"
+          },
+          {
+            "name": "Tertiary Color",
+            "value": "color-tertiary"
+          },
+          {
+            "name": "Black",
+            "value": "color-black"
+          },
+          {
+            "name": "White",
+            "value": "color-white"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "classes_size",
+        "label": "Button Size",
+        "description": "Size of the button",
+        "options": [
+          {
+            "name": "Large",
+            "value": "size-large"
+          },
+          {
+            "name": "Medium",
+            "value": "size-medium"
+          },
+          {
+            "name": "Small",
+            "value": "size-small"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "classes_shape",
+        "label": "Button Shape",
+        "description": "Shape of the button corners",
+        "options": [
+          {
+            "name": "Rectangular",
+            "value": ""
+          },
+          {
+            "name": "Pill",
+            "value": "shape-pill"
+          }
+        ]
       }
     ]
   },
